@@ -132,6 +132,7 @@ def run_walk_forward_analysis(df_dev: pd.DataFrame, param_grid: dict = PARAM_GRI
             'oos_win_rate': oos_stats['win_rate'], 'oos_trades_per_day': oos_stats['trades_per_day'],
             'oos_sharpe': oos_equity['sharpe_ratio'], 'oos_max_dd': oos_equity['max_drawdown_pct'],
             'oos_total_pnl': oos_stats['total_net_pnl'], 'oos_objective': oos_objective,
+            'oos_profit_factor': min(oos_stats['profit_factor'], 10.0),
             'wide_thin_accuracy': oos_stats['wide_thin_accuracy'],
             'tight_deep_accuracy': oos_stats['tight_deep_accuracy'],
         })
@@ -163,28 +164,28 @@ def summarize_wfa_results(fold_results: List[dict]) -> dict:
     return s
 
 
-def select_wfa_best_params(fold_results: List[dict], method: str = 'weighted') -> dict:
+def select_wfa_best_params(fold_results: List[dict], method: str = 'weighted',
+                           weight_key: str = 'oos_objective') -> dict:
     """
     Choose final parameters from WFA folds (development-set only).
 
     method='weighted'  : per-parameter vote where each fold's chosen value is
-                         weighted by a softmax of its OOS objective score
-                         (folds that performed better OOS count more).
-    method='best_fold' : take the params of the single highest-OOS-objective fold.
+                         weighted by a softmax of `weight_key` (e.g. 'oos_objective'
+                         or 'oos_profit_factor'); better-performing folds count more.
+    method='best_fold' : take the params of the single best fold by `weight_key`.
     method='modal'     : plain majority vote (each fold weighted equally).
     """
     from collections import defaultdict
     keys = list(DEFAULT_PARAMS.keys())
 
     if method == 'best_fold':
-        best = max(fold_results, key=lambda f: f.get('oos_objective', -1e9))
+        best = max(fold_results, key=lambda f: f.get(weight_key, -1e9))
         chosen = dict(best['best_params'])
         chosen['exit_bars'] = int(chosen['exit_bars'])
         return chosen
 
-    objs = np.array([f.get('oos_objective', 0.0) for f in fold_results], dtype=float)
+    objs = np.array([f.get(weight_key, 0.0) for f in fold_results], dtype=float)
     if method == 'weighted':
-        # Softmax weights (temperature scaled by the spread of objective scores).
         scale = objs.std() if objs.std() > 1e-9 else 1.0
         w = np.exp((objs - objs.max()) / scale)
         w = w / w.sum()

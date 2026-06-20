@@ -38,6 +38,20 @@ The data file path and output dir are configurable via env vars
 cd /app && python -m pytest strategy_02_queue_depletion/tests -q
 ```
 
+## Research add-ons
+- `python -m strategy_02_queue_depletion.diagnostics` — sign-inversion + threshold sweep.
+- `python -m strategy_02_queue_depletion.ml_prototype` — anti-curve-fit logistic-regression
+  test of whether the 45-feature set carries directional signal (purged walk-forward,
+  test set used once, fixed hyperparameters, costs/no-overnight, binomial significance).
+- `strategy_02.pine` — TradingView Pine v5 strategy port (use on ES/MES 5-min RTH, NY tz).
+
+### Research findings (this dataset)
+Neither the published rules nor a regularized ML classifier finds an exploitable edge.
+Sign inversion does not help (both directions lose). The ML classifier's out-of-sample
+directional accuracy is ~50.6% (dev purged-WFA) / ~51.0% (test) — within noise; the small
+positive test PnL is statistically insignificant (binomial p≈0.83) and the overfit gap is
+~0.4 pts. Conclusion: the feature set has no short-horizon directional edge on ES 5-min.
+
 ## Key implementation notes / deviations from the literal spec
 These changes keep results correct and the code runnable; numeric semantics are
 preserved unless noted.

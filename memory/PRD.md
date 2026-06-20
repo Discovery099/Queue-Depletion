@@ -67,6 +67,17 @@ params), not an implementation defect. All metrics in strategy_02_summary.json.
   regime logic, guards, ATR exits, $30 RT costs). Copied to /app/output/.
 - 12 output artifacts; tests still 11/11 pass.
 
+## Updates (2026-06-20, iteration 4)
+- `select_wfa_best_params` now supports `weight_key` (e.g. 'oos_objective' or
+  'oos_profit_factor'); folds store `oos_profit_factor`. Methods: weighted/best_fold/modal.
+- Added `ml_prototype.py` — anti-curve-fit (Section 8) logistic-regression test of the
+  45-feature set: strong L2, FIXED hyperparameters {H=3, C=0.05, margin=0.05, 28-feat},
+  PURGED walk-forward (H-bar embargo), test used ONCE, scaler fit on train only, costs +
+  no overnight, seed 42, binomial significance. RESULT: OOS directional accuracy ~50.6%
+  (dev) / 51.0% (test) — no edge; test PnL insignificant (p≈0.83); overfit gap ~0.4 pts.
+  Writes strategy_02_ml_prototype.json.
+- All 11 tests pass.
+
 ## Backlog / Next action items
 - P1: Optionally use WFA-selected (rather than default) params for final test eval.
 - P2: Add monthly-returns heatmap + Sortino test; parameter-stability report to CSV.

@@ -1,0 +1,69 @@
+{
+  "hyperparameters": {
+    "H": 3,
+    "C": 0.05,
+    "prob_margin": 0.05,
+    "n_features": 28,
+    "features": [
+      "f_returns",
+      "f_log_returns",
+      "f_bar_range",
+      "f_body_size",
+      "f_body_direction",
+      "f_upper_shadow",
+      "f_lower_shadow",
+      "f_bvc_ratio",
+      "f_bvc_imbalance",
+      "f_atr_20_pct",
+      "f_vol_realized_20",
+      "f_vol_ratio",
+      "f_volume_ratio",
+      "f_volume_zscore_20",
+      "f_depletion_raw",
+      "f_depletion_ma_5",
+      "f_depletion_ma_10",
+      "f_depletion_diff",
+      "f_toxicity_raw",
+      "f_toxicity_ma_5",
+      "f_toxicity_zscore",
+      "f_ema_diff",
+      "f_price_vs_ema20",
+      "f_momentum_3",
+      "f_momentum_6",
+      "f_liquidity_score",
+      "f_regime_tight_deep",
+      "f_regime_wide_thin"
+    ]
+  },
+  "dev_oos_purged_wfa": {
+    "trades": 5761,
+    "win_rate": 0.4687,
+    "net_pnl": -85692.0,
+    "profit_factor": 0.889,
+    "trades_per_day": 5.17,
+    "mean_fold_accuracy": 0.5063
+  },
+  "test_once": {
+    "trades": 155,
+    "accuracy": 0.5097,
+    "win_rate": 0.4645,
+    "net_pnl": 3450.0,
+    "profit_factor": 1.072,
+    "avg_pnl": 22.26,
+    "trades_per_day": 0.32,
+    "binomial_p_value": 0.832432
+  },
+  "overfit_gap_winrate": 0.0042,
+  "verdict": "NO EXPLOITABLE EDGE in the feature set under these constraints",
+  "anti_curve_fit": {
+    "purged_walk_forward_embargo_bars": 3,
+    "test_set_uses": 1,
+    "hyperparameters_fixed_before_test": true,
+    "scaler_fit_on_train_only": true,
+    "costs_included_usd_per_rt": 30.0,
+    "overnight_positions": false,
+    "random_seed": 42,
+    "trades_test": 155,
+    "trades_ge_1000": false
+  }
+}
