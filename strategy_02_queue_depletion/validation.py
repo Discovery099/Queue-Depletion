@@ -162,6 +162,22 @@ def summarize_wfa_results(fold_results: List[dict]) -> dict:
     return s
 
 
+def select_wfa_best_params(fold_results: List[dict]) -> dict:
+    """
+    Choose final parameters by per-parameter majority vote (mode) across all WFA
+    folds. Modal selection is robust to single-fold overfitting and uses only
+    development-set information (no test-set contamination).
+    """
+    from collections import Counter
+    chosen = {}
+    for k in DEFAULT_PARAMS.keys():
+        vals = [f['best_params'][k] for f in fold_results]
+        chosen[k] = Counter(vals).most_common(1)[0][0]
+    # Preserve int type for exit_bars
+    chosen['exit_bars'] = int(chosen['exit_bars'])
+    return chosen
+
+
 def check_parameter_stability(fold_results: List[dict]) -> dict:
     keys = list(DEFAULT_PARAMS.keys())
     out = {}

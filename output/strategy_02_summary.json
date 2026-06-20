@@ -13,32 +13,32 @@
     "test_bars": 36695
   },
   "parameters": {
-    "dep_threshold": 0.15,
-    "tox_threshold": 0.2,
-    "momentum_confirm": 0.0002,
-    "breakthrough_threshold": 0.1,
-    "exit_bars": 4,
-    "profit_target_pct": 0.8,
-    "stop_loss_pct": 0.6,
-    "min_volume_pctile": 30.0
+    "dep_threshold": 0.05,
+    "tox_threshold": 0.05,
+    "momentum_confirm": 0.0,
+    "breakthrough_threshold": 0.02,
+    "exit_bars": 8,
+    "profit_target_pct": 0.3,
+    "stop_loss_pct": 1.5,
+    "min_volume_pctile": 50.0
   },
   "test_set_results": {
-    "total_trades": 106,
-    "win_rate_pct": 35.8491,
-    "trades_per_day": 0.2208,
-    "wide_thin_accuracy_pct": 37.9747,
-    "tight_deep_accuracy_pct": 29.6296,
-    "sharpe_ratio": -1.0437,
-    "sortino_ratio": -0.0915,
-    "max_drawdown_pct": -10.725,
-    "profit_factor": 0.672,
-    "total_net_pnl": -9930.0,
-    "avg_pnl_per_trade": -93.68
+    "total_trades": 30,
+    "win_rate_pct": 50.0,
+    "trades_per_day": 0.0625,
+    "wide_thin_accuracy_pct": 50.0,
+    "tight_deep_accuracy_pct": 50.0,
+    "sharpe_ratio": -1.3171,
+    "sortino_ratio": -0.0555,
+    "max_drawdown_pct": -10.5589,
+    "profit_factor": 0.3552,
+    "total_net_pnl": -9575.0,
+    "avg_pnl_per_trade": -319.17
   },
   "statistical_tests": {
-    "binomial_p_value": 0.9987799958103255,
+    "binomial_p_value": 0.572232224047184,
     "sharpe_p_value": 1.0,
-    "permutation_p_value": 0.835
+    "permutation_p_value": 0.955
   },
   "walk_forward": {
     "num_folds": 17,
@@ -57,5 +57,5 @@
     "binomial_significant": false,
     "all_pass": false
   },
-  "timestamp": "2026-06-20T18:39:13Z"
+  "timestamp": "2026-06-20T18:49:33Z"
 }

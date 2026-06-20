@@ -140,6 +140,45 @@ def plot_trade_distribution(trades: List[Trade], output_path: str = None):
     return path
 
 
+def plot_monthly_returns(df: pd.DataFrame, trades: List[Trade], output_path: str = None):
+    path = output_path or os.path.join(OUTPUT_DIR, "strategy_02_monthly_returns.png")
+    if not trades:
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.text(0.5, 0.5, "No trades", ha='center', va='center')
+        fig.savefig(path, dpi=100)
+        plt.close(fig)
+        return path
+
+    rows = []
+    for t in trades:
+        ts = pd.Timestamp(t.exit_time).tz_convert('America/New_York')
+        rows.append({'year': ts.year, 'month': ts.month, 'pnl': t.net_pnl})
+    s = pd.DataFrame(rows)
+    piv = s.groupby(['year', 'month'])['pnl'].sum().unstack(fill_value=np.nan)
+    piv = piv.reindex(columns=range(1, 13))
+
+    vmax = np.nanmax(np.abs(piv.values)) if np.isfinite(piv.values).any() else 1.0
+    fig, ax = plt.subplots(figsize=(12, 1.2 + 0.6 * len(piv)))
+    im = ax.imshow(piv.values, cmap='RdYlGn', vmin=-vmax, vmax=vmax, aspect='auto')
+    month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    ax.set_xticks(range(12))
+    ax.set_xticklabels(month_names)
+    ax.set_yticks(range(len(piv)))
+    ax.set_yticklabels([str(y) for y in piv.index])
+    ax.set_title("Monthly Net P&L Heatmap (Test Set)")
+    for i in range(piv.shape[0]):
+        for j in range(piv.shape[1]):
+            v = piv.values[i, j]
+            if np.isfinite(v):
+                ax.text(j, i, f"{v:,.0f}", ha='center', va='center', fontsize=7,
+                        color='black')
+    fig.colorbar(im, ax=ax, label="Net P&L ($)", fraction=0.025)
+    fig.tight_layout()
+    fig.savefig(path, dpi=100)
+    plt.close(fig)
+    return path
+
+
 def trades_to_dataframe(trades: List[Trade]) -> pd.DataFrame:
     return pd.DataFrame([{
         'entry_idx': t.entry_idx, 'exit_idx': t.exit_idx,
@@ -160,6 +199,7 @@ def save_all_reports(df: pd.DataFrame, trades: List[Trade], output_dir: str = OU
     plot_equity_curve(df)
     plot_regime_performance(trades)
     plot_trade_distribution(trades)
+    plot_monthly_returns(df, trades)
     trades_to_dataframe(trades).to_csv(
         os.path.join(output_dir, "strategy_02_test_trades.csv"), index=False)
     sig_cols = [c for c in ['ts_event', 'close', 'f_liquidity_regime',

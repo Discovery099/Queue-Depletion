@@ -20,8 +20,21 @@ from strategy_02_queue_depletion.features import compute_all_features, validate_
 from strategy_02_queue_depletion.signals import generate_signals, validate_signals
 from strategy_02_queue_depletion.validation import (
     run_walk_forward_analysis, evaluate_on_test_set, check_parameter_stability,
+    select_wfa_best_params,
 )
 from strategy_02_queue_depletion.reporting import save_all_reports
+
+
+def _write_param_stability_csv(fold_results, stability, path):
+    keys = list(stability.keys())
+    rows = []
+    for k in keys:
+        row = {'parameter': k, 'mean': stability[k]['mean'], 'std': stability[k]['std'],
+               'cv': stability[k]['cv'], 'mode': stability[k]['mode']}
+        for f in fold_results:
+            row[f"fold_{f['fold']}"] = f['best_params'][k]
+        rows.append(row)
+    pd.DataFrame(rows).to_csv(path, index=False)
 
 
 def _write_wfa_csv(wfa_results: dict, path: str) -> None:
@@ -113,8 +126,10 @@ def main():
     print(f"  Consistency Score: {wfa['consistency_score']*100:.1f}%")
     print(f"  Mean WT Accuracy:  {wfa['mean_wide_thin_accuracy']*100:.2f}%")
 
-    # Final parameters: DEFAULT_PARAMS (fixed before test; no test-set tuning)
-    best_params = DEFAULT_PARAMS.copy()
+    # Final parameters: chosen from WFA by per-parameter majority vote across folds
+    # (development-set only; no test-set tuning).
+    best_params = select_wfa_best_params(wfa_results['fold_results'])
+    print(f"  WFA-selected params (modal across folds): {best_params}")
 
     print("\n[4/7] Evaluating on TEST set (final, run once)...")
     test_results = evaluate_on_test_set(df_test, best_params)
@@ -135,6 +150,9 @@ def main():
     df_bt = generate_signals(test_results['df_bt'], best_params)
     report = save_all_reports(df_bt, test_results['trades'])
     _write_wfa_csv(wfa_results, os.path.join(OUTPUT_DIR, "strategy_02_wfa_results.csv"))
+    stability = check_parameter_stability(wfa_results['fold_results'])
+    _write_param_stability_csv(wfa_results['fold_results'], stability,
+                               os.path.join(OUTPUT_DIR, "strategy_02_param_stability.csv"))
     summary = _write_summary_json(
         df, test_results, wfa, best_params,
         os.path.join(OUTPUT_DIR, "strategy_02_summary.json"))

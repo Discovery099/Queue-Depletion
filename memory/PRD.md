@@ -47,6 +47,15 @@ WFA mean OOS win rate ~52.2%, consistency 0%. This reflects the strategy hypothe
 under-performing on the provided ES history (anti-predictive even with loosened
 params), not an implementation defect. All metrics in strategy_02_summary.json.
 
+## Updates (2026-06-20, iteration 2)
+- Final test evaluation now uses WFA-SELECTED params (per-parameter modal vote across
+  the 17 folds via `select_wfa_best_params`), not DEFAULT_PARAMS. Dev-set only; no
+  test-set tuning. Chosen modal params still fail targets (30 trades, 50% WR) — edge
+  absent, as expected.
+- Added monthly-returns heatmap (`strategy_02_monthly_returns.png`) and
+  parameter-stability CSV (`strategy_02_param_stability.csv`, mean/std/cv/mode +
+  per-fold values). Now 10 output files. Pipeline still ~170s.
+
 ## Backlog / Next action items
 - P1: Optionally use WFA-selected (rather than default) params for final test eval.
 - P2: Add monthly-returns heatmap + Sortino test; parameter-stability report to CSV.

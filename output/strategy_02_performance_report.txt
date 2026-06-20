@@ -6,54 +6,54 @@ Queue-Depletion Momentum with Liquidity Regime Filter
 
 TRADE STATISTICS
 ----------------
-Total Trades:           106
-Long Trades:            47
-Short Trades:           59
-Win Rate:               35.85%
-Profit Factor:          0.672
-Payoff Ratio:           1.203
+Total Trades:           30
+Long Trades:            16
+Short Trades:           14
+Win Rate:               50.00%
+Profit Factor:          0.355
+Payoff Ratio:           0.355
 
 P&L SUMMARY
 -----------
-Total Net P&L:          $-9,930.00
-Total Gross P&L:        $-6,750.00
-Total Costs:            $3,180.00
-Avg P&L per Trade:      $-93.68
-Median P&L:             $-180.00
+Total Net P&L:          $-9,575.00
+Total Gross P&L:        $-8,675.00
+Total Costs:            $900.00
+Avg P&L per Trade:      $-319.17
+Median P&L:             $-55.00
 
 WIN/LOSS BREAKDOWN
 ------------------
-Winning Trades:         38
-Losing Trades:          68
-Avg Win:                $535.46
-Avg Loss:               $-445.26
+Winning Trades:         15
+Losing Trades:          15
+Avg Win:                $351.67
+Avg Loss:               $-990.00
 
 REGIME PERFORMANCE
 ------------------
-Tight-Deep Accuracy:    29.63% (27 trades)
-Wide-Thin Accuracy:     37.97% (79 trades)
+Tight-Deep Accuracy:    50.00% (8 trades)
+Wide-Thin Accuracy:     50.00% (22 trades)
 Disrupted Trades:       0
 
 TRADE EXECUTION
 ---------------
-Avg Bars Held:          1.52
-Trades per Day:         0.22
-Avg MAE (points):       -0.2406
-Avg MFE (points):       0.7335
+Avg Bars Held:          2.27
+Trades per Day:         0.06
+Avg MAE (points):       -1.7583
+Avg MFE (points):       0.1917
 
 EQUITY METRICS
 --------------
-Final Equity:           $90,070.00
-Total Return:           -9.93%
-Max Drawdown:           -10.72%
-Sharpe Ratio:           -1.044
-Sortino Ratio:          -0.091
-Calmar Ratio:           -0.926
+Final Equity:           $90,425.00
+Total Return:           -9.57%
+Max Drawdown:           -10.56%
+Sharpe Ratio:           -1.317
+Sortino Ratio:          -0.055
+Calmar Ratio:           -0.907
 
 EXIT REASONS
 ------------
-  stop_loss: 71
-  profit_target: 23
-  regime_change: 9
-  max_hold: 3
+  profit_target: 13
+  end_of_day: 1
+  regime_change: 7
+  stop_loss: 9
 ======================================================================
