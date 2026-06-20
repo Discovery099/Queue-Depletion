@@ -122,6 +122,7 @@ def _simulate(a: Dict[str, np.ndarray], params: dict):
     p_mom = params['momentum_confirm']; p_bt = params['breakthrough_threshold']
     p_exit = params['exit_bars']; p_pt = params['profit_target_pct']
     p_sl = params['stop_loss_pct']; p_minvol = params['min_volume_pctile'] / 100.0
+    p_invert = params.get('invert_signal', False)
 
     n = len(close)
     realized = np.zeros(n); unreal = np.zeros(n); position = np.zeros(n, dtype=np.int8)
@@ -146,6 +147,8 @@ def _simulate(a: Dict[str, np.ndarray], params: dict):
                         d = 1
                     elif dep_diff[i] < -p_bt and bar_range[i] > atr_pct[i] * 1.2 and vol_ratio[i] > 1.5:
                         d = -1
+            if p_invert and d != 0:
+                d = -d
             if d != 0:
                 in_pos = True; pdir = d; e_idx = i; e_regime = int(regime[i])
                 ncon = int(max(1, min(2, round(pos_scale[i]))))

@@ -56,6 +56,17 @@ params), not an implementation defect. All metrics in strategy_02_summary.json.
   parameter-stability CSV (`strategy_02_param_stability.csv`, mean/std/cv/mode +
   per-fold values). Now 10 output files. Pipeline still ~170s.
 
+## Updates (2026-06-20, iteration 3)
+- WFA final-param selection now **OOS-objective weighted** (softmax over each fold's
+  OOS objective; `select_wfa_best_params(method='weighted'|'best_fold'|'modal')`).
+- Added `diagnostics.py` (sign-inversion + threshold sweep). FINDING: no profitable
+  variant exists — both directions lose on dev & test (WR 35-43%, PF<1, neg test
+  Sharpe). The strategy has no edge on this ES data. Writes strategy_02_diagnostics.json.
+- Added `invert_signal` flag to the engine (diagnostic only).
+- Added complete **TradingView Pine Script v5** `strategy_02.pine` (full port: features,
+  regime logic, guards, ATR exits, $30 RT costs). Copied to /app/output/.
+- 12 output artifacts; tests still 11/11 pass.
+
 ## Backlog / Next action items
 - P1: Optionally use WFA-selected (rather than default) params for final test eval.
 - P2: Add monthly-returns heatmap + Sortino test; parameter-stability report to CSV.

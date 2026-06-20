@@ -126,10 +126,10 @@ def main():
     print(f"  Consistency Score: {wfa['consistency_score']*100:.1f}%")
     print(f"  Mean WT Accuracy:  {wfa['mean_wide_thin_accuracy']*100:.2f}%")
 
-    # Final parameters: chosen from WFA by per-parameter majority vote across folds
+    # Final parameters: chosen from WFA, weighted by each fold's OOS objective
     # (development-set only; no test-set tuning).
-    best_params = select_wfa_best_params(wfa_results['fold_results'])
-    print(f"  WFA-selected params (modal across folds): {best_params}")
+    best_params = select_wfa_best_params(wfa_results['fold_results'], method='weighted')
+    print(f"  WFA-selected params (OOS-objective weighted): {best_params}")
 
     print("\n[4/7] Evaluating on TEST set (final, run once)...")
     test_results = evaluate_on_test_set(df_test, best_params)

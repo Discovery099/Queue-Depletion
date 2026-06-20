@@ -123,6 +123,7 @@ def run_walk_forward_analysis(df_dev: pd.DataFrame, param_grid: dict = PARAM_GRI
         best_params = optimize_parameters(df_is, param_grid)
         is_stats, _ = _evaluate_fast(df_is, best_params)
         oos_stats, oos_equity = _evaluate_fast(df_oos, best_params)
+        oos_objective = objective_function(oos_stats, oos_equity)
 
         fold_results.append({
             'fold': fold_num, 'is_start': is_start, 'is_end': is_end,
@@ -130,7 +131,7 @@ def run_walk_forward_analysis(df_dev: pd.DataFrame, param_grid: dict = PARAM_GRI
             'is_win_rate': is_stats['win_rate'], 'is_trades_per_day': is_stats['trades_per_day'],
             'oos_win_rate': oos_stats['win_rate'], 'oos_trades_per_day': oos_stats['trades_per_day'],
             'oos_sharpe': oos_equity['sharpe_ratio'], 'oos_max_dd': oos_equity['max_drawdown_pct'],
-            'oos_total_pnl': oos_stats['total_net_pnl'],
+            'oos_total_pnl': oos_stats['total_net_pnl'], 'oos_objective': oos_objective,
             'wide_thin_accuracy': oos_stats['wide_thin_accuracy'],
             'tight_deep_accuracy': oos_stats['tight_deep_accuracy'],
         })
@@ -162,18 +163,40 @@ def summarize_wfa_results(fold_results: List[dict]) -> dict:
     return s
 
 
-def select_wfa_best_params(fold_results: List[dict]) -> dict:
+def select_wfa_best_params(fold_results: List[dict], method: str = 'weighted') -> dict:
     """
-    Choose final parameters by per-parameter majority vote (mode) across all WFA
-    folds. Modal selection is robust to single-fold overfitting and uses only
-    development-set information (no test-set contamination).
+    Choose final parameters from WFA folds (development-set only).
+
+    method='weighted'  : per-parameter vote where each fold's chosen value is
+                         weighted by a softmax of its OOS objective score
+                         (folds that performed better OOS count more).
+    method='best_fold' : take the params of the single highest-OOS-objective fold.
+    method='modal'     : plain majority vote (each fold weighted equally).
     """
-    from collections import Counter
+    from collections import defaultdict
+    keys = list(DEFAULT_PARAMS.keys())
+
+    if method == 'best_fold':
+        best = max(fold_results, key=lambda f: f.get('oos_objective', -1e9))
+        chosen = dict(best['best_params'])
+        chosen['exit_bars'] = int(chosen['exit_bars'])
+        return chosen
+
+    objs = np.array([f.get('oos_objective', 0.0) for f in fold_results], dtype=float)
+    if method == 'weighted':
+        # Softmax weights (temperature scaled by the spread of objective scores).
+        scale = objs.std() if objs.std() > 1e-9 else 1.0
+        w = np.exp((objs - objs.max()) / scale)
+        w = w / w.sum()
+    else:  # modal
+        w = np.ones(len(fold_results)) / len(fold_results)
+
     chosen = {}
-    for k in DEFAULT_PARAMS.keys():
-        vals = [f['best_params'][k] for f in fold_results]
-        chosen[k] = Counter(vals).most_common(1)[0][0]
-    # Preserve int type for exit_bars
+    for k in keys:
+        tally = defaultdict(float)
+        for f, wi in zip(fold_results, w):
+            tally[f['best_params'][k]] += wi
+        chosen[k] = max(tally.items(), key=lambda kv: kv[1])[0]
     chosen['exit_bars'] = int(chosen['exit_bars'])
     return chosen
 
