@@ -1,0 +1,61 @@
+{
+  "strategy": "Queue-Depletion Momentum with Liquidity Regime Filter",
+  "strategy_code": "STRAT-02",
+  "instrument": "ES",
+  "bar_frequency": "5min",
+  "data_range": {
+    "start": "2020-01-02",
+    "end": "2026-03-06",
+    "total_bars": 122295
+  },
+  "train_test_split": {
+    "dev_bars": 85600,
+    "test_bars": 36695
+  },
+  "parameters": {
+    "dep_threshold": 0.15,
+    "tox_threshold": 0.2,
+    "momentum_confirm": 0.0002,
+    "breakthrough_threshold": 0.1,
+    "exit_bars": 4,
+    "profit_target_pct": 0.8,
+    "stop_loss_pct": 0.6,
+    "min_volume_pctile": 30.0
+  },
+  "test_set_results": {
+    "total_trades": 106,
+    "win_rate_pct": 35.8491,
+    "trades_per_day": 0.2208,
+    "wide_thin_accuracy_pct": 37.9747,
+    "tight_deep_accuracy_pct": 29.6296,
+    "sharpe_ratio": -1.0437,
+    "sortino_ratio": -0.0915,
+    "max_drawdown_pct": -10.725,
+    "profit_factor": 0.672,
+    "total_net_pnl": -9930.0,
+    "avg_pnl_per_trade": -93.68
+  },
+  "statistical_tests": {
+    "binomial_p_value": 0.9987799958103255,
+    "sharpe_p_value": 1.0,
+    "permutation_p_value": 0.835
+  },
+  "walk_forward": {
+    "num_folds": 17,
+    "mean_oos_win_rate_pct": 52.1778,
+    "mean_oos_sharpe": -0.9303,
+    "consistency_score_pct": 0.0
+  },
+  "targets_met": {
+    "overall_win_rate": false,
+    "trades_per_day": false,
+    "wide_thin_accuracy": false,
+    "disrupted_trades_zero": true,
+    "sharpe_ratio": false,
+    "max_drawdown": true,
+    "profit_factor": false,
+    "binomial_significant": false,
+    "all_pass": false
+  },
+  "timestamp": "2026-06-20T18:39:13Z"
+}
