@@ -1,96 +1,93 @@
-# Status at generation 20,008
+# Status at generation 50,008
 
-- Generations completed: 20,008 of 100,000
+- Generations completed: 50,008 of 100,000
 - Best certified tier: none
 - Vault queries used: 0 of 60 (Vault-A), 0 of 5 (Vault-B). The vault has not been read.
-- Pipeline false-discovery rate, latest placebo run: 0 Bronze, 0 Silver, 0 Gold in 1,000 placebo generations
+- Pipeline false-discovery rate, latest placebo run: 0 Bronze, 0 Silver, 0 Gold in 1,000 placebo generations (three runs, three decoy types)
 
-`OUTCOME so far: NONE` — no strategy has met Bronze. The closest approach is described below. The owner can rely on the harness
-and on the negative findings; the owner cannot rely on any strategy found so far.
+`OUTCOME so far: NONE` — no strategy has met Bronze. Two leading candidates are described below; neither is certified. The owner
+can rely on the harness and on the negative findings; the owner cannot yet rely on any strategy.
 
-## What exists
-
-The harness of the specification is built and tested (131 tests): data partition and sealed vault, pessimistic order simulator,
-baseline reproduction, 196 library-derived atoms across 11 mechanism families plus 12 canaries and a honeypot, genome and search
-operators, stage 1 screen with random-entry and random-exit twins, stages 2 to 4, Vault Keeper, decoy markets, placebo mode,
-Pine v6 exporter with the owner's webhook layer, an independent Pine replay check, trial ledger, archive, epoch reports.
-`reports/milestones/bootstrap.md` lists each Generation 0 item with its evidence and what is not built yet.
-
-## What the search found
+## Where the search stands
 
 | Measure | Value |
 |---|---|
-| Generations | 20,008 (survey to 2,000, then assembly and early refinement) |
-| Stage 1 passes on home folds | 1 (generation 17196) |
+| Generations | 50,008 |
+| Passed the stage 1 screen on their island's folds | 20 |
 | Confirmed on all six test folds | 0 |
 | Reached stage 2 or beyond | 0 |
-| Raw stage 1 trials in the ledger | 40,148 candidate rows (includes the dry run and recounts); effective independent trials about 24,000 |
+| Stage 1 candidate rows in the ledger | 100,172 (includes the dry run, re-runs and recounts); effective independent trials about 60,000 |
 | Canary adoption among stage 1 passes | 0% |
 | Honeypot genome voided at every epoch | yes |
-| Ledger hash chain | intact, 120,804 rows |
-| Reproducibility | 20 of 20 past generations re-run from their folders give identical metrics |
+| Ledger hash chain | intact, 301,790 rows |
+| Reproducibility | 60 of 60 past generations re-run from their folders give identical metrics (checks at 20,008, 30,008, 50,008) |
+| Placebo | 0 promotions in 1,000 generations on each of a bootstrap, a model and a second bootstrap decoy |
 
-**Closest approach (not certified).** Generation 17196, 30-minute bars: enter when price crosses its 34-bar average, stop 0.3% of
-price, target at the level supplied by the trigger, half off at 0.5 of the risk. On all six walk-forward test folds, both instruments,
-base costs:
+## Leading candidates (not certified)
+
+**Generation 44439, 15-minute bars: one gate short of the Bronze screen.** Enter when the net move over 8 bars first exceeds 3 ATR,
+with price on the trade side of session VWAP and beyond the cloud; stop 1.5 ATR; half off at half the risk; target 1.5 ATR.
+On all six walk-forward test folds, both instruments, base costs:
 
 ```
-Headline win rate (net, flat-to-flat, OOS):   63.8 %   (n = 1,025 trades)
-Geometry baseline (random-entry twin median): 57.3 %   (200 twins)
-Win-rate alpha:                               +6.5 points
-Profit factor:                                1.30   (per fold: 1.49, 1.49, 1.15, 1.58, 1.01, 1.33)
-Expectancy per trade:                         +3.4 x round-trip cost
+Headline win rate (net, flat-to-flat, OOS):   69.3 %   (n = 915 trades)
+Wilson 95% lower bound:                       66.2 %
+Geometry baseline (random-entry twin median): 61.7 %   (200 twins)
+Win-rate alpha:                               +7.6 points (twin p99 = 65.0 %)
+Random-exit twin win rate:                    56.4 %
+Payoff ratio:                                 0.67
+Profit factor:                                1.51   (per fold: 2.04, 1.22, 2.23, 1.53, 1.29, 1.06)
+Expectancy per trade:                         +4.1 x round-trip cost
+Trades per year per instrument:               158
 ```
 
-It misses Bronze on three gates: win rate 63.8% against 65%, profit factor 1.30 against 1.40, Wilson lower bound 60.8% against 61%.
-It is the best of about 24,000 effective attempts, so by itself it is not evidence of an edge; it has not been through stage 2
-(other timeframes, decoys, cost stress, parameter neighbours).
+It fails one confirmation gate: one fold supplies 35.9% of the profit and the limit is 35%. The gate stands, so it is not promoted.
+An informational robustness run (`reports/candidates/gen_044439_stage2.md`) shows why caution is right:
 
-**The leaders are fitted to the folds they were selected on.** At generation 20,008 the 20 highest-scoring distinct strategies
-average 75.6% wins and profit factor 1.63 on their island's folds. On the other island's folds, which never influenced them:
-66.3% wins, profit factor 0.91, and they keep 18% of their composite score (43% at generation 15,008). The gap is widening as the
-search continues, which is what overfitting looks like. Details: `reports/exchange_015008.md`, `reports/exchange_020008.md`.
+- For it: no lookahead; no dependence on intrabar ordering; profit factor 1.41 at doubled costs; long and short both profitable;
+  1.30 on the inverted market; no edge on decoy markets.
+- Against it: it is best exactly where it was selected. Profit factor is 1.51 on 15-minute bars but 1.11 on 5, 1.22 on 10, 1.09
+  on 30 and 0.96 on 60; shifting the 15-minute bar boundaries by 5 or 10 minutes cuts it to about 1.1; the two most recent folds
+  are the weakest (1.29, 1.06); profit disappears when each session's net drift is removed.
 
-**The placebo sets the yardstick.** On a decoy market with no edge, selection alone reached a composite score of 0.34 in 1,000
-generations. The real leaders' score on unseen folds (0.10 to 0.22) is below that.
+**Generation 25968, 5-minute bars: the most consistent.** The same momentum-thrust entry with a structure stop and a 1 ATR target.
+On all six folds: 73.2% wins over 2,281 trades, twin 66.0%, profit factor 1.19 (1.11 at doubled costs), about 400 trades a year per
+instrument, every fold and both instruments profitable. It scores the same on folds it was not selected on. It fails Bronze on
+profit factor. A Pine export marked NOT CERTIFIED, its parity result and a TradingView check sheet are in `reports/candidates/`.
 
-**Frontier** (`reports/frontier.md`; home-fold screening numbers, best of many attempts):
+**Honest reading of both.** There is a real, small edge in momentum-thrust entries on trend days: about +4 to +7 points of win rate
+beyond what the exits alone give, worth a profit factor of roughly 1.1 to 1.2 once the choice of timeframe and bar alignment is
+taken out. The 1.5 of generation 44439 is the top of a noisy landscape around that level, found after about 60,000 effective
+attempts. Nothing found so far supports 80% wins with a profit factor of 1.8.
 
-- 80% win rate with profit factor above 1.0 and at least 150 out-of-sample trades: reached by 10 genomes on their home folds, all
-  trading fewer than 150 times a year per instrument. None passed the stage 1 screen, and none was among the leaders re-scored on
-  unseen folds, so their win rate there is not known.
-- At 200 or more trades a year per instrument, the best profit factor at 65 to 80% wins is about 1.4 to 1.5 on home folds, and no
-  genome reaches 80% wins.
-- Profit factors above 1.8 occur only below about 100 trades a year per instrument.
-- The binding constraints are win rate and profit factor together on unseen folds, then trade frequency and participation.
+## What changed the search (all tightenings; `reports/gate_changes.md`)
 
-**What carried any signal:** trend-continuation entries on 15- and 30-minute bars (average crosses, ATR-trail flips) with structure
-or percentage stops. **What did not:** oscillator hooks, candle patterns, sweep-and-reclaim triggers, and companion-instrument
-triggers used alone (median profit factor 0.84 to 0.88 after costs). `ledger/lessons.md` has the counts.
+After 20,008 generations the leaders kept only 18% of their score on folds that had not influenced them. Since then: a symmetric
+overfit penalty in the score, a profitable-record requirement before each test fold, behavioural de-duplication, and an automatic
+island exchange every 2,500 generations that removes leaders which do not hold up. Retention on unseen folds rose to about 60 to
+75%, and the leaders' profit factor on unseen folds from 0.91 to about 1.2 (`reports/exchange_*.md`).
 
-## Checks that fired, and what was changed
+## Frontier (`reports/frontier.md`; home-fold screening numbers, best of many attempts)
 
-- The random-entry twin was tightened to match target-to-stop geometry after the survey showed level-based targets inflating alpha.
-- A gate was added requiring a profitable record before each test fold, after leaders appeared that lost before their home folds and
-  won inside them.
-- Both are in `reports/gate_changes.md`. Ten deviations and fixes are in `reports/ERRATA.md`, including the six vault bars seen once
-  before the specification had been read.
+- 80% wins with at least 150 out-of-sample trades: 17 genomes on their home folds, all below 150 trades a year per instrument;
+  none passed the screen.
+- 70% wins with profit factor at least 1.4: 805 genomes on home folds; on all six folds the best robust figures are those above.
+- The binding constraint is profit factor on unseen data at any useful trade frequency. Win rate near 70% is reachable; a payoff
+  ratio high enough to turn it into a profit factor of 1.4 on every fold is not, so far.
 
-## Honest reading
+## What carried signal, and what did not
 
-After 20,008 generations there is no certifiable strategy, and the evidence so far says the 80% target with a high profit factor
-and 200 trades a year is not within reach of single-idea strategies built from these techniques on this data. What exists is a weak,
-consistent residual in slow trend-following entries (a few points of win-rate alpha, profit factor 1.0 to 1.3 on unseen folds).
-Whether combining such entries can clear Bronze is what the next phase tests. It may not.
+Carried a little: momentum thrusts and average crosses in the direction of the session (VWAP side, cloud, trail regime), on 5- to
+30-minute bars. Did not: oscillator hooks, candle patterns, sweep-and-reclaim triggers, companion-instrument triggers alone, and
+ensembles of weak entries (the union takes the weaker member's quality). `ledger/lessons.md` has the counts.
 
 ## Next steps
 
-1. Continue the loop (`python3 -m orchestrator.loop --generations N`). It resumes from `state/checkpoint.json`.
-2. Curb home-fold fitting before spending more generations: enforce behavioural deduplication, and weight parent selection by
-   the exchange result instead of the home score alone (a tightening).
-3. Build the ENSEMBLE operator, the one remaining route in SPEC 9.6 that has not been tried.
-4. The single most valuable extra evidence remains what the specification says: a less correlated instrument (NQ, RTY, CL or GC)
-   held as pure out-of-sample data, and forward paper trading once anything is certified.
+1. Continue the loop to 100,000 (`python3 -m orchestrator.loop --generations N`). A Bronze pass in the momentum-thrust family is
+   possible; the stage 2 results above say it would be a narrow one.
+2. Decide what a Bronze would be worth to you. It means walk-forward evidence only, and the informational runs already show the
+   timeframe and alignment weaknesses that would cap this family below Silver.
+3. The most valuable extra evidence is unchanged: a less correlated instrument (NQ, RTY, CL or GC) held as pure out-of-sample data.
 
 ## Limits of everything above
 
@@ -99,7 +96,8 @@ no live fills; no vault result. Timeframes below 5 minutes cannot be tested with
 
 ## Housekeeping
 
-- Disk: `runs/` holds 20,008 generation folders, 3.6 GB; 25 GB free. Old folders have not been packed yet.
-- `runs/` and `library/raw/` are not in version control (size). Everything else is committed locally.
-- **The commits have not reached GitHub.** The connection to `Discovery099/Queue-Depletion` is read-only for this session, so every
-  push is refused. Until that is fixed the work exists only in this session's container.
+- Disk: `runs/` holds 50,008 generation folders, 9.4 GB; 18 GB free. Older stage 1 failures are being packed into one archive per
+  1,000 generations (`tools/pack_runs.py`).
+- The branch `claude/dazzling-rubin-wc3b48` is pushed to GitHub. Ledgers are stored as compressed snapshots; `runs/` and
+  `library/raw/` are not in the repository.
+- Deviations and fixes: `reports/ERRATA.md` (14 items). Not yet built: `reports/milestones/bootstrap.md`.

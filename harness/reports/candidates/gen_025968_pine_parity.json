@@ -1,0 +1,53 @@
+{
+ "details": [
+  {
+   "bars_checked": 9219,
+   "first_session": 745,
+   "instrument": "ES",
+   "series_mismatches": [],
+   "timeframe": 5,
+   "trade_lists_equal": true,
+   "trades_engine": 191,
+   "trades_replay": 191
+  },
+  {
+   "bars_checked": 9219,
+   "first_session": 745,
+   "instrument": "YM",
+   "series_mismatches": [],
+   "timeframe": 5,
+   "trade_lists_equal": true,
+   "trades_engine": 196,
+   "trades_replay": 196
+  },
+  {
+   "bars_checked": 3073,
+   "first_session": 814,
+   "instrument": "ES",
+   "series_mismatches": [],
+   "timeframe": 15,
+   "trade_lists_equal": true,
+   "trades_engine": 84,
+   "trades_replay": 84
+  },
+  {
+   "bars_checked": 3073,
+   "first_session": 814,
+   "instrument": "YM",
+   "series_mismatches": [],
+   "timeframe": 15,
+   "trade_lists_equal": true,
+   "trades_engine": 73,
+   "trades_replay": 73
+  }
+ ],
+ "late": 0,
+ "match": true,
+ "scope": "Signal layer of the Pine file executed from text by an independent interpreter; order section not executed (TradingView's broker emulator is not reproduced). Trade lists compared by feeding both signal sets to the default engine.",
+ "sessions_per_instrument": 120,
+ "timeframes": [
+  5,
+  15
+ ],
+ "vanished": 0
+}

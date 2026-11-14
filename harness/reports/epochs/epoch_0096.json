@@ -1,0 +1,119 @@
+{
+ "best_generation": 47013,
+ "best_score": {
+  "A": 0.7337517961380592,
+  "B": 0.5467725852625576
+ },
+ "canary_adoption_rate": 0.0,
+ "canary_passes": 0,
+ "counts": {
+  "HOME_ONLY": 1,
+  "STAGE1_FAIL": 499
+ },
+ "effective_trials": {
+  "n_eff": 57653,
+  "raw": 96086,
+  "var_sharpe": 0.01180138883086399
+ },
+ "epoch": 96,
+ "exchange": null,
+ "frozen_ok": true,
+ "generations": [
+  47501,
+  48000
+ ],
+ "honeypot_voided": true,
+ "ledger_chain_ok": true,
+ "ledger_records": 578848,
+ "mean_pairwise_distance_top100": 0.7193786266924566,
+ "notes": [],
+ "occupied_cells": {
+  "A": 311,
+  "B": 307
+ },
+ "operator_share": {
+  "ATOM_ADD": 0.054205268589362345,
+  "ATOM_DROP": 0.05908562926962125,
+  "ATOM_SWAP": 0.13058804577819455,
+  "ENSEMBLE": 0.026694431353274723,
+  "ENTRY_TRANSPLANT": 0.07609751633806996,
+  "EXIT_TRANSPLANT": 0.07405058517978003,
+  "INVERT": 0.03259630407984536,
+  "LIBRARY_PROBE": 0.03439598660025136,
+  "LLM_HYPOTHESIS": 0.1307016658459323,
+  "PARAM_STEP": 0.20538951123228336,
+  "SIMPLIFY": 0.06013361784558676,
+  "SLOT_CROSSOVER": 0.11606143788779799
+ },
+ "operator_stats": {
+  "ATOM_ADD": {
+   "improved": 323,
+   "passed": 1,
+   "uses": 3319
+  },
+  "ATOM_DROP": {
+   "improved": 149,
+   "passed": 0,
+   "uses": 989
+  },
+  "ATOM_SWAP": {
+   "improved": 577,
+   "passed": 1,
+   "uses": 7619
+  },
+  "ENSEMBLE": {
+   "improved": 47,
+   "passed": 0,
+   "uses": 540
+  },
+  "ENTRY_TRANSPLANT": {
+   "improved": 548,
+   "passed": 4,
+   "uses": 4248
+  },
+  "EXIT_TRANSPLANT": {
+   "improved": 458,
+   "passed": 6,
+   "uses": 4087
+  },
+  "INVERT": {
+   "improved": 56,
+   "passed": 0,
+   "uses": 1459
+  },
+  "LIBRARY_PROBE": {
+   "improved": 804,
+   "passed": 0,
+   "uses": 11703
+  },
+  "LLM_HYPOTHESIS": {
+   "improved": 17,
+   "passed": 0,
+   "uses": 29
+  },
+  "PARAM_STEP": {
+   "improved": 1270,
+   "passed": 1,
+   "uses": 7088
+  },
+  "SIMPLIFY": {
+   "improved": 151,
+   "passed": 0,
+   "uses": 931
+  },
+  "SLOT_CROSSOVER": {
+   "improved": 836,
+   "passed": 4,
+   "uses": 5988
+  }
+ },
+ "outside_false_discovery_set": [],
+ "raw_stage1_trials": 96086,
+ "stage1_pass_rate": 0.002,
+ "tier_counts": {
+  "bronze": 0,
+  "gold": 0,
+  "silver": 0
+ },
+ "utc": "2026-11-14T19:47:29.188437Z"
+}
