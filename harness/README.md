@@ -16,8 +16,18 @@ python3 -m orchestrator.loop --placebo 1000 --tag my_run --decoy phase:3   # pla
 A new session should read, in order: `SPEC.md`, `state/checkpoint.json`, the latest file in `reports/epochs/`, `ledger/lessons.md`,
 `reports/STATUS.md`. Nothing needed to continue lives only in a conversation.
 
-`library/raw/` (the extracted scripts) and `runs/` (one folder per generation) are not committed because of their size. Re-create
-`library/raw/` with `cd library/raw && for z in ../raw_zips/*.zip; do unzip -q -o $z; done`.
+In a fresh checkout, before resuming:
+
+```bash
+pip install numba pyarrow scipy scikit-learn pytest pyyaml pandas
+python3 tools/snapshot.py restore      # rebuild the working ledgers from ledger/snapshots/ and verify the hash chain
+python3 vault/rebuild.py               # re-create the sealed vault from the raw CSVs and check it against the frozen hashes
+```
+
+and before committing: `python3 tools/snapshot.py save`.
+
+Not in the repository (size): `runs/` (one folder per generation), `library/raw/` and the three library archives. To mine the
+library again, unzip the owner's archives into `library/raw/`. Everything the loop needs to continue is committed.
 
 ## Layout
 

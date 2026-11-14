@@ -41,3 +41,15 @@ Every entry states what happened, what it could have affected, and what was done
 10. **Behavioural duplicates in the archive.** Parameter steps that change nothing in practice (for example a longer cool-down that
     never binds) produce genomes with different identifiers and identical trades. They are counted as separate trials (conservative)
     but crowd the leader list; the behavioural-distance rule of SPEC 9.7 is not yet enforced at proposal time.
+11. **Aborted trial rows were missing from the hash-chained mirror.** When a batch was interrupted (the session's worker process
+    restarted twice), its open trial rows were marked ABORTED in the sqlite table by a direct update that bypassed the jsonl mirror.
+    Found when the ledger was first restored from snapshots: 96 rows were ABORTED in one store and OPEN in the other. The 96 close
+    events were appended to the mirror, and the loop now marks aborted rows through the ledger so both stores always agree.
+12. **Ledgers are stored in version control as compressed shards** (`ledger/snapshots/`, written by `tools/snapshot.py`), because the
+    working files exceed GitHub's 100 MB file limit. A restore reproduces `trials.jsonl`, `graveyard.jsonl` and the lineage database
+    exactly and rebuilds the sqlite trial table from the mirror.
+13. **What is and is not in the repository.** Not committed, because of size or by design: `runs/` (one folder per generation,
+    3.6 GB), `library/raw/` and the three library archives (the owner holds them), the working ledgers (see item 12), `data/vault/`
+    (rebuilt and hash-checked by `vault/rebuild.py`), and the generation folders of the 50-generation dry run and of the placebo runs
+    (their summaries remain under `reports/`). The per-generation folders therefore exist only on the machine that ran them; the
+    ledgers, lineage (every genome and its daily result series), archive, lessons and reports are in the repository.

@@ -8,3 +8,10 @@ state/cache/
 *.tmp
 state/placebo/*/runs/
 state/placebo/*/ledger/lineage.sqlite
+ledger/trials.jsonl
+ledger/trials.sqlite
+ledger/lineage.sqlite
+ledger/graveyard.jsonl
+state/placebo/*/ledger/
+reports/dryrun_001/runs_000/
+reports/dryrun_001/lineage.sqlite

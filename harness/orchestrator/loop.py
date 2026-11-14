@@ -147,7 +147,9 @@ class Run:
             ok, n = self.ledger.verify_chain()
             if not ok:
                 self.halt("Trial ledger hash chain is broken.", {"records_verified": n})
-            self.ledger.db.execute("UPDATE trials SET status='ABORTED' WHERE status='OPEN' AND generation>=?", [self.st["next_generation"]])
+            for (tid,) in self.ledger.db.execute("SELECT trial_id FROM trials WHERE status='OPEN' AND generation>=?",
+                                                 [self.st["next_generation"]]).fetchall():
+                self.ledger.close(tid, status="ABORTED")          # through the ledger, so the hash-chained mirror records it too
             self.ledger.commit()
         else:
             ops = dict(SEARCH["operators"])
