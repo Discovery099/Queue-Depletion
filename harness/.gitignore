@@ -6,3 +6,5 @@ runs/
 data/decoys/*.npz
 state/cache/
 *.tmp
+state/placebo/*/runs/
+state/placebo/*/ledger/lineage.sqlite

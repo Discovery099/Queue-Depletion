@@ -128,6 +128,7 @@ def supertrend(n, mult): return E("supertrend", n, float(mult))
 def htf(field, k): return E("htf", field, int(k))
 def htfema(k, n): return E("htfema", int(k), int(n))
 def htfago(k, j): return E("htfago", int(k), int(j))
+def rtick(x): return E("rtick", w(x))                     # round a price to the instrument's tick grid
 def sqrt(x): return E("sqrt", w(x))
 def roundlvl(mult): return E("roundlvl", float(mult))     # nearest round-number level to the close
 def crossover(a, b): return (w(a) > w(b)) & (shift(w(a), 1) <= shift(w(b), 1))
@@ -146,7 +147,7 @@ class Ctx:
     """Evaluation context for one instrument at one timeframe.  Results are cached by node key."""
 
     def __init__(self, bars, other=None, ext=None):
-        self.b, self.other, self.ext = bars, other, ext or {}
+        self.b, self.other, self.ext = bars, other, ({} if ext is None else ext)
         self.cache = {}
         self._sc = None
 
@@ -213,6 +214,8 @@ class Ctx:
                 return -ev(a[0])
             if op == "abs":
                 return np.abs(ev(a[0]))
+            if op == "rtick":
+                return np.floor(ev(a[0]) / b.tick + 0.5) * b.tick
             if op == "sqrt":
                 x = ev(a[0])
                 return np.sqrt(np.where(x >= 0, x, np.nan))
@@ -402,6 +405,8 @@ class Pine:
             add(f"{v} = math.abs({s(a[0])})")
         elif op in ("max", "min"):
             add(f"{v} = math.{op}({s(a[0])}, {s(a[1])})")
+        elif op == "rtick":
+            add(f"{v} = math.floor({s(a[0])} / syminfo.mintick + 0.5) * syminfo.mintick")
         elif op == "sqrt":
             x = s(a[0])
             add(f"{v} = ({x} >= 0 ? math.sqrt({x}) : na)")

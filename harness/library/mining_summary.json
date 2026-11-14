@@ -28,16 +28,18 @@
   "CC-BY-SA": 18,
   "CC-BY-NC": 3
  },
- "clusters": 2476,
- "scripts_with_any_hazard": 4028,
+ "clusters": 2470,
+ "scripts_with_any_hazard": 4569,
  "hazard_counts": {
-  "REPEATED_SIGNAL_DELETE": 1215,
-  "PIVOT_UNCONFIRMED": 922,
-  "SECURITY_LOOKAHEAD": 887,
-  "ZIGZAG_RECALC": 846,
-  "REALTIME_REPAINT": 833,
+  "REPEATED_SIGNAL_DELETE": 1219,
+  "PIVOT_UNCONFIRMED": 920,
+  "ZIGZAG_RECALC": 901,
+  "SECURITY_LOOKAHEAD": 889,
+  "REALTIME_REPAINT": 836,
   "FUTURE_OFFSET": 822,
-  "BAR_MAGNIFIER_DEPENDENCE": 415
+  "HTF_CLOSE_INTRABAR": 718,
+  "BAR_MAGNIFIER_DEPENDENCE": 416,
+  "SESSION_VALUE_LEAK": 79
  },
  "distinct_builtin_functions": 516
 }

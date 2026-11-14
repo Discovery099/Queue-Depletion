@@ -41,9 +41,7 @@ FOLD_OF = fold_of_session()
 
 
 def _frame(sym, scope):
-    if sym in FRAME_OVERRIDE:
-        return FRAME_OVERRIDE[sym]
-    df = load_frame(sym)
+    df = FRAME_OVERRIDE[sym] if sym in FRAME_OVERRIDE else load_frame(sym)
     if scope == "search":
         return df[df["sess"] < N_SEARCH]
     if scope == "holdout":          # stage 4 only: features warm up on the search sessions, scored on the holdout
@@ -54,6 +52,14 @@ def _frame(sym, scope):
 @functools.lru_cache(maxsize=48)
 def bars_for(sym, tf, offset=0, scope="search"):
     return frame_to_bars(_frame(sym, scope), sym, tf, offset)
+
+
+def set_frames(frames=None):
+    """Swap the market under evaluation (decoy markets, stress series).  None restores the research data."""
+    FRAME_OVERRIDE.clear()
+    if frames:
+        FRAME_OVERRIDE.update(frames)
+    clear_caches()
 
 
 def other_arrays(b, o):
@@ -67,16 +73,14 @@ _CTX = {}
 
 
 def ctx_for(sym, tf, offset=0, scope="search"):
-    key = (sym, tf, offset, scope, id(FRAME_OVERRIDE.get(sym)))
+    key = (sym, tf, offset, scope)
     c = _CTX.get(key)
     if c is None:
         if len(_CTX) > 12:
             _CTX.clear()
-        b = bars_for(sym, tf, offset, scope) if sym not in FRAME_OVERRIDE else frame_to_bars(FRAME_OVERRIDE[sym], sym, tf, offset)
-        osym = "YM" if sym == "ES" else "ES"
-        ob = bars_for(osym, tf, offset, scope) if osym not in FRAME_OVERRIDE else frame_to_bars(FRAME_OVERRIDE[osym], osym, tf, offset)
-        ext = EXT_PROVIDER(b) if EXT_PROVIDER else {}
-        c = Ctx(b, other=other_arrays(b, ob), ext=ext)
+        b = bars_for(sym, tf, offset, scope)
+        ob = bars_for("YM" if sym == "ES" else "ES", tf, offset, scope)
+        c = Ctx(b, other=other_arrays(b, ob), ext=EXT_PROVIDER(b) if EXT_PROVIDER else {})
         _CTX[key] = c
     if len(c.cache) > 500:          # bound memory: the cache is an optimisation only
         c.cache.clear()
@@ -86,6 +90,7 @@ def ctx_for(sym, tf, offset=0, scope="search"):
 def clear_caches():
     _CTX.clear()
     bars_for.cache_clear()
+    regime_cells.cache_clear()
 
 
 @functools.lru_cache(maxsize=8)
@@ -117,7 +122,7 @@ def run(g, sym, tf, cost="base", offset=0, scope="search", optimistic=False, fil
     T, eq, inpos, liq = sim.run(b, plan, COSTS[cost], optimistic=optimistic, fill_at_close=fill_at_close,
                                 loss_standdown=loss_standdown)
     fo = FOLD_OF if scope == "search" else np.r_[FOLD_OF, np.full(partition()["research"]["sessions"] - N_SEARCH, 9, np.int16)]
-    rc = regime_cells(sym) if scope == "search" and sym not in FRAME_OVERRIDE else None
+    rc = regime_cells(sym) if scope == "search" else None
     df = M.trades_frame(T, b, generation, fo, rc, g["slots"]["entry"]["type"])
     return {"trades": df, "T": T, "eq": eq, "inpos": inpos, "liq_miss": int(liq), "plan": plan, "aux": aux, "bars": b}
 

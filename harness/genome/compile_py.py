@@ -15,7 +15,7 @@ from types import SimpleNamespace
 import numpy as np
 
 from engine.sim import Plan, MARKET, LIMIT, STOP
-from genome.dsl import C, FALSE, MINTGT, TRUE, E, any_in, maxx, minx, shift, w
+from genome.dsl import C, FALSE, MINTGT, TRUE, E, any_in, maxx, minx, rtick, shift, w
 from library.atoms import catalog as K
 from library.atoms.catalog import ATOMS, A, D
 
@@ -85,14 +85,15 @@ def build(g):
         if ent["type"] == "market":
             ref = C
         elif ent["type"] == "limit":
-            ref = d.dn(C, ent["offset_atr"] * A)
+            ref = rtick(d.dn(C, ent["offset_atr"] * A))
         else:
-            ref = d.up(C, ent["offset_atr"] * A)
+            ref = rtick(d.up(C, ent["offset_atr"] * A))
         st = s["risk"]["stop"]
         p = SimpleNamespace(**st["params"])
         rawdist = K.stop_distance(st["atom"], p, d, ref, lvl)
-        dist = minx(maxx(rawdist, MIN_STOP_ATR * A), minx(MAX_STOP_ATR * A, MAX_STOP_PCT * ref))
-        stp = d.dn(ref, dist)
+        clamped = minx(maxx(rawdist, MIN_STOP_ATR * A), minx(MAX_STOP_ATR * A, MAX_STOP_PCT * ref))
+        stp = rtick(d.dn(ref, clamped))                 # order prices sit on the tick grid
+        dist = d.sg(ref - stp)                          # the limits below are checked on the rounded prices
         valid = dist > 0
         tgt = None
         inval = []
@@ -100,9 +101,9 @@ def build(g):
             a = ATOMS[e["atom"]]
             pe = SimpleNamespace(**e["params"])
             if a.kind == "target":
-                tgt = K.target_level(e["atom"], pe, d, ref, dist, lvl)
+                tgt = rtick(K.target_level(e["atom"], pe, d, ref, dist, lvl))
                 td = d.sg(tgt - ref)
-                valid = valid & (td >= dist / MAX_RATIO) & (td >= MINTGT)
+                valid = valid & (td * MAX_RATIO >= dist) & (td >= MINTGT)
             elif a.kind == "inval":
                 inval.append(K.exit_inval(e["atom"], pe, d))
         allowed = not ((g["direction"] == "long_only" and dv < 0) or (g["direction"] == "short_only" and dv > 0))
@@ -144,10 +145,10 @@ def to_plan(g, ctx, exprs=None):
     p.etype = ETYPE[ent["type"]]
     p.valid_bars = 1 if p.etype == MARKET else bars_for_minutes(ent["valid_minutes"], b.tf)
     if p.etype != MARKET:
-        p.epxL, p.epxS = _round(ev(x["ref"]["long"]), b.tick), _round(ev(x["ref"]["short"]), b.tick)
-    p.stpL, p.stpS = _round(ev(x["stp"]["long"]), b.tick), _round(ev(x["stp"]["short"]), b.tick)
+        p.epxL, p.epxS = ev(x["ref"]["long"]), ev(x["ref"]["short"])
+    p.stpL, p.stpS = ev(x["stp"]["long"]), ev(x["stp"]["short"])
     if x["tgt"]["long"] is not None:
-        p.tgtL, p.tgtS = _round(ev(x["tgt"]["long"]), b.tick), _round(ev(x["tgt"]["short"]), b.tick)
+        p.tgtL, p.tgtS = ev(x["tgt"]["long"]), ev(x["tgt"]["short"])
     p.exL, p.exS = ev(x["ex"]["long"]), ev(x["ex"]["short"])
     sc = x["scalars"]
     p.time_stop_bars = bars_for_minutes(sc["time_stop_minutes"], b.tf) if sc["time_stop_minutes"] else 0
@@ -159,11 +160,6 @@ def to_plan(g, ctx, exprs=None):
     aux = {"validL": ev(x["valid"]["long"]), "validS": ev(x["valid"]["short"]),
            "atr": ev(A), "refL": ev(x["ref"]["long"]), "refS": ev(x["ref"]["short"])}
     return p, aux
-
-
-def _round(a, tick):
-    """Order prices sit on the tick grid, as they would at the exchange."""
-    return np.round(a / tick) * tick
 
 
 def python_source(g):

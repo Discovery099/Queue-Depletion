@@ -16,7 +16,8 @@ RT_COST_USD = {"ES": 27.5, "YM": 12.5}  # base level: two commissions plus two t
 def trades_frame(T, bars, generation=-1, fold_of_sess=None, regime_of_sess=None, entry_type="market"):
     """Trade record (SPEC A.2) from the simulator's trade matrix."""
     if len(T) == 0:
-        return pd.DataFrame(columns=TRADE_COLUMNS)
+        obj = {"instrument", "entry_order_type", "exit_reason"}
+        return pd.DataFrame({c: pd.Series(dtype="object" if c in obj else "bool" if c == "is_win" else "float64") for c in TRADE_COLUMNS})
     ei = T[:, C["entry_idx"]].astype(np.int64)
     xi = T[:, C["exit_idx"]].astype(np.int64)
     si = T[:, C["sig_idx"]].astype(np.int64)
