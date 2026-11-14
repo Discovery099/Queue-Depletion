@@ -1,0 +1,385 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0
+// © Smart Trend V1
+//
+// WHAT THIS DOES (unchanged):
+//   • A BUY arrow  → go LONG.
+//   • Hold the long with NO stop and NO target until the next SELL arrow.
+//   • The SELL arrow ends the long AND immediately opens a SHORT.
+//   • Hold the short until the next BUY arrow, which flips it back to long.
+//   • Always in the market. The opposite arrow is the only exit. Repeats forever.
+//
+// V9.5-W WEBHOOK EDITION — the signal/arrow logic below is the ORIGINAL
+// engine, untouched. Only the webhook/alert layer was replaced with the
+// exact system from "Post-Absorption VWAP Reversal V9.5-W" so the SAME website
+// ticket + single TradingView alert can execute this strategy:
+//
+//   • Group "06 Webhook / Live Gates" is identical to V9.5-W: Execution mode,
+//     Webhook mode, live-risk checkbox, Alert tag, Broker root, TV symbol, Qty.
+//   • Defaults: Broker root = YM, TV symbol = CBOT_MINI_DL:YM1!, QUANTITY = 4.
+//   • Identical JSON payload fields: action, side, qty, symbol, broker_root,
+//     price, key, tag, live. Actions: BUY / SELL_SHORT / CLOSE_LONG / CLOSE_SHORT.
+//   • "live":true only when Execution mode = Live AND Webhook mode = live AND
+//     the risk checkbox is ticked — same triple gate as V9.5-W.
+//   • REVERSALS ARE SPLIT into an explicit CLOSE + ENTRY on the same bar, so
+//     your server receives two payloads it already understands (CLOSE_SHORT
+//     then BUY, or CLOSE_LONG then SELL_SHORT) instead of one double-size
+//     reverse order. Fills, position and P&L are identical to the one-step
+//     reverse. Comment codes match V9.5-W: L / S / XL / XS.
+//
+//   TradingView alert setup (same as your V9.5 alert):
+//     Condition : this strategy → "Order fills only"
+//     Message   : {{strategy.order.alert_message}}        ← nothing else
+//     Webhook   : your tradocopy webhook URL
+//
+//   FIX (margin_long=0, margin_short=0): Pine v6 defaults strategy margin to
+//   100%, so with initial_capital=100000 the emulator silently REJECTED every
+//   order (1 YM ≈ $266k notional, 1 NQ ≈ $588k) — zero fills, therefore zero
+//   order-fill alerts. Margin 0 disables the funds check so every arrow fills;
+//   real position risk is managed at the broker, not in TradingView.
+
+//@version=6
+strategy("Smart Trend V1",
+     overlay=true,
+     max_lines_count=500,
+     max_labels_count=500,
+     max_boxes_count=500,
+     initial_capital=100000,
+     margin_long=0,
+     margin_short=0,
+     default_qty_type=strategy.fixed,
+     default_qty_value=1,
+     pyramiding=1,
+     commission_type=strategy.commission.cash_per_contract,
+     commission_value=1.25,
+     slippage=1,
+     process_orders_on_close=true,
+     calc_on_every_tick=false)
+
+// ═══════════════════════════════════════════
+// ║  TAB: TRAIL                              ║
+// ═══════════════════════════════════════════
+groupTrail = "Trail"
+i_atrLen     = input.int(14, "ATR Length", minval=5, maxval=100, step=1, group=groupTrail, tooltip="Lookback period for ATR volatility calculation.")
+i_factor     = input.float(3.0, "Factor", minval=1.0, maxval=5.0, step=0.1, group=groupTrail, tooltip="ATR multiplier for trail buffer. Higher = wider trail, fewer arrows.")
+i_confirm    = input.int(1, "Confirm Bars", minval=1, maxval=3, step=1, group=groupTrail, tooltip="Consecutive closes on the opposite side of the trail before the arrow confirms.")
+i_useAdapt   = input.bool(true, "Volatility Adaptation", group=groupTrail, tooltip="EMA-smooth the ATR for a steadier trail buffer.")
+i_adaptLen   = input.int(10, "Adaptation EMA", minval=5, maxval=30, step=1, group=groupTrail, tooltip="EMA length for volatility smoothing.")
+
+// ═══════════════════════════════════════════
+// ║  TAB: COLORS                             ║
+// ═══════════════════════════════════════════
+groupColors = "Colors"
+i_colUp      = input.color(color.new(#00D084, 0), "Up Color", group=groupColors)
+i_colDown    = input.color(color.new(#FF4757, 0), "Down Color", group=groupColors)
+i_colUpTransp = input.int(0, "Up Transparency", minval=0, maxval=100, step=5, group=groupColors)
+i_colDownTransp = input.int(0, "Down Transparency", minval=0, maxval=100, step=5, group=groupColors)
+i_trailWidth = input.int(2, "Trail Width", minval=1, maxval=4, step=1, group=groupColors)
+i_trailStyle = input.string("Solid", "Trail Style", options=["Solid", "Dashed", "Dotted"], group=groupColors)
+i_useFill = input.bool(true, "Show Trail Zone Fill", group=groupColors)
+i_fillTransp = input.int(92, "Fill Transparency", minval=80, maxval=99, step=1, group=groupColors)
+
+// ═══════════════════════════════════════════
+// ║  TAB: SIGNALS                            ║
+// ═══════════════════════════════════════════
+groupSignals = "Signals"
+i_showLabels  = input.bool(true, "Show Bullish/Bearish Labels", group=groupSignals)
+i_showBoxes   = input.bool(true, "Show BUY/SELL Boxes", group=groupSignals)
+i_showStrength = input.bool(true, "Show Strength Number", group=groupSignals)
+i_sigDelay    = input.int(0, "Signal Delay", minval=0, maxval=5, step=1, group=groupSignals, tooltip="Delay the arrow by N bars after a confirmed cross. 0 = immediate.")
+i_boxSize     = input.string("Normal", "Box Size", options=["Small", "Normal", "Large"], group=groupSignals)
+i_textSize    = input.string("Normal", "Text Size", options=["Small", "Normal", "Large"], group=groupSignals)
+i_useHTF      = input.bool(true, "Use Higher Timeframe Confluence", group=groupSignals)
+i_htf1        = input.string("15", "HTF 1", options=["1", "3", "5", "15", "30", "60", "120", "240", "D", "W"], group=groupSignals)
+i_htf2        = input.string("60", "HTF 2", options=["1", "3", "5", "15", "30", "60", "120", "240", "D", "W"], group=groupSignals)
+i_useVolume   = input.bool(true, "Use Volume Confirmation", group=groupSignals)
+i_useMomentum = input.bool(true, "Use Momentum Confirmation", group=groupSignals)
+i_rsiLen      = input.int(14, "RSI Length", minval=5, maxval=30, step=1, group=groupSignals)
+i_volLookback = input.int(50, "Volume Lookback", minval=20, maxval=200, step=10, group=groupSignals)
+i_useADX       = input.bool(false, "Use ADX Filter", group=groupSignals, tooltip="Only trade arrows when ADX > threshold. OFF = trade every arrow.")
+i_adxLen       = input.int(14, "ADX Length", minval=5, maxval=30, step=1, group=groupSignals)
+i_adxThreshold = input.int(20, "ADX Threshold", minval=10, maxval=50, step=5, group=groupSignals)
+
+// ═══════════════════════════════════════════
+// ║  TAB: TRADE / AUTOMATION                 ║
+// ═══════════════════════════════════════════
+groupTrade = "Trade / Automation"
+i_minStrength = input.int(1, "Min Arrow Strength (1-3)", minval=1, maxval=3, step=1, group=groupTrade, tooltip="1 = trade EVERY arrow (faithful to your request). Raise only if you want to skip weaker arrows.")
+
+// ═══════════════════════════════════════════
+// ║  06 WEBHOOK / LIVE GATES (from V9.5-W)   ║
+// ═══════════════════════════════════════════
+gAlerts = "06 Webhook / Live Gates"
+executionMode  = input.string("Sim/Paper", "Execution mode", options=["Backtest only", "Sim/Paper", "Live"], group=gAlerts, tooltip="'Backtest only' disables ALL orders (and therefore all alerts), exactly like V9.5-W. Sim/Paper and Live both place orders and fire webhook payloads; the 'live' flag inside the JSON tells your server which path to route.")
+webhookMode    = input.string("internal_paper", "Webhook mode", options=["disabled", "internal_paper", "projectx_sim", "live"], group=gAlerts)
+acceptLiveRisk = input.bool(false, "I accept full live-trading risk", group=gAlerts)
+alertTag       = input.string("SMART_TREND_V1", "Alert tag", group=gAlerts, tooltip="Different tag from the VWAP strategy so your dashboard can tell them apart.")
+brokerRoot     = input.string("YM", "Broker root override", group=gAlerts)
+tvSymbol       = input.string("CBOT_MINI_DL:YM1!", "TV symbol override", group=gAlerts)
+qty            = input.int(4, "Quantity", minval=1, maxval=10, group=gAlerts, tooltip="Contracts per position. Default 4. This value feeds both the orders and the JSON payload, so they always stay in sync.")
+
+// ── Webhook helpers (identical to V9.5-W) ────────────────────────────────────
+f_num(x) => na(x) ? "null" : str.tostring(x, "#.#####")
+f_bool(x) => x ? "true" : "false"
+
+liveAuthorized = executionMode == "Live" and webhookMode == "live" and acceptLiveRisk
+ordersOk       = executionMode == "Sim/Paper" or executionMode == "Live"
+
+f_alert(eventName, side, action) =>
+    key = syminfo.ticker + "_" + str.tostring(time) + "_" + eventName + "_" + side
+    "{" + "\"action\":\"" + action + "\",\"side\":\"" + side + "\",\"qty\":" + str.tostring(qty) + ",\"symbol\":\"" + tvSymbol + "\",\"broker_root\":\"" + brokerRoot + "\",\"price\":" + f_num(close) + ",\"key\":\"" + key + "\",\"tag\":\"" + alertTag + "\",\"live\":" + f_bool(liveAuthorized) + "}"
+
+// ═══════════════════════════════════════════
+// ║  CORE ALGORITHM: SMART TRAIL (ORIGINAL)  ║
+// ═══════════════════════════════════════════
+_rawAtr = ta.atr(i_atrLen)
+_atr = i_useAdapt ? ta.ema(_rawAtr, i_adaptLen) : _rawAtr
+_buffer = i_factor * _atr
+
+var float trailLevel = na
+var int regime = 0
+var int confirmCount = 0
+
+if na(trailLevel) and not na(_atr)
+    trailLevel := close
+    regime := close > close[1] ? 1 : -1
+    confirmCount := 0
+
+if not na(trailLevel) and not na(_buffer)
+    float rawTrail = na
+    int rawRegime = regime
+    if regime == 1
+        rawTrail := math.max(trailLevel, close - _buffer)
+        if close < rawTrail
+            rawRegime := -1
+    else
+        rawTrail := math.min(trailLevel, close + _buffer)
+        if close > rawTrail
+            rawRegime := 1
+    if rawRegime != regime
+        confirmCount += 1
+        if confirmCount >= i_confirm
+            regime := rawRegime
+            confirmCount := 0
+            if regime == 1
+                trailLevel := close - _buffer
+            else
+                trailLevel := close + _buffer
+        else
+            if regime == 1
+                trailLevel := math.max(trailLevel, close - _buffer)
+            else
+                trailLevel := math.min(trailLevel, close + _buffer)
+    else
+        confirmCount := 0
+        if regime == 1
+            trailLevel := math.max(trailLevel, close - _buffer)
+        else
+            trailLevel := math.min(trailLevel, close + _buffer)
+
+plotTrail = trailLevel
+
+// ═══════════════════════════════════════════
+// ║  SIGNAL STRENGTH (ORIGINAL)              ║
+// ═══════════════════════════════════════════
+htf1Close = request.security(syminfo.tickerid, i_htf1, close, lookahead=barmerge.lookahead_off)
+htf1Open  = request.security(syminfo.tickerid, i_htf1, open,  lookahead=barmerge.lookahead_off)
+htf2Close = request.security(syminfo.tickerid, i_htf2, close, lookahead=barmerge.lookahead_off)
+htf2Open  = request.security(syminfo.tickerid, i_htf2, open,  lookahead=barmerge.lookahead_off)
+
+htf1Bull = not na(htf1Close) and not na(htf1Open) and htf1Close > htf1Open
+htf1Bear = not na(htf1Close) and not na(htf1Open) and htf1Close < htf1Open
+htf2Bull = not na(htf2Close) and not na(htf2Open) and htf2Close > htf2Open
+htf2Bear = not na(htf2Close) and not na(htf2Open) and htf2Close < htf2Open
+
+volSma = ta.sma(volume, i_volLookback)
+volConfirmed = i_useVolume and not na(volSma) and volume > volSma * 1.2
+
+_rsi = ta.rsi(close, i_rsiLen)
+momBull = i_useMomentum and not na(_rsi) and _rsi > 50 and _rsi < 80
+momBear = i_useMomentum and not na(_rsi) and _rsi < 50 and _rsi > 20
+
+[adx_di_plus, adx_di_minus, _adx] = ta.dmi(i_adxLen, i_adxLen)
+adrTrending = not i_useADX or (not na(_adx) and _adx > i_adxThreshold)
+
+strengthBull = 1
+strengthBear = 1
+if i_useHTF
+    if htf1Bull
+        strengthBull += 1
+    if htf2Bull
+        strengthBull += 1
+    if htf1Bear
+        strengthBear += 1
+    if htf2Bear
+        strengthBear += 1
+if volConfirmed
+    strengthBull += 1
+    strengthBear += 1
+if momBull
+    strengthBull += 1
+if momBear
+    strengthBear += 1
+strengthBull := math.min(3, strengthBull)
+strengthBear := math.min(3, strengthBear)
+
+// ═══════════════════════════════════════════
+// ║  ARROW DETECTION (ORIGINAL)              ║
+// ═══════════════════════════════════════════
+var int prevRegime = 0
+bullCross = (regime == 1) and (prevRegime == -1)
+bearCross = (regime == -1) and (prevRegime == 1)
+prevRegime := regime
+
+var int bullDelayCount = 0
+var int bearDelayCount = 0
+var int delayedBullStr = 0
+var int delayedBearStr = 0
+bullSignal = false
+bearSignal = false
+bullStr = 0
+bearStr = 0
+if bullCross
+    bullDelayCount := i_sigDelay
+    delayedBullStr := strengthBull
+else if bullDelayCount > 0
+    bullDelayCount -= 1
+    if bullDelayCount == 0
+        bullSignal := true
+        bullStr := delayedBullStr
+if bearCross
+    bearDelayCount := i_sigDelay
+    delayedBearStr := strengthBear
+else if bearDelayCount > 0
+    bearDelayCount -= 1
+    if bearDelayCount == 0
+        bearSignal := true
+        bearStr := delayedBearStr
+if i_sigDelay == 0
+    bullSignal := bullCross
+    bearSignal := bearCross
+    bullStr := strengthBull
+    bearStr := strengthBear
+
+// ── THE ARROWS. Everything (chart + trades) keys off these two booleans, so what
+//    you SEE is exactly what TRADES. ──
+buyArrow  = bullSignal and bullStr >= i_minStrength and adrTrending
+sellArrow = bearSignal and bearStr >= i_minStrength and adrTrending
+
+// ═══════════════════════════════════════════
+// ║  VISUALS (ORIGINAL)                      ║
+// ═══════════════════════════════════════════
+trailColor = regime == 1 ? color.new(i_colUp, i_colUpTransp) : color.new(i_colDown, i_colDownTransp)
+trailPlotStyle = i_trailStyle == "Solid" ? plot.style_line : i_trailStyle == "Dashed" ? plot.style_linebr : plot.style_cross
+plot(plotTrail, title="Smart Trail", color=trailColor, linewidth=i_trailWidth, style=trailPlotStyle)
+
+pTrail = plot(plotTrail, title="Trail Base", color=na, editable=false, display=display.none)
+pPrice = plot(close, title="Price Base", color=na, editable=false, display=display.none)
+fill(pTrail, pPrice, color=i_useFill ? (regime == 1 ? color.new(i_colUp, i_fillTransp) : color.new(i_colDown, i_fillTransp)) : na, title="Trail Zone")
+
+boxTextSize = i_textSize == "Small" ? size.small : i_textSize == "Normal" ? size.normal : size.large
+boxHeightMult = i_boxSize == "Small" ? 1.0 : i_boxSize == "Normal" ? 1.5 : 2.0
+
+var label[] labelArray = array.new_label(0)
+maxLabels = 500
+if i_showLabels and buyArrow
+    array.push(labelArray, label.new(bar_index, low, "Bullish", style=label.style_label_up, color=color.new(i_colUp, 10), textcolor=color.white, size=size.normal, yloc=yloc.belowbar))
+if i_showLabels and sellArrow
+    array.push(labelArray, label.new(bar_index, high, "Bearish", style=label.style_label_down, color=color.new(i_colDown, 10), textcolor=color.white, size=size.normal, yloc=yloc.abovebar))
+if array.size(labelArray) > maxLabels
+    label.delete(array.shift(labelArray))
+
+var box[] boxArray = array.new_box(0)
+maxBoxes = 100
+boxWidth = 3
+if i_showBoxes and buyArrow
+    boxTop = low - _atr * boxHeightMult
+    boxBottom = low - _atr * boxHeightMult * 2
+    bullText = i_showStrength ? "BUY " + str.tostring(bullStr) : "BUY"
+    array.push(boxArray, box.new(left=bar_index, top=boxTop, right=bar_index + boxWidth, bottom=boxBottom, bgcolor=color.new(i_colUp, 70), border_color=i_colUp, border_width=1, text=bullText, text_color=color.white, text_size=boxTextSize, text_valign=text.align_center, text_halign=text.align_center))
+if i_showBoxes and sellArrow
+    boxBottom = high + _atr * boxHeightMult
+    boxTop = high + _atr * boxHeightMult * 2
+    bearText = i_showStrength ? "SELL " + str.tostring(bearStr) : "SELL"
+    array.push(boxArray, box.new(left=bar_index, top=boxTop, right=bar_index + boxWidth, bottom=boxBottom, bgcolor=color.new(i_colDown, 70), border_color=i_colDown, border_width=1, text=bearText, text_color=color.white, text_size=boxTextSize, text_valign=text.align_center, text_halign=text.align_center))
+if array.size(boxArray) > maxBoxes
+    box.delete(array.shift(boxArray))
+
+plotshape(buyArrow,  title="BUY Signal",  location=location.belowbar, color=i_colUp,   style=shape.triangleup,   size=size.small)
+plotshape(sellArrow, title="SELL Signal", location=location.abovebar, color=i_colDown, style=shape.triangledown, size=size.small)
+bgcolor(buyArrow ? color.new(i_colUp, 90) : sellArrow ? color.new(i_colDown, 90) : na, title="Signal Background")
+
+// ═══════════════════════════════════════════
+// ║  INFO PANEL (+ webhook gate rows)        ║
+// ═══════════════════════════════════════════
+var table infoTable = table.new(position.top_right, 2, 8, bgcolor=color.new(color.black, 10), frame_width=1, frame_color=color.gray)
+if barstate.islast
+    regimeText = regime == 1 ? "BULLISH" : "BEARISH"
+    regimeColor = regime == 1 ? i_colUp : i_colDown
+    posText = strategy.position_size > 0 ? "LONG " + str.tostring(strategy.position_size) : strategy.position_size < 0 ? "SHORT " + str.tostring(math.abs(strategy.position_size)) : "FLAT"
+    posCol  = strategy.position_size > 0 ? i_colUp : strategy.position_size < 0 ? i_colDown : color.gray
+    table.cell(infoTable, 0, 0, "Smart Trend V1", text_color=color.white, text_size=size.small)
+    table.cell(infoTable, 1, 0, "", text_color=color.white, text_size=size.small)
+    table.cell(infoTable, 0, 1, "Regime:", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTable, 1, 1, regimeText, text_color=regimeColor, text_size=size.tiny)
+    table.cell(infoTable, 0, 2, "Position:", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTable, 1, 2, posText, text_color=posCol, text_size=size.tiny)
+    table.cell(infoTable, 0, 3, "ATR:", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTable, 1, 3, str.tostring(_atr, "#.##"), text_color=color.white, text_size=size.tiny)
+    table.cell(infoTable, 0, 4, "HTF " + i_htf1 + ":", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTable, 1, 4, htf1Bull ? "Bull" : htf1Bear ? "Bear" : "Neutral", text_color=htf1Bull ? i_colUp : htf1Bear ? i_colDown : color.gray, text_size=size.tiny)
+    table.cell(infoTable, 0, 5, "Last Arrow:", text_color=color.gray, text_size=size.tiny)
+    lastSig = buyArrow ? "BUY" : sellArrow ? "SELL" : "None"
+    table.cell(infoTable, 1, 5, lastSig, text_color=buyArrow ? i_colUp : sellArrow ? i_colDown : color.gray, text_size=size.tiny)
+    table.cell(infoTable, 0, 6, "Qty:", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTable, 1, 6, str.tostring(qty) + " contracts", text_color=color.white, text_size=size.tiny)
+    table.cell(infoTable, 0, 7, "Gate:", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTable, 1, 7, liveAuthorized ? "LIVE AUTH" : "sim/paper", text_color=liveAuthorized ? color.red : color.white, text_size=size.tiny)
+
+// ═══════════════════════════════════════════
+// ║  ORDER ENGINE — PURE ARROW REVERSAL      ║
+// ║  (V9.5-W payload on every order)         ║
+// ═══════════════════════════════════════════
+// A reversal is expressed as an explicit CLOSE followed by an ENTRY on the same
+// bar. TradingView fills the close first, then the entry (orders fill in
+// creation order), so your webhook receives two payloads the server already
+// understands from V9.5-W:
+//   short + BUY arrow  →  CLOSE_SHORT (comment XS)  then  BUY (comment L)
+//   long  + SELL arrow →  CLOSE_LONG  (comment XL)  then  SELL_SHORT (comment S)
+// Net effect (fills, position, P&L, commission) is identical to a one-step
+// strategy.entry reverse. No stop, no target, no time exit — the opposite
+// arrow remains the ONLY exit, exactly as before.
+if ordersOk and buyArrow and strategy.position_size <= 0
+    if strategy.position_size < 0
+        strategy.close("Short", comment="XS", alert_message=f_alert("exit", "short", "CLOSE_SHORT"))
+    strategy.entry("Long", strategy.long, qty=qty, comment="L", alert_message=f_alert("entry", "long", "BUY"))
+
+if ordersOk and sellArrow and strategy.position_size >= 0
+    if strategy.position_size > 0
+        strategy.close("Long", comment="XL", alert_message=f_alert("exit", "long", "CLOSE_LONG"))
+    strategy.entry("Short", strategy.short, qty=qty, comment="S", alert_message=f_alert("entry", "short", "SELL_SHORT"))
+
+// Optional plain-text ping (manual use). Automation uses the order-fill alert below.
+alertcondition(buyArrow or sellArrow, title="Smart Trend V1 — Arrow", message="Smart Trend V1 arrow on {{ticker}} @ {{close}}")
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  AUTO-EXECUTION SETUP (tradocopy — Single alert (Strategy) mode)
+//  1) Add to chart, set group 06 inputs (qty=4 is the default).
+//  2) Create ONE alert on this strategy:
+//        Condition : Smart Trend V1 → "Order fills only"
+//        Message   : {{strategy.order.alert_message}}   ← the placeholder ONLY,
+//                    no extra text in the body or the JSON breaks
+//        Webhook   : your tradocopy webhook URL
+//  3) Payloads are byte-compatible with V9.5-W:
+//     {"action":"BUY","side":"long","qty":4,"symbol":"CBOT_MINI_DL:YM1!",
+//      "broker_root":"YM","price":...,"key":"...","tag":"SMART_TREND_V1",
+//      "live":false}
+//  4) REVERSALS SEND TWO PAYLOADS BACK-TO-BACK: first the CLOSE_ (flatten),
+//     then the new entry. Dedupe keys differ (event + side are in the key), so
+//     both pass your idempotency check. Your server must apply them in arrival
+//     order — verify once in paper mode before going live.
+//  5) "live":true requires all three gates: Execution mode = Live, Webhook
+//     mode = live, and the risk checkbox. Anything else routes as paper.
+//  6) This strategy is ALWAYS in the market — positions are held overnight
+//     and through sessions until the opposite arrow. Make sure the account,
+//     margin, and your bridge's session handling allow that.
+// ═══════════════════════════════════════════════════════════════════════════
