@@ -468,3 +468,30 @@ def nth_event_value(x, ev, k):
             buf[0] = x[i]
         out[i] = buf[k]
     return out
+
+
+@njit(cache=True)
+def wma(x, n):
+    """Linearly weighted average, weight n on the current bar down to 1 on the oldest (Pine ta.wma)."""
+    m = len(x)
+    out = np.full(m, np.nan)
+    den = n * (n + 1) / 2.0
+    for i in range(n - 1, m):
+        s = 0.0
+        ok = True
+        for j in range(n):
+            v = x[i - j]
+            if np.isnan(v):
+                ok = False
+                break
+            s += v * (n - j)
+        if ok:
+            out[i] = s / den
+    return out
+
+
+def hma(x, n):
+    """Hull average as Pine ta.hma: wma(2*wma(x, n/2) - wma(x, n), floor(sqrt(n)))."""
+    h = max(1, n // 2)
+    r = max(1, int(np.floor(np.sqrt(n))))
+    return wma(2.0 * wma(x, h) - wma(x, n), r)

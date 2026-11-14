@@ -1,0 +1,64 @@
+# Search configuration (SPEC Appendix A.6, 16.1, 19.3).  Defaults the agent may tune, except where noted.
+generations_total: 100000
+epoch_size: 500
+islands: 2
+complexity_ceiling: 22
+survey_complexity_ceiling: 10
+param_grid_max_values: 12
+stage1_twins: 200
+walk_forward_folds: 8
+cpcv_groups: 10
+cpcv_test_groups: 2
+purge_sessions: 3
+embargo_sessions: 5
+inner_holdout_share: 0.15
+vault_a_queries: 60
+vault_b_exams: 5
+vault_min_gap_generations: 1500
+genome_same_distance: 0.15
+novelty_min_distance: 0.05
+canary_features: 12
+decoys_per_type: 20
+placebo_generations: 1000
+placebo_interval: 20000
+strategist_review_every: 1000
+reproducibility_check_every: 5000
+llm_hypothesis_share: 0.08
+operator_share_floor: 0.02
+master_seed: 20261114
+operators:             # typical shares (SPEC 9.4); adapted each epoch within the floor
+  PARAM_STEP: 0.20
+  ATOM_SWAP: 0.15
+  ATOM_ADD: 0.06
+  ATOM_DROP: 0.06
+  SLOT_CROSSOVER: 0.12
+  EXIT_TRANSPLANT: 0.08
+  ENTRY_TRANSPLANT: 0.08
+  INVERT: 0.04
+  SIMPLIFY: 0.06
+  LLM_HYPOTHESIS: 0.08
+  LIBRARY_PROBE: 0.04
+  ENSEMBLE: 0.03
+parent_selection: {grid: 0.70, leaders: 0.20, uniform: 0.10}
+phases:                # SPEC 10.4
+  survey_until: 2000
+  assembly_until: 15000
+  refinement_until: 50000
+  hardening_until: 85000
+score:                 # SPEC 16.1: fixed, pre-declared transforms to the range 0..1 (value at 0, value at 1)
+  weights: {alpha: 0.20, worst_pf: 0.20, expectancy: 0.15, tail: 0.10, consistency: 0.15, frequency: 0.05, fog: 0.10, simplicity: 0.05}
+  alpha_pts: [0, 25]
+  worst_pf: [0.7, 1.6]
+  expectancy_costs: [0, 8]
+  largest_loss_avg_wins: [8, 2]
+  tail_share: [0.7, 0.15]
+  skew: [-3, 0]
+  fold_pf_cv: [1.0, 0.2]
+  fog_retention_before_stage2: 0.5
+  win_rate_penalty: {full: 0.80, half: 0.60, zero: 0.45}
+  sample_shrink: true        # tightening: multiply by min(1, trades / required trades) so tiny samples cannot lead
+budgets:               # SPEC 19.3
+  max_cores: 4
+  max_disk_gb: 25
+  max_llm_tokens_total: 0    # no language-model API is wired into the loop; LLM_HYPOTHESIS reads a queue file
+  max_wall_clock_days: 120

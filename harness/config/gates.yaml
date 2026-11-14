@@ -1,0 +1,84 @@
+# Gate thresholds (SPEC Appendix A.5 and Sections 11-13).  These may only be TIGHTENED, with a logged
+# reason in reports/gate_changes.md (Constitution Article 15).  Only the owner may relax a gate, in
+# OWNER_OVERRIDES.md.  The hash of this file is recorded in every generation's config.lock.json.
+version: 1
+tiers:
+  bronze: {win_rate: 0.65, win_rate_each: 0.60, wilson_lo: 0.61, alpha_pts: 5,  pf: 1.4, pf_worst_fold: 1.0, payoff: 0.35,
+           exp_costs: 2.0, largest_loss_avg_wins: 6, trades_per_year_5m: 150, core_tfs: 2, decoy_pf_max: 1.10, roll6m: 0.70}
+  silver: {win_rate: 0.72, win_rate_each: 0.67, wilson_lo: 0.68, alpha_pts: 8,  pf: 1.6, pf_worst_fold: 1.2, payoff: 0.40,
+           exp_costs: 2.5, largest_loss_avg_wins: 5, trades_per_year_5m: 200, core_tfs: 4, hidden_tfs: 2, pbo_max: 0.30,
+           dsr_min: 0.90, decoy_pf_max: 1.05, roll6m: 0.80}
+  gold:   {win_rate: 0.80, win_rate_each: 0.75, wilson_lo: 0.76, alpha_pts: 12, pf: 1.8, pf_worst_fold: 1.4, payoff: 0.45,
+           exp_costs: 3.0, largest_loss_avg_wins: 4, trades_per_year_5m: 200, core_tfs: 4, hidden_tfs: 2, pbo_max: 0.20,
+           dsr_min: 0.95, decoy_pf_max: 1.05, roll6m: 0.85}
+structural:            # SPEC 11.2, enforced by the genome compiler on every entry
+  max_stop_to_target: 2.5
+  max_stop_atr: 2.5
+  max_stop_pct_of_price: 0.006
+  min_stop_atr: 0.3                 # tightening: no stop inside ordinary bar noise
+  min_target_round_trip_costs: 3
+sample:                # SPEC 12.1
+  min_trades_per_instrument: 300    # over the six test folds; scaled by the share of folds an island scores
+  min_trades_per_fold: 30
+  trades_per_complexity_point: 40
+  wilson_margin_pts: 4
+walk_forward:          # SPEC 12.2
+  folds_pf_above_1: 5               # of 6
+  median_fold_pf: 1.4
+  worst_fold_wr_gap_pts: 8
+  efficiency_min: 0.60
+  efficiency_fail: 0.40
+  max_fold_profit_share: 0.35
+forensics:             # SPEC 11.3
+  tail_share_max: 0.35
+  skew_min: -1.5
+  loss_streak_multiple: 2.0
+  mae_winner_median_max: 0.50
+  scratch_share_max: 0.15
+  time_asymmetry_max: 3.0
+  session_exit_profit_flag: 0.40
+twins:                 # SPEC 11.4
+  n: 200
+  n_when_already_failed: 40         # compute saving for candidates that have already failed another stage 1 gate
+  candidate_above_twin_percentile: 99
+frequency:             # SPEC 11.5 and 13.3 (Gold/Silver floors; Bronze uses 0.75 of the trade floor)
+  by_timeframe:
+    5:  {trades_per_year: 200, session_share: 0.55}
+    10: {trades_per_year: 150, session_share: 0.45}
+    15: {trades_per_year: 120, session_share: 0.40}
+    30: {trades_per_year: 80,  session_share: 0.28}
+    60: {trades_per_year: 50,  session_share: 0.18}
+  max_gap_sessions_5m: 15
+  regime_cell_min_share: 0.50
+  filter_audit_removed_share: 0.30
+  filter_audit_folds: 5
+timeframes:            # SPEC 13.3
+  worst_pf_min: 1.15
+  worst_pf_floor: 1.0
+  wr_spread_pts: 8
+  pf_cv_max: 0.30
+  alignment_pf_ratio: 0.75
+  alignment_wr_pts: 5
+costs:                 # SPEC 7.5
+  stress_pf_min: 1.3
+robustness:            # SPEC 12.6-12.8, 13.5
+  plateau_one_step: 0.80
+  plateau_two_step: 0.60
+  plateau_peak_excess: 0.25
+  transfer_retention: 0.70
+  side_pf_min: 1.2
+  side_wr_gap_pts: 10
+  drift_neutral_retention: 0.70
+  intrabar_wr_gap_pts: 6
+  same_bar_share_flag: 0.20
+resampling:            # SPEC 12.7
+  bootstrap_pf_p5: 1.2
+  bootstrap_wr_margin_pts: 5
+  permutation_percentile: 99
+stability:             # SPEC 12.10
+  roll3m: 0.70
+decoys:                # SPEC 15.3
+  sample: 30
+  alpha_gap_pts: 8
+inner_holdout:         # SPEC 16.2 stage 4
+  max_degradation: 0.25
