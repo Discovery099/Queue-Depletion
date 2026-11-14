@@ -150,8 +150,8 @@ def twin_runs(r, sess_mask, n, seed, cost="base"):
     """Random-entry twins for one instrument's run `r`, restricted to bars in `sess_mask`.
 
     Identical direction mix, order type, stop, target, exit and time rules, costs and sequencing;
-    entry times are random, matched to the candidate's time-of-day distribution and long/short mix,
-    drawn from bars where the candidate was flat and the structural limits allow an entry.
+    entry times are random, matched to the candidate's time-of-day distribution, long/short mix and
+    target-to-stop geometry, drawn from bars where the candidate was flat and the structural limits allow an entry.
     Returns arrays (n twins): wins, trades, sum of net/cost, gross profit, gross loss."""
     b, plan, aux = r["bars"], r["plan"], r["aux"]
     sb, sp = subset(b, sess_mask), subset_plan(r["plan"], sess_mask)
@@ -160,15 +160,29 @@ def twin_runs(r, sess_mask, n, seed, cost="base"):
     keep = sess_mask[T[:, sim.C["sig_idx"]].astype(np.int64)] if len(T) else np.zeros(0, bool)
     sig = pos[T[keep, sim.C["sig_idx"]].astype(np.int64)]
     dr = T[keep, sim.C["dir"]]
-    slot = sb.slot
     flat = ~r["inpos"][sess_mask] & ~sb.last
+    tod = sb.slot // 6                                   # 30-minute time-of-day bucket
     pools, counts = {}, {}
-    for d_, valid in ((1, aux["validL"][sess_mask]), (-1, aux["validS"][sess_mask])):
-        ok = flat & valid
-        s_sel = slot[sig[dr == d_]]
-        for sl, c in zip(*np.unique(s_sel, return_counts=True)):
-            pools[(d_, sl)] = np.flatnonzero(ok & (slot == sl))
-            counts[(d_, sl)] = int(c)
+    for d_, valid, ref, stp, tgt in ((1, aux["validL"], aux["refL"], plan.stpL, plan.tgtL), (-1, aux["validS"], aux["refS"], plan.stpS, plan.tgtS)):
+        ok = flat & valid[sess_mask]
+        # geometry match (tightening, reports/gate_changes.md): a twin entry must face the same
+        # target-to-stop distance ratio as the candidate's entries, in quintile bins of the candidate's own ratios
+        with np.errstate(divide="ignore", invalid="ignore"):
+            ratio = np.where(np.isnan(tgt), 1.0, np.abs(tgt - ref) / np.abs(ref - stp))[sess_mask]
+        ratio = np.where(np.isfinite(ratio), ratio, 1.0)
+        mine = sig[dr == d_]
+        if len(mine) == 0:
+            continue
+        edges = np.unique(np.quantile(ratio[mine], [0.2, 0.4, 0.6, 0.8]))
+        rb = np.searchsorted(edges, ratio)
+        keys = tod[mine] * 10 + rb[mine]
+        allk = tod * 10 + rb
+        for key, c in zip(*np.unique(keys, return_counts=True)):
+            pool = np.flatnonzero(ok & (allk == key))
+            if len(pool) < c:                            # too few bars at that time of day: same geometry bin, any time
+                pool = np.flatnonzero(ok & (rb == key % 10))
+            pools[(d_, int(key))] = pool
+            counts[(d_, int(key))] = int(c)
     rng = np.random.default_rng(seed)
     comm = 2.0 * COSTS[cost]["commission_per_side_usd"] / b.pv
     rt = M.RT_COST_USD[b.sym] / b.pv

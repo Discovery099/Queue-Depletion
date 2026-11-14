@@ -488,6 +488,11 @@ class Run:
                         status = "CONFIRMED"
                         st["counts"]["confirmed"] += 1
                         prop["confirm"] = cr
+                        write_json(os.path.join(d, "gates.json"), gates)
+                        from orchestrator import promote
+                        status, tier, reason, stage = promote.process(self, prop, cr)
+                        gates = read_json(os.path.join(d, "gates.json"))
+                        st["counts"][status.lower()] = st["counts"].get(status.lower(), 0) + 1
                     else:
                         status, reason = "HOME_ONLY", "passes only on its island's folds: " + ", ".join(cr["failed_gates"][:4])
                 elif confirm is not None:
@@ -539,7 +544,7 @@ class Run:
             os_["improved"] += 1
         elif not prop["parent"] and score > 0.05:
             os_["improved"] += 1
-        if status in ("STAGE1_PASS", "CONFIRMED"):
+        if stage >= 1 and status not in ("STAGE1_FAIL", "VOID", "ERROR"):
             os_["passed"] += 1
         self.db.execute("INSERT OR REPLACE INTO genomes VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         [n, g["genome_id"], prop["lineage_id"], prop["island"], prop["operator"], json.dumps(prop["parents"]),
@@ -547,7 +552,7 @@ class Run:
                          m.get("profit_factor"), res["twin"]["win_rate_alpha_pts"] if res else None, cell, self.trig_key(g),
                          json.dumps(g, sort_keys=True), prop.get("daily") if m.get("n", 0) >= 30 else None])
         self.ids.add(g["genome_id"])
-        if status not in ("STAGE1_PASS", "CONFIRMED"):
+        if tier is None:
             with open(self.p("ledger/graveyard.jsonl"), "a") as f:
                 f.write(json.dumps({"generation": n, "genome_id": g["genome_id"][:16], "atoms": [e["atom"] for e in GN.atom_entries(g)],
                                     "structure": {"trigger": self.trig_key(g), "entry": g["slots"]["entry"]["type"], "tf": g["primary_timeframe_min"],
@@ -555,28 +560,21 @@ class Run:
                                     "stage": stage, "status": status, "failed_gates": (res or {}).get("failed_gates", [])[:8],
                                     "cause": reason[:200], "win_rate": m.get("win_rate"), "alpha": res["twin"]["win_rate_alpha_pts"] if res else None,
                                     "pf": m.get("profit_factor"), "n": m.get("n", 0)}) + "\n")
-        write_text(os.path.join(d, "SUMMARY.md"), self.summary(prop, status, stage, reason, res))
+        write_text(os.path.join(d, "SUMMARY.md"), self.summary(prop, status, stage, reason, res, tier))
         man = []
         for fn in sorted(os.listdir(d)):
             if fn != "MANIFEST.sha256":
                 man.append(f"{sha256_file(os.path.join(d, fn))}  {fn}")
         write_text(os.path.join(d, "MANIFEST.sha256"), "\n".join(man) + "\n")
-        if status == "CONFIRMED":
-            self.on_confirmed(prop, res)
         st["next_generation"] = n + 1
         self.done_this_run += 1
 
-    def on_confirmed(self, prop, res):
-        """A stage 1 pass confirmed on all six folds queues for stage 2 (run by orchestrator/stage2 when present)."""
-        with open(self.p("state/stage2_queue.jsonl"), "a") as f:
-            f.write(json.dumps({"generation": prop["generation"], "genome_id": prop["genome"]["genome_id"], "island": prop["island"]}) + "\n")
-
-    def summary(self, prop, status, stage, reason, res):
+    def summary(self, prop, status, stage, reason, res, tier=None):
         n, g = prop["generation"], prop["genome"]
         lines = [f"# Generation {n}: {status}", "",
                  f"- What: {prop['operator']} on island {prop['island']}, {g['primary_timeframe_min']}-minute primary timeframe, complexity {g['complexity']}.",
                  f"- Result: {status} at stage {stage}." + (f" Reason: {reason}." if reason else ""),
-                 f"- Tier: none.", "", "```", GN.describe(g), "```", ""]
+                 f"- Tier: {tier or 'none'}.", "", "```", GN.describe(g), "```", ""]
         if res:
             m, tw = res["pooled"], res["twin"]
             lo, hi = m.get("wilson_lo", 0.0), m.get("wilson_hi", 0.0)
@@ -596,7 +594,8 @@ class Run:
                       f"- Failed gates ({len(res['failed_gates'])}): {', '.join(res['failed_gates']) or 'none'}."]
             if res.get("flags"):
                 lines.append(f"- Flags: {', '.join(res['flags'])}.")
-        lines += ["", "- Next step: " + ("stage 2 robustness." if status == "CONFIRMED" else "none; recorded in the graveyard." if status != "STAGE1_PASS" else "confirmation.")]
+        lines += ["", "- Next step: " + ("none; recorded in the graveyard." if tier is None else
+                                         "held in the hall of fame; re-evaluated each epoch against the growing trial count.")]
         return "\n".join(lines) + "\n"
 
     # ---------------- epochs
@@ -632,14 +631,28 @@ class Run:
             notes.append("stage 1 pass rate above 15%: the screen is too loose and must be tightened (SPEC 10.5)")
         if adoption > 0.02:
             notes.append("canary adoption above 2%: promotion halted for this epoch pending tightening (SPEC 15.1)")
+        from orchestrator import promote
+        ti = promote.trial_info(self, "none")
+        st["n_eff"] = {"raw": ti["raw"], "n_eff": ti["n_eff"], "var_sharpe": ti["var_sharpe"]}
+        demoted = []
+        f3 = self.p("ledger/stage3_candidates.jsonl")
+        if os.path.exists(f3):
+            from gates import stats as _stats
+            cands = [json.loads(x) for x in open(f3)]
+            keep = set(_stats.benjamini_hochberg([c["p_value"] for c in cands], 0.10))
+            demoted = [c["generation"] for i, c in enumerate(cands) if i not in keep]
         hp = self.honeypot_check()
         chain_ok, chain_n = self.ledger.verify_chain()
         rep = {"epoch": e, "generations": [lo, hi], "counts": cnt, "stage1_pass_rate": pass_rate, "canary_adoption_rate": adoption,
                "canary_passes": can, "occupied_cells": occupied, "mean_pairwise_distance_top100": float(np.mean(dists)) if dists else None,
                "best_score": st["best_score"], "best_generation": st["best_generation"], "operator_share": st["operator_share"],
                "operator_stats": st["operator_stats"], "honeypot_voided": hp, "ledger_chain_ok": chain_ok, "ledger_records": chain_n,
-               "frozen_ok": frozen_hashes() == st["frozen"], "notes": notes, "utc": utcnow(),
+               "frozen_ok": frozen_hashes() == st["frozen"], "notes": notes, "utc": utcnow(), "effective_trials": st["n_eff"],
+               "outside_false_discovery_set": demoted, "tier_counts": st["tier_counts"],
                "raw_stage1_trials": self.ledger.count("stage='1' AND stress_mode='candidate' AND status='DONE'")}
+        if e % 2 == 0:                                   # every 1,000 generations (SPEC 15.8)
+            from orchestrator import lessons
+            lessons.distil(self)
         write_json(self.p("reports/epochs", f"epoch_{e:04d}.json"), rep)
         write_text(self.p("reports/epochs", f"epoch_{e:04d}.md"), self.epoch_md(rep))
         if not hp:
@@ -676,7 +689,9 @@ class Run:
               f"- Occupied archive cells: island A {r['occupied_cells'].get('A', 0)}, island B {r['occupied_cells'].get('B', 0)}.",
               f"- Best composite score so far: A {r['best_score']['A']:.4f}, B {r['best_score']['B']:.4f} (generation {r['best_generation']}).",
               f"- Honeypot genome voided: {r['honeypot_voided']}. Ledger chain intact: {r['ledger_chain_ok']} ({r['ledger_records']} records). Frozen files unchanged: {r['frozen_ok']}.",
-              f"- Raw stage 1 trials to date: {r['raw_stage1_trials']}.", "", "## Operators", "",
+              f"- Raw stage 1 trials to date: {r['raw_stage1_trials']}; effective independent trials (clustered): {r['effective_trials']['n_eff']}.",
+              f"- Hall of fame: {r['tier_counts']}. Stage 3 candidates outside the 10% false-discovery set: {r['outside_false_discovery_set'] or 'none'}.",
+              "", "## Operators", "",
               "| Operator | Uses | Improved on parent | Stage 1 passes | Share next epoch |", "|---|---|---|---|---|"]
         for k, s in sorted(r["operator_stats"].items()):
             L.append(f"| {k} | {s['uses']} | {s['improved']} | {s['passed']} | {100 * r['operator_share'].get(k, 0):.1f}% |")

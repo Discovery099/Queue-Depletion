@@ -1,0 +1,121 @@
+{
+ "batch": 16,
+ "best_generation": 37,
+ "best_score": {
+  "A": 0.1668095005381987,
+  "B": 0.06900559496749466
+ },
+ "complexity_ceiling": 22,
+ "counts": {
+  "confirmed": 0,
+  "error": 0,
+  "stage1_fail": 50,
+  "stage1_pass": 0,
+  "void": 0
+ },
+ "decoy": null,
+ "engine_version": "1.0.0",
+ "epoch": 0,
+ "frozen": {
+  "costs": "c9f34a1fb7a405c307f0b6dfec3b8525b6a44e58883b264d491f6062ae3fa829",
+  "partition": "2c5cfaf77cb2f204ea322fb4d184917f4b9a5ae96f2e61fc25dbe620f8b39c48",
+  "raw_ES": "ead01c6e2173c3925d897b5e160350e31c71ceb06e6c7f2d1a029d22b16f47f1",
+  "raw_YM": "77dd831221c15938a00dd0f6ea922c70f7cb2ee5353aecefe89bccc342adddfd"
+ },
+ "ledger_last_hash": "6b28b1652f000814ad430a9a5c822f1c8cb6f6459033bdb4b234a37c387d04b1",
+ "master_seed": 20261114,
+ "next_generation": 51,
+ "operator_share": {
+  "ATOM_ADD": 0.06,
+  "ATOM_DROP": 0.06,
+  "ATOM_SWAP": 0.15,
+  "ENSEMBLE": 0.03,
+  "ENTRY_TRANSPLANT": 0.08,
+  "EXIT_TRANSPLANT": 0.08,
+  "INVERT": 0.04,
+  "LIBRARY_PROBE": 0.04,
+  "LLM_HYPOTHESIS": 0.08,
+  "PARAM_STEP": 0.2,
+  "SIMPLIFY": 0.06,
+  "SLOT_CROSSOVER": 0.12
+ },
+ "operator_stats": {
+  "ATOM_ADD": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 0
+  },
+  "ATOM_DROP": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 0
+  },
+  "ATOM_SWAP": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 2
+  },
+  "ENSEMBLE": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 0
+  },
+  "ENTRY_TRANSPLANT": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 3
+  },
+  "EXIT_TRANSPLANT": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 3
+  },
+  "INVERT": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 0
+  },
+  "LIBRARY_PROBE": {
+   "improved": 6,
+   "passed": 0,
+   "uses": 41
+  },
+  "LLM_HYPOTHESIS": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 0
+  },
+  "PARAM_STEP": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 0
+  },
+  "SIMPLIFY": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 0
+  },
+  "SLOT_CROSSOVER": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 1
+  }
+ },
+ "placebo": false,
+ "seconds_stage1": 11.905424118041992,
+ "started_utc": "2026-11-14T17:14:44.755855Z",
+ "survey_cursor": 41,
+ "tier_counts": {
+  "bronze": 0,
+  "gold": 0,
+  "silver": 0
+ },
+ "updated_utc": "2026-11-14T17:14:48.701918Z",
+ "vault": {
+  "a_used": 0,
+  "b_used": 0,
+  "last_query_generation": null
+ },
+ "void_streak": [],
+ "workers": 4
+}

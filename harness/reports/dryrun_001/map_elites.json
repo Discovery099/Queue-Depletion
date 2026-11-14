@@ -1,0 +1,3022 @@
+{
+ "A": {
+  "bofail|3|0|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 25,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "f0016e70d41a11335662293b34e8efd10c866f2295cb29c22b0ac83ce2218e90",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.05,
+         "n": 8
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_false_break_prior_day",
+         "params": {
+          "q": 4
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000025",
+    "metrics": {
+     "alpha": 8.769551704334312,
+     "n": 598,
+     "pf": 1.1817878190417703,
+     "tpy": 211.53802816901407,
+     "win_rate": 0.4916387959866221
+    },
+    "score": 0.07996693849731602,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "close|0|0|market": {
+   "best": {
+    "complexity": 8,
+    "generation": 9,
+    "genome": {
+     "complexity": 8,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "e7855b8e5661ee545ae90a8eda081714318c641762e403b82a399cc16e827512",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_extreme",
+        "params": {
+         "n": 10
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_session_extreme",
+        "params": {
+         "buf": 0.1
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_close_extreme_fade",
+         "params": {
+          "m": 345
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000009",
+    "metrics": {
+     "alpha": -5.717566016073484,
+     "n": 67,
+     "pf": 0.5607394366197183,
+     "tpy": 22.715492957746477,
+     "win_rate": 0.3582089552238806
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "close|2|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 47,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "7c5af6d9faa4be8cdfdc84473bf2fc9c239936d148cfe9f12bc1781327d252e6",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_session_extreme",
+        "params": {
+         "buf": 0.1
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_late_vwap_cross",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000047",
+    "metrics": {
+     "alpha": 5.82911377609463,
+     "n": 225,
+     "pf": 1.224935376661743,
+     "tpy": 78.7943661971831,
+     "win_rate": 0.5377777777777778
+    },
+    "score": 0.10835709691625434,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "exhaust|1|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 49,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "0dcde24c24dff4d325c6fc821afe5890aed5db0383c357e8c195a8bbd0977a42",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.002
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_macd_histogram_fade",
+         "params": {
+          "n": 20
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000049",
+    "metrics": {
+     "alpha": -6.498090892653924,
+     "n": 337,
+     "pf": 0.6639381389931409,
+     "tpy": 108.60845070422535,
+     "win_rate": 0.3798219584569733
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "exhaust|1|2|market": {
+   "best": {
+    "complexity": 4,
+    "generation": 23,
+    "genome": {
+     "complexity": 4,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "e377ab43443ec223910898a06ab7e3143e3f1f548e0c4c6c75b05454c21990e8",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_session_mid",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_engulfing",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000023",
+    "metrics": {
+     "alpha": 8.776474854110639,
+     "n": 1841,
+     "pf": 0.8173526155175673,
+     "tpy": 614.738028169014,
+     "win_rate": 0.41499185225420965
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "exhaust|2|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 45,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "6c45c84027c357b64149f8f089d28ecbddef498f490d7e60c7e83f3e59c4f1ad",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_vwap",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.25,
+         "n": 12
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_key_reversal",
+         "params": {
+          "n": 20
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000045",
+    "metrics": {
+     "alpha": 50.0,
+     "n": 2,
+     "pf": 0.7508196721311475,
+     "tpy": 0.7098591549295774,
+     "win_rate": 0.5
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "intermarket|1|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 13,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "7c3730eb73f2ad88807305f7250c49a1ad9b54eb8a54a9f1dc7db50ebec1d78b",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_extreme",
+        "params": {
+         "n": 10
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 2.0
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_companion_leads_break",
+         "params": {
+          "n": 20
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000013",
+    "metrics": {
+     "alpha": 10.746200303403263,
+     "n": 161,
+     "pf": 0.8582171392762025,
+     "tpy": 54.65915492957746,
+     "win_rate": 0.577639751552795
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "intermarket|2|0|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 17,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "315335ae96b2c4dd0bd0fcae8d12b5a930e73cf1fd4a8d75db755fa15ba55609",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 2.0
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_divergence_at_session_extreme",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000017",
+    "metrics": {
+     "alpha": 0.7039231295224657,
+     "n": 216,
+     "pf": 0.8979414825951197,
+     "tpy": 61.047887323943655,
+     "win_rate": 0.47685185185185186
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "meanrev|1|1|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 5,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "82e7c5cf2f49377bff5a68c6d9341e8118308a3302083a91f28eca80db9b54d5",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 10,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_session_extreme",
+        "params": {
+         "buf": 0.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_bollinger_reentry",
+         "params": {
+          "k": 2.0,
+          "n": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000005",
+    "metrics": {
+     "alpha": -2.4066492414848817,
+     "n": 1106,
+     "pf": 0.7984840524168624,
+     "tpy": 389.00281690140844,
+     "win_rate": 0.4231464737793852
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 5,
+    "generation": 15,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "2d867aa9b050d7a718d1ce27a58a57bd02fc510427b42e4770d7d7dae3b44b5d",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_session_mid",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_signal_bar",
+        "params": {
+         "buf": 0.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_cycle_phase_hook",
+         "params": {
+          "lvl": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000015",
+    "metrics": {
+     "alpha": -1.175050660085869,
+     "n": 832,
+     "pf": 0.679055967633176,
+     "tpy": 294.5915492957746,
+     "win_rate": 0.3713942307692308
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "meanrev|2|0|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 7,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "54957ab40622cf5c2d23ae144ac70426a6156bc5566d9f0c2ba285621b5cd9ed",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_cci_hook",
+         "params": {
+          "lvl": 150,
+          "n": 20
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000007",
+    "metrics": {
+     "alpha": 0.1311014787498066,
+     "n": 453,
+     "pf": 0.9973314411760169,
+     "tpy": 157.5887323943662,
+     "win_rate": 0.46357615894039733
+    },
+    "score": 0.01811084678898972,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "meanrev|2|1|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 21,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "2588969af1a7f5034e4e86d51ecbaf4e3bb39ffc95c89aef7d31fa68b40e9a09",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 10,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_extreme",
+        "params": {
+         "n": 10
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 2.0
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_bollinger_reentry",
+         "params": {
+          "k": 2.0,
+          "n": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000005",
+    "metrics": {
+     "alpha": -3.6003299469045844,
+     "n": 959,
+     "pf": 0.8889778191813894,
+     "tpy": 340.0225352112676,
+     "win_rate": 0.42961418143899893
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "open|1|0|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 27,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "f181df03de88637a82551478b538ed109965afbaa130c72365dd8f08e0e9d95c",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_opposite_range_edge",
+        "params": {
+         "m": 60
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.004
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_first_bar_break",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000027",
+    "metrics": {
+     "alpha": 9.090909090909088,
+     "n": 22,
+     "pf": 0.7480499219968799,
+     "tpy": 6.388732394366197,
+     "win_rate": 0.5454545454545454
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "open|2|0|market": {
+   "best": {
+    "complexity": 8,
+    "generation": 37,
+    "genome": {
+     "complexity": 8,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "f2467e7a3678f8c2dca8a7583490c59968866718f20cc24dd7d2ffee96310bd3",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_session_extreme",
+        "params": {
+         "buf": 0.1
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_initial_balance_extension",
+         "params": {
+          "x": 0.5
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000037",
+    "metrics": {
+     "alpha": 7.840796613992495,
+     "n": 350,
+     "pf": 1.1004741573515844,
+     "tpy": 114.28732394366196,
+     "win_rate": 0.5485714285714286
+    },
+    "score": 0.1668095005381987,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "sweep|0|0|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 19,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "70b18f11b687d735b09890d4b0cba81e9462c15f5552a348ba85cb74cb4a6c06",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_signal_bar",
+        "params": {
+         "buf": 0.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_double_tap",
+         "params": {
+          "r": 3
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000019",
+    "metrics": {
+     "alpha": 0.0,
+     "n": 1,
+     "pf": 0.0,
+     "tpy": 0.0,
+     "win_rate": 0.0
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "sweep|1|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 35,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "b296025ebf7294da5c115179ea15c5e0c0d82430c19b23ad1e55e28c1f4c607c",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 0.75
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 2.0
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_htf_extreme_sweep",
+         "params": {
+          "k": 4
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000035",
+    "metrics": {
+     "alpha": -6.660335711719112,
+     "n": 161,
+     "pf": 0.6826138218755669,
+     "tpy": 26.264788732394365,
+     "win_rate": 0.5900621118012422
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "trend|1|1|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 1,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "19beb26e41f9434cbbcafbe067364b10f1f4246c66d6d8b1ff35cf2256712d26",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_close",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_signal_bar",
+        "params": {
+         "buf": 0.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_adaptive_momentum_cross",
+         "params": {
+          "lvl": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000001",
+    "metrics": {
+     "alpha": -1.3055790109453347,
+     "n": 1254,
+     "pf": 0.8338716095538631,
+     "tpy": 435.85352112676054,
+     "win_rate": 0.2926634768740032
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "trend|2|0|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 43,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "7fad121c767251f8d8d99adb681c5cb9b30a4861c1c7909d65773d69efe83c87",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.75
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_keltner_break",
+         "params": {
+          "k": 1.5,
+          "n": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000043",
+    "metrics": {
+     "alpha": 0.8335648791330919,
+     "n": 290,
+     "pf": 1.085963080719404,
+     "tpy": 94.4112676056338,
+     "win_rate": 0.5
+    },
+    "score": 0.05655693175374673,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "volcon|1|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 31,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "4eeef8dceb165c1c4aceb7e7f8f2368d5b4467efa7c3ce388a274c50c7a4ad7e",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_close",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_signal_bar",
+        "params": {
+         "buf": 0.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_coil_break",
+         "params": {
+          "k": 2.0,
+          "n": 8
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000011",
+    "metrics": {
+     "alpha": 13.23236892648804,
+     "n": 639,
+     "pf": 1.179515570934256,
+     "tpy": 221.47605633802814,
+     "win_rate": 0.3411580594679186
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 5,
+    "generation": 41,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "637db1bc5e3377a92ef82cb6d7436b7890ddb6cde57b4a858f9e03c677a6fc89",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 10,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_opposite_range_edge",
+        "params": {
+         "m": 30
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.002
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_inside_bar_break",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000041",
+    "metrics": {
+     "alpha": 5.534632034632031,
+     "n": 500,
+     "pf": 0.9944302237390975,
+     "tpy": 176.0450704225352,
+     "win_rate": 0.41
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "volcon|2|1|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 11,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "9745a864761b0b057108319897c09c76463863eac198027bb1b372309b6474dd",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 3.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.004
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_coil_break",
+         "params": {
+          "k": 2.0,
+          "n": 8
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000011",
+    "metrics": {
+     "alpha": 2.483216961584478,
+     "n": 1055,
+     "pf": 1.05004382368741,
+     "tpy": 366.28732394366193,
+     "win_rate": 0.3990521327014218
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "volexp|2|0|market": {
+   "best": {
+    "complexity": 8,
+    "generation": 3,
+    "genome": {
+     "complexity": 8,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "5c71faa971029ae6ad5915c0f0215bc921d583e2b472d851fcc236db58a7dad5",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_opposite_range_edge",
+        "params": {
+         "m": 60
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.25,
+         "n": 12
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_band_width_expansion",
+         "params": {
+          "m": 50,
+          "n": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000003",
+    "metrics": {
+     "alpha": 13.043478260869563,
+     "n": 23,
+     "pf": 0.6608876560332871,
+     "tpy": 6.388732394366197,
+     "win_rate": 0.5652173913043478
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 6,
+    "generation": 29,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "4100aaef54a7ace1dae6a7b5a6de5b028836896d6c0fc9af80d45b7cee238a19",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_session_extreme",
+        "params": {
+         "buf": 0.05
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_fractal_energy_break",
+         "params": {
+          "lvl": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000029",
+    "metrics": {
+     "alpha": -2.490077980096123,
+     "n": 145,
+     "pf": 0.6867041914858736,
+     "tpy": 50.4,
+     "win_rate": 0.42758620689655175
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  }
+ },
+ "B": {
+  "bofail|0|2|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 50,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "0365b21e4d00455b1c564b65171f21eb9de8760f4132fa063f9d440594e9609c",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_failed_break",
+         "params": {
+          "n": 20,
+          "q": 4
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000014",
+    "metrics": {
+     "alpha": 0.518009484795845,
+     "n": 2820,
+     "pf": 0.8205179062075242,
+     "tpy": 971.0873239436619,
+     "win_rate": 0.46702127659574466
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "bofail|1|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 2,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "d4a0e5d4d371df5a3bce41baa0142ec29f8e4705b9cc18c4422f0c9d69bc14c4",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_session_mid",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_session_extreme",
+        "params": {
+         "buf": 0.1
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_band_break_failure",
+         "params": {
+          "k": 2.0,
+          "n": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000002",
+    "metrics": {
+     "alpha": 11.151240820912134,
+     "n": 458,
+     "pf": 0.9779904951295966,
+     "tpy": 161.13802816901406,
+     "win_rate": 0.4519650655021834
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "bofail|1|2|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 24,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "668e57c7d5d68df68cbd78593c164a142f48f984e8cd2477c9292fdfded9be82",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_close",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_failed_break",
+         "params": {
+          "n": 20,
+          "q": 4
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000024",
+    "metrics": {
+     "alpha": 5.832430497201935,
+     "n": 1692,
+     "pf": 0.8914175539469267,
+     "tpy": 598.4112676056337,
+     "win_rate": 0.2641843971631206
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "close|0|0|market": {
+   "best": {
+    "complexity": 8,
+    "generation": 36,
+    "genome": {
+     "complexity": 8,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "5139ae6551561b2e1f700a5ff4d524946caa10f4f5a078fbf6f388b971cd8630",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_final_hour_thrust",
+         "params": {
+          "k": 2.0
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000014",
+    "metrics": {
+     "alpha": -2.760663495359561,
+     "n": 402,
+     "pf": 0.8219845134509459,
+     "tpy": 141.9718309859155,
+     "win_rate": 0.43781094527363185
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "close|1|0|market": {
+   "best": {
+    "complexity": 8,
+    "generation": 26,
+    "genome": {
+     "complexity": 8,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "ac1dbb4f38710cb265910224877f791cfc02e2793c67c5f04f7adde28d6bb2f0",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_opposite_range_edge",
+        "params": {
+         "m": 60
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_session_extreme",
+        "params": {
+         "buf": 0.05
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_final_hour_thrust",
+         "params": {
+          "k": 2.0
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000026",
+    "metrics": {
+     "alpha": 12.888888888888895,
+     "n": 150,
+     "pf": 1.2391141542740987,
+     "tpy": 48.98028169014084,
+     "win_rate": 0.5066666666666667
+    },
+    "score": 0.034950110399213544,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "exhaust|2|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 8,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "6a926fe0b7d132d248e4d024bcadab053d1ca4a71ee57da79bbba2fac1b27ef3",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_session_extreme",
+        "params": {
+         "buf": 0.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_climax_reversal",
+         "params": {
+          "n": 20
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000008",
+    "metrics": {
+     "alpha": 11.03448275862069,
+     "n": 30,
+     "pf": 0.8239479569018093,
+     "tpy": 9.228169014084507,
+     "win_rate": 0.5
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "intermarket|0|1|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 30,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "70a609e0bfde60847e0179588ad96e211202763a40f60f031ff270541627478c",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 0.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_companion_reclaim",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000014",
+    "metrics": {
+     "alpha": 2.3420584777811615,
+     "n": 881,
+     "pf": 0.7292871900826446,
+     "tpy": 290.33239436619715,
+     "win_rate": 0.6152099886492622
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "intermarket|1|1|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 14,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "81f636fb923b1588deffab4834befdfe76f2999510036c99db6892f55af9b4ed",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_companion_reclaim",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000014",
+    "metrics": {
+     "alpha": -1.4974202767013112,
+     "n": 1140,
+     "pf": 0.8556515241423266,
+     "tpy": 395.3915492957746,
+     "win_rate": 0.4649122807017544
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "intermarket|2|0|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 12,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "f9c7f7a8a97561d9653ce23b0a18755726472d534236e0b6f9f17b5bb0d5d3eb",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.004
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_companion_impulse",
+         "params": {
+          "k": 1.5
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000012",
+    "metrics": {
+     "alpha": -4.999999999999999,
+     "n": 40,
+     "pf": 0.7243694429323172,
+     "tpy": 13.487323943661972,
+     "win_rate": 0.425
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "meanrev|1|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 44,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "a43b0832c74ed011ee28c764ba7e0b9ee5b00f69e8357136bf8eb0dcff803263",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_vwap",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.75
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_keltner_reentry",
+         "params": {
+          "k": 2.0,
+          "n": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000044",
+    "metrics": {
+     "alpha": 4.5523645388965805,
+     "n": 349,
+     "pf": 0.9941454701815896,
+     "tpy": 122.8056338028169,
+     "win_rate": 0.5186246418338109
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "meanrev|1|1|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 42,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "6a36650e06b9e67ae4c7f2ea654b8bb2c6150244f3b63ea8194c4d4845a558c5",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_vwap",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.1,
+         "n": 8
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_internal_bar_strength",
+         "params": {
+          "thr": 0.2
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000042",
+    "metrics": {
+     "alpha": -4.41791985479184,
+     "n": 1208,
+     "pf": 0.7354110704541128,
+     "tpy": 426.625352112676,
+     "win_rate": 0.3435430463576159
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "meanrev|2|0|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 10,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "a8fa35881ca2a4543d8b04d9cf4fcf27e248d8a9eac36bd937e4f2220173e5b1",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_opposite_range_edge",
+        "params": {
+         "m": 15
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.002
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_cmo_hook",
+         "params": {
+          "lvl": 50,
+          "n": 14
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000010",
+    "metrics": {
+     "alpha": 12.667698870044914,
+     "n": 130,
+     "pf": 1.4561841676620697,
+     "tpy": 43.30140845070422,
+     "win_rate": 0.5307692307692308
+    },
+    "score": 0.06900559496749466,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "meanrev|3|0|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 38,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "7b2c2c7526c289712d13d1b654b3989bdd7368a61e778fd80904e0731b1607c0",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_extreme",
+        "params": {
+         "n": 40
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_cmo_hook",
+         "params": {
+          "lvl": 50,
+          "n": 14
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000010",
+    "metrics": {
+     "alpha": 1.8063032333452633,
+     "n": 184,
+     "pf": 1.1827292696320704,
+     "tpy": 62.46760563380281,
+     "win_rate": 0.45108695652173914
+    },
+    "score": 0.0008685962665042671,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "sweep|2|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 40,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "515f31f803168b1dbc5fd08c038c65a00929772d585c662858f9d9cb0f35b53c",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_session_mid",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_level",
+        "params": {
+         "buf": 0.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_initial_balance_sweep",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000040",
+    "metrics": {
+     "alpha": 14.874817237603487,
+     "n": 502,
+     "pf": 0.8251673877837132,
+     "tpy": 162.55774647887324,
+     "win_rate": 0.49203187250996017
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "trend|0|2|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 16,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "87a8c08ce29379f9a7f601e81b3f3538e22cd924c79e3d357194a1cabac45f96",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_signal_bar",
+        "params": {
+         "buf": 0.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_di_cross",
+         "params": {
+          "n": 14
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000016",
+    "metrics": {
+     "alpha": 0.5995002065820099,
+     "n": 2403,
+     "pf": 0.8748348725482646,
+     "tpy": 849.7014084507042,
+     "win_rate": 0.4914689970869746
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "trend|1|1|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 6,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "b28e389ab6bbbfccba49733e0f63cf1fcbcde94945a2a0ea66ecc06198604c31",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_extreme",
+        "params": {
+         "n": 20
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.003
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_cci_breakout",
+         "params": {
+          "n": 20
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000006",
+    "metrics": {
+     "alpha": 12.60319238437637,
+     "n": 711,
+     "pf": 0.9108387406873347,
+     "tpy": 247.74084507042252,
+     "win_rate": 0.5752461322081576
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "trend|1|2|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 34,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "e2c9b3929b8e3c8bee7c9faf608855f5749c33cc90acd0cb3681cd48ea4f40de",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_hma_turn",
+         "params": {
+          "n": 36
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000034",
+    "metrics": {
+     "alpha": 1.7921477832177513,
+     "n": 2753,
+     "pf": 0.9120545605612999,
+     "tpy": 967.5380281690141,
+     "win_rate": 0.5059934616781693
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "trend|2|0|market": {
+   "best": {
+    "complexity": 7,
+    "generation": 22,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "d97a586df6b2e2eaa8a7266fa6cd14c65d953475855161c800b7e5a344603556",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_extreme",
+        "params": {
+         "n": 40
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_ema_cross",
+         "params": {
+          "f": 13,
+          "s": 55
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000022",
+    "metrics": {
+     "alpha": 11.427315963606288,
+     "n": 104,
+     "pf": 1.2460945425035503,
+     "tpy": 36.91267605633803,
+     "win_rate": 0.5480769230769231
+    },
+    "score": 0.0521813705841268,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "trend|2|1|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 28,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "1bd901e28039b463cc48f98fb65cc2de7d72de848cdf021184572036a6d82aec",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.004
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_cci_breakout",
+         "params": {
+          "n": 20
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000012",
+    "metrics": {
+     "alpha": 1.3722048778941676,
+     "n": 1056,
+     "pf": 0.9895485329175844,
+     "tpy": 370.54647887323944,
+     "win_rate": 0.5
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "volcon|0|0|market": {
+   "best": {
+    "complexity": 6,
+    "generation": 48,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "dfe33935691fe1e0092eb0df608a640fa5f794e054569b2749484ef243c426c9",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_vwap",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_signal_bar",
+        "params": {
+         "buf": 0.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_low_volatility_break",
+         "params": {
+          "n": 20,
+          "q": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000048",
+    "metrics": {
+     "alpha": 22.22222222222222,
+     "n": 9,
+     "pf": 0.16216216216216217,
+     "tpy": 2.8394366197183096,
+     "win_rate": 0.2222222222222222
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  }
+ }
+}
