@@ -138,6 +138,8 @@ def evaluate_slice(g, runs, folds, n_twins, seed, tier=BR, full_thresholds=False
     gates.append(gate("wf.worst_fold_win_rate_gap_pts", 100 * (float(np.median(wrs)) - min(wrs)), G["walk_forward"]["worst_fold_wr_gap_pts"], "<="))
     eff, is_m, oos_m = wf_efficiency(tr_all, folds)
     gates.append(gate("wf.efficiency", eff, G["walk_forward"]["efficiency_min"]))
+    gates.append(gate("wf.in_sample_expectancy_costs", is_m, 0, ">",
+                      "tightening (generation 15,009): the record before each test fold, which the search did not select on, must be profitable"))
     tot = sum(r["net_usd"] for r in ft)
     max_share = max(r["net_usd"] for r in ft) / tot if tot > 0 else 9.0
     gates.append(gate("wf.max_fold_profit_share", max_share, min(0.99, G["walk_forward"]["max_fold_profit_share"] / share), "<="))

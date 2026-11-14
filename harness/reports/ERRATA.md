@@ -33,3 +33,11 @@ Every entry states what happened, what it could have affected, and what was done
    and proposals became slow. The parameter part is now total grid steps divided by 8: one step is exactly 0.05 (novel), three steps
    are 0.15 (the "same strategy" limit used by the archive and the Vault Keeper). No verdict of an earlier generation changes; the
    search before this point simply under-used parameter refinement.
+9. **Engine 1.2.0 to 1.3.0 (after generation 15,008).** The rolling simple average now sums its window afresh for every bar instead of
+   keeping a running sum. The running sum accumulated rounding error, so two values that should tie could compare unequal; the
+   independent Pine replay found this on 3 of 196 atoms (1 to 3 bars each out of about 3,900). Results of earlier generations can
+   differ on such tie bars only. The hall of fame was empty. Also in 1.3.0: a history reference on a constant is the constant itself
+   (Pine has no `50.0[1]`); the reproducibility self-test therefore covers generations sealed under 1.3.0 only.
+10. **Behavioural duplicates in the archive.** Parameter steps that change nothing in practice (for example a longer cool-down that
+    never binds) produce genomes with different identifiers and identical trades. They are counted as separate trials (conservative)
+    but crowd the leader list; the behavioural-distance rule of SPEC 9.7 is not yet enforced at proposal time.

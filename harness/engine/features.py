@@ -14,21 +14,19 @@ from numba import njit
 
 @njit(cache=True)
 def sma(x, n):
+    """Simple average of the last n values, summed afresh for every bar (oldest first).  A running sum
+    would be faster but accumulates rounding error, which flips comparisons when two values tie."""
     m = len(x)
     out = np.full(m, np.nan)
-    s = 0.0
-    bad = 0
-    for i in range(m):
-        if np.isnan(x[i]):
-            bad += 1
-        else:
-            s += x[i]
-        if i >= n:
-            if np.isnan(x[i - n]):
-                bad -= 1
-            else:
-                s -= x[i - n]
-        if i >= n - 1 and bad == 0:
+    for i in range(n - 1, m):
+        s = 0.0
+        ok = True
+        for j in range(i - n + 1, i + 1):
+            if np.isnan(x[j]):
+                ok = False
+                break
+            s += x[j]
+        if ok:
             out[i] = s / n
     return out
 

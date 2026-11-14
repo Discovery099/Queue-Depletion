@@ -1,0 +1,1058 @@
+{
+ "atoms_checked": 196,
+ "failures": {
+  "tr_cci_breakout": {
+   "match": false,
+   "mismatches": [
+    {
+     "count": 1,
+     "first_bar": 3431,
+     "pine_name": "x33",
+     "series": "sigS"
+    }
+   ],
+   "trades": 194
+  },
+  "tr_stochastic_cross": {
+   "match": false,
+   "mismatches": [
+    {
+     "count": 3,
+     "first_bar": 3720,
+     "pine_name": "x1",
+     "series": "sigL"
+    },
+    {
+     "count": 1,
+     "first_bar": 3429,
+     "pine_name": "x37",
+     "series": "sigS"
+    }
+   ],
+   "trades": 214
+  },
+  "tr_stochastic_hook": {
+   "match": false,
+   "mismatches": [
+    {
+     "count": 2,
+     "first_bar": 3099,
+     "pine_name": "x35",
+     "series": "sigS"
+    }
+   ],
+   "trades": 167
+  }
+ },
+ "matching": 193,
+ "results": {
+  "f_adx_high": {
+   "match": true,
+   "mismatches": [],
+   "trades": 89
+  },
+  "f_adx_low": {
+   "match": true,
+   "mismatches": [],
+   "trades": 71
+  },
+  "f_atr_rank_high": {
+   "match": true,
+   "mismatches": [],
+   "trades": 54
+  },
+  "f_atr_rank_low": {
+   "match": true,
+   "mismatches": [],
+   "trades": 45
+  },
+  "f_body_ratio": {
+   "match": true,
+   "mismatches": [],
+   "trades": 120
+  },
+  "f_choppy": {
+   "match": true,
+   "mismatches": [],
+   "trades": 50
+  },
+  "f_close_location": {
+   "match": true,
+   "mismatches": [],
+   "trades": 138
+  },
+  "f_companion_confirms": {
+   "match": true,
+   "mismatches": [],
+   "trades": 128
+  },
+  "f_directional": {
+   "match": true,
+   "mismatches": [],
+   "trades": 18
+  },
+  "f_htf_agrees": {
+   "match": true,
+   "mismatches": [],
+   "trades": 132
+  },
+  "f_inside_prior_day_range": {
+   "match": true,
+   "mismatches": [],
+   "trades": 51
+  },
+  "f_midday_only": {
+   "match": true,
+   "mismatches": [],
+   "trades": 25
+  },
+  "f_not_extended_from_vwap": {
+   "match": true,
+   "mismatches": [],
+   "trades": 67
+  },
+  "f_not_midday": {
+   "match": true,
+   "mismatches": [],
+   "trades": 131
+  },
+  "f_outside_prior_day_range": {
+   "match": true,
+   "mismatches": [],
+   "trades": 108
+  },
+  "f_relative_volume_high": {
+   "match": true,
+   "mismatches": [],
+   "trades": 53
+  },
+  "f_relative_volume_low": {
+   "match": true,
+   "mismatches": [],
+   "trades": 18
+  },
+  "f_room_to_session_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 4
+  },
+  "f_rsi_not_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 97
+  },
+  "f_session_range_developed": {
+   "match": true,
+   "mismatches": [],
+   "trades": 111
+  },
+  "f_session_segment": {
+   "match": true,
+   "mismatches": [],
+   "trades": 31
+  },
+  "f_signal_bar_not_huge": {
+   "match": true,
+   "mismatches": [],
+   "trades": 107
+  },
+  "f_skip_open": {
+   "match": true,
+   "mismatches": [],
+   "trades": 100
+  },
+  "f_small_gap": {
+   "match": true,
+   "mismatches": [],
+   "trades": 33
+  },
+  "f_squeeze_on": {
+   "match": true,
+   "mismatches": [],
+   "trades": 19
+  },
+  "f_stop_before_close": {
+   "match": true,
+   "mismatches": [],
+   "trades": 122
+  },
+  "f_volatility_contracting": {
+   "match": true,
+   "mismatches": [],
+   "trades": 37
+  },
+  "f_volatility_expanding": {
+   "match": true,
+   "mismatches": [],
+   "trades": 48
+  },
+  "f_volume_trend_up": {
+   "match": true,
+   "mismatches": [],
+   "trades": 93
+  },
+  "f_weekday_block": {
+   "match": true,
+   "mismatches": [],
+   "trades": 104
+  },
+  "loc_bollinger_outer": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_confirmed_swing": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_ema_distance": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_htf_bar_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_initial_balance_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 1
+  },
+  "loc_keltner_outer": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_opening_range_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_prior_close": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_prior_day_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 2
+  },
+  "loc_prior_day_mid": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_round_number": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_rsi_zone": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_session_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_session_range_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_stochastic_zone": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_unfilled_gap": {
+   "match": true,
+   "mismatches": [],
+   "trades": 11
+  },
+  "loc_vwap": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_vwap_band": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "loc_vwap_distance": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "r_stop_atr": {
+   "match": true,
+   "mismatches": [],
+   "trades": 135
+  },
+  "r_stop_level": {
+   "match": true,
+   "mismatches": [],
+   "trades": 151
+  },
+  "r_stop_percent": {
+   "match": true,
+   "mismatches": [],
+   "trades": 126
+  },
+  "r_stop_session_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 76
+  },
+  "r_stop_signal_bar": {
+   "match": true,
+   "mismatches": [],
+   "trades": 127
+  },
+  "r_stop_swing": {
+   "match": true,
+   "mismatches": [],
+   "trades": 119
+  },
+  "st_adx_trend": {
+   "match": true,
+   "mismatches": [],
+   "trades": 100
+  },
+  "st_both_vwap_side": {
+   "match": true,
+   "mismatches": [],
+   "trades": 118
+  },
+  "st_donchian_mid": {
+   "match": true,
+   "mismatches": [],
+   "trades": 131
+  },
+  "st_efficiency_trend": {
+   "match": true,
+   "mismatches": [],
+   "trades": 67
+  },
+  "st_ema_slope": {
+   "match": true,
+   "mismatches": [],
+   "trades": 128
+  },
+  "st_ema_stack": {
+   "match": true,
+   "mismatches": [],
+   "trades": 119
+  },
+  "st_first_half_hour_sign_late": {
+   "match": true,
+   "mismatches": [],
+   "trades": 31
+  },
+  "st_first_minutes_direction": {
+   "match": true,
+   "mismatches": [],
+   "trades": 47
+  },
+  "st_gap_direction": {
+   "match": true,
+   "mismatches": [],
+   "trades": 86
+  },
+  "st_hma_slope": {
+   "match": true,
+   "mismatches": [],
+   "trades": 156
+  },
+  "st_htf_bar_dir": {
+   "match": true,
+   "mismatches": [],
+   "trades": 109
+  },
+  "st_htf_ema": {
+   "match": true,
+   "mismatches": [],
+   "trades": 118
+  },
+  "st_htf_momentum": {
+   "match": true,
+   "mismatches": [],
+   "trades": 108
+  },
+  "st_ichimoku_cloud": {
+   "match": true,
+   "mismatches": [],
+   "trades": 117
+  },
+  "st_late_session_trend": {
+   "match": true,
+   "mismatches": [],
+   "trades": 20
+  },
+  "st_macd_side": {
+   "match": true,
+   "mismatches": [],
+   "trades": 149
+  },
+  "st_opening_range_side": {
+   "match": true,
+   "mismatches": [],
+   "trades": 83
+  },
+  "st_other_instrument_trend": {
+   "match": true,
+   "mismatches": [],
+   "trades": 146
+  },
+  "st_price_vs_ema": {
+   "match": true,
+   "mismatches": [],
+   "trades": 132
+  },
+  "st_prior_close_side": {
+   "match": true,
+   "mismatches": [],
+   "trades": 117
+  },
+  "st_relative_strength": {
+   "match": true,
+   "mismatches": [],
+   "trades": 69
+  },
+  "st_rsi_regime": {
+   "match": true,
+   "mismatches": [],
+   "trades": 119
+  },
+  "st_session_open_side": {
+   "match": true,
+   "mismatches": [],
+   "trades": 119
+  },
+  "st_session_overextended": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "st_session_range_position": {
+   "match": true,
+   "mismatches": [],
+   "trades": 123
+  },
+  "st_spread_zscore": {
+   "match": true,
+   "mismatches": [],
+   "trades": 22
+  },
+  "st_supertrend": {
+   "match": true,
+   "mismatches": [],
+   "trades": 118
+  },
+  "st_swing_structure": {
+   "match": true,
+   "mismatches": [],
+   "trades": 51
+  },
+  "st_trail_regime": {
+   "match": true,
+   "mismatches": [],
+   "trades": 129
+  },
+  "st_vwap_side": {
+   "match": true,
+   "mismatches": [],
+   "trades": 154
+  },
+  "tr_band_break_failure": {
+   "match": true,
+   "mismatches": [],
+   "trades": 66
+  },
+  "tr_band_width_expansion": {
+   "match": true,
+   "mismatches": [],
+   "trades": 59
+  },
+  "tr_bollinger_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 100
+  },
+  "tr_bollinger_reentry": {
+   "match": true,
+   "mismatches": [],
+   "trades": 117
+  },
+  "tr_cci_breakout": {
+   "match": false,
+   "mismatches": [
+    {
+     "count": 1,
+     "first_bar": 3431,
+     "pine_name": "x33",
+     "series": "sigS"
+    }
+   ],
+   "trades": 194
+  },
+  "tr_cci_hook": {
+   "match": true,
+   "mismatches": [],
+   "trades": 145
+  },
+  "tr_climax_reversal": {
+   "match": true,
+   "mismatches": [],
+   "trades": 12
+  },
+  "tr_close_extreme_fade": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "tr_cmo_hook": {
+   "match": true,
+   "mismatches": [],
+   "trades": 107
+  },
+  "tr_coil_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 115
+  },
+  "tr_companion_impulse": {
+   "match": true,
+   "mismatches": [],
+   "trades": 7
+  },
+  "tr_companion_leads_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 83
+  },
+  "tr_companion_reclaim": {
+   "match": true,
+   "mismatches": [],
+   "trades": 59
+  },
+  "tr_di_cross": {
+   "match": true,
+   "mismatches": [],
+   "trades": 146
+  },
+  "tr_divergence_at_session_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 47
+  },
+  "tr_donchian_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 127
+  },
+  "tr_double_tap": {
+   "match": true,
+   "mismatches": [],
+   "trades": 123
+  },
+  "tr_ema_cross": {
+   "match": true,
+   "mismatches": [],
+   "trades": 64
+  },
+  "tr_engulfing": {
+   "match": true,
+   "mismatches": [],
+   "trades": 196
+  },
+  "tr_failed_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 159
+  },
+  "tr_false_break_prior_day": {
+   "match": true,
+   "mismatches": [],
+   "trades": 89
+  },
+  "tr_final_hour_thrust": {
+   "match": true,
+   "mismatches": [],
+   "trades": 25
+  },
+  "tr_first_bar_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 47
+  },
+  "tr_gap_and_go": {
+   "match": true,
+   "mismatches": [],
+   "trades": 14
+  },
+  "tr_gap_fade": {
+   "match": true,
+   "mismatches": [],
+   "trades": 46
+  },
+  "tr_hma_turn": {
+   "match": true,
+   "mismatches": [],
+   "trades": 162
+  },
+  "tr_htf_extreme_sweep": {
+   "match": true,
+   "mismatches": [],
+   "trades": 194
+  },
+  "tr_initial_balance_extension": {
+   "match": true,
+   "mismatches": [],
+   "trades": 31
+  },
+  "tr_initial_balance_sweep": {
+   "match": true,
+   "mismatches": [],
+   "trades": 71
+  },
+  "tr_inside_bar_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 144
+  },
+  "tr_internal_bar_strength": {
+   "match": true,
+   "mismatches": [],
+   "trades": 214
+  },
+  "tr_keltner_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 157
+  },
+  "tr_keltner_reentry": {
+   "match": true,
+   "mismatches": [],
+   "trades": 100
+  },
+  "tr_key_reversal": {
+   "match": true,
+   "mismatches": [],
+   "trades": 19
+  },
+  "tr_late_session_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 46
+  },
+  "tr_late_vwap_cross": {
+   "match": true,
+   "mismatches": [],
+   "trades": 26
+  },
+  "tr_low_volatility_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 71
+  },
+  "tr_macd_histogram_fade": {
+   "match": true,
+   "mismatches": [],
+   "trades": 52
+  },
+  "tr_macd_signal_cross": {
+   "match": true,
+   "mismatches": [],
+   "trades": 153
+  },
+  "tr_macd_zero_cross": {
+   "match": true,
+   "mismatches": [],
+   "trades": 80
+  },
+  "tr_mfi_hook": {
+   "match": true,
+   "mismatches": [],
+   "trades": 96
+  },
+  "tr_momentum_bar": {
+   "match": true,
+   "mismatches": [],
+   "trades": 17
+  },
+  "tr_narrow_range_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 170
+  },
+  "tr_new_session_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 74
+  },
+  "tr_opening_drive": {
+   "match": true,
+   "mismatches": [],
+   "trades": 13
+  },
+  "tr_opening_range_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 85
+  },
+  "tr_opening_range_failure": {
+   "match": true,
+   "mismatches": [],
+   "trades": 111
+  },
+  "tr_opening_range_retest": {
+   "match": true,
+   "mismatches": [],
+   "trades": 70
+  },
+  "tr_outside_bar_reversal": {
+   "match": true,
+   "mismatches": [],
+   "trades": 68
+  },
+  "tr_pin_bar": {
+   "match": true,
+   "mismatches": [],
+   "trades": 99
+  },
+  "tr_price_ema_cross": {
+   "match": true,
+   "mismatches": [],
+   "trades": 115
+  },
+  "tr_pullback_depth": {
+   "match": true,
+   "mismatches": [],
+   "trades": 141
+  },
+  "tr_pullback_resume": {
+   "match": true,
+   "mismatches": [],
+   "trades": 190
+  },
+  "tr_range_exhaustion_turn": {
+   "match": true,
+   "mismatches": [],
+   "trades": 11
+  },
+  "tr_range_expansion_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 149
+  },
+  "tr_range_tail_turn": {
+   "match": true,
+   "mismatches": [],
+   "trades": 56
+  },
+  "tr_relative_strength_turn": {
+   "match": true,
+   "mismatches": [],
+   "trades": 53
+  },
+  "tr_roc_thrust": {
+   "match": true,
+   "mismatches": [],
+   "trades": 161
+  },
+  "tr_round_number_reject": {
+   "match": true,
+   "mismatches": [],
+   "trades": 82
+  },
+  "tr_rsi2_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 188
+  },
+  "tr_rsi_divergence": {
+   "match": true,
+   "mismatches": [],
+   "trades": 50
+  },
+  "tr_rsi_hook": {
+   "match": true,
+   "mismatches": [],
+   "trades": 108
+  },
+  "tr_rsi_midline_cross": {
+   "match": true,
+   "mismatches": [],
+   "trades": 130
+  },
+  "tr_run_then_reverse": {
+   "match": true,
+   "mismatches": [],
+   "trades": 137
+  },
+  "tr_snapback": {
+   "match": true,
+   "mismatches": [],
+   "trades": 98
+  },
+  "tr_squeeze_release": {
+   "match": true,
+   "mismatches": [],
+   "trades": 88
+  },
+  "tr_stochastic_cross": {
+   "match": false,
+   "mismatches": [
+    {
+     "count": 3,
+     "first_bar": 3720,
+     "pine_name": "x1",
+     "series": "sigL"
+    },
+    {
+     "count": 1,
+     "first_bar": 3429,
+     "pine_name": "x37",
+     "series": "sigS"
+    }
+   ],
+   "trades": 214
+  },
+  "tr_stochastic_hook": {
+   "match": false,
+   "mismatches": [
+    {
+     "count": 2,
+     "first_bar": 3099,
+     "pine_name": "x35",
+     "series": "sigS"
+    }
+   ],
+   "trades": 167
+  },
+  "tr_supertrend_flip": {
+   "match": true,
+   "mismatches": [],
+   "trades": 63
+  },
+  "tr_sweep_n_bar": {
+   "match": true,
+   "mismatches": [],
+   "trades": 167
+  },
+  "tr_sweep_opening_range": {
+   "match": true,
+   "mismatches": [],
+   "trades": 103
+  },
+  "tr_sweep_prior_close": {
+   "match": true,
+   "mismatches": [],
+   "trades": 28
+  },
+  "tr_sweep_prior_day": {
+   "match": true,
+   "mismatches": [],
+   "trades": 53
+  },
+  "tr_sweep_session_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 90
+  },
+  "tr_sweep_swing": {
+   "match": true,
+   "mismatches": [],
+   "trades": 143
+  },
+  "tr_swing_break": {
+   "match": true,
+   "mismatches": [],
+   "trades": 153
+  },
+  "tr_swing_break_failure": {
+   "match": true,
+   "mismatches": [],
+   "trades": 189
+  },
+  "tr_three_bar_run": {
+   "match": true,
+   "mismatches": [],
+   "trades": 211
+  },
+  "tr_trail_flip": {
+   "match": true,
+   "mismatches": [],
+   "trades": 89
+  },
+  "tr_true_range_spike": {
+   "match": true,
+   "mismatches": [],
+   "trades": 43
+  },
+  "tr_turtle_soup": {
+   "match": true,
+   "mismatches": [],
+   "trades": 48
+  },
+  "tr_two_bar_reversal": {
+   "match": true,
+   "mismatches": [],
+   "trades": 82
+  },
+  "tr_volume_climax_follow": {
+   "match": true,
+   "mismatches": [],
+   "trades": 90
+  },
+  "tr_volume_dryup_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 19
+  },
+  "tr_vwap_band_reentry": {
+   "match": true,
+   "mismatches": [],
+   "trades": 81
+  },
+  "tr_vwap_cross": {
+   "match": true,
+   "mismatches": [],
+   "trades": 106
+  },
+  "tr_vwap_retest_hold": {
+   "match": true,
+   "mismatches": [],
+   "trades": 96
+  },
+  "tr_vwap_stretch_turn": {
+   "match": true,
+   "mismatches": [],
+   "trades": 61
+  },
+  "tr_wick_rejection": {
+   "match": true,
+   "mismatches": [],
+   "trades": 80
+  },
+  "tr_williams_hook": {
+   "match": true,
+   "mismatches": [],
+   "trades": 211
+  },
+  "tr_zscore_revert": {
+   "match": true,
+   "mismatches": [],
+   "trades": 123
+  },
+  "x_breakeven": {
+   "match": true,
+   "mismatches": [],
+   "trades": 113
+  },
+  "x_invalidate_ema": {
+   "match": true,
+   "mismatches": [],
+   "trades": 153
+  },
+  "x_invalidate_macd": {
+   "match": true,
+   "mismatches": [],
+   "trades": 130
+  },
+  "x_invalidate_rsi_mid": {
+   "match": true,
+   "mismatches": [],
+   "trades": 135
+  },
+  "x_invalidate_structure": {
+   "match": true,
+   "mismatches": [],
+   "trades": 109
+  },
+  "x_invalidate_supertrend": {
+   "match": true,
+   "mismatches": [],
+   "trades": 145
+  },
+  "x_invalidate_trail_flip": {
+   "match": true,
+   "mismatches": [],
+   "trades": 147
+  },
+  "x_invalidate_two_closes": {
+   "match": true,
+   "mismatches": [],
+   "trades": 142
+  },
+  "x_invalidate_vwap": {
+   "match": true,
+   "mismatches": [],
+   "trades": 128
+  },
+  "x_partial": {
+   "match": true,
+   "mismatches": [],
+   "trades": 127
+  },
+  "x_target_atr": {
+   "match": true,
+   "mismatches": [],
+   "trades": 148
+  },
+  "x_target_location_level": {
+   "match": true,
+   "mismatches": [],
+   "trades": 145
+  },
+  "x_target_opposite_range_edge": {
+   "match": true,
+   "mismatches": [],
+   "trades": 19
+  },
+  "x_target_prior_close": {
+   "match": true,
+   "mismatches": [],
+   "trades": 12
+  },
+  "x_target_prior_extreme": {
+   "match": true,
+   "mismatches": [],
+   "trades": 0
+  },
+  "x_target_r": {
+   "match": true,
+   "mismatches": [],
+   "trades": 135
+  },
+  "x_target_session_mid": {
+   "match": true,
+   "mismatches": [],
+   "trades": 4
+  },
+  "x_target_vwap": {
+   "match": true,
+   "mismatches": [],
+   "trades": 3
+  },
+  "x_time_stop": {
+   "match": true,
+   "mismatches": [],
+   "trades": 114
+  },
+  "x_trail_r": {
+   "match": true,
+   "mismatches": [],
+   "trades": 127
+  }
+ },
+ "scope": "signal layer replayed from Pine text; 20 sessions per instrument at 5 minutes"
+}

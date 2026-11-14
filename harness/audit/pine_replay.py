@@ -174,6 +174,14 @@ def order_inputs(src):
 
 
 # ------------------------------------------------------------------ streaming built-ins (own implementations)
+def seqsum(it):
+    """Plain left-to-right float addition (Python's built-in sum uses compensated summation for floats)."""
+    s = 0.0
+    for v in it:
+        s += v
+    return s
+
+
 class Roll:
     def __init__(self, n):
         self.n, self.q = int(n), deque(maxlen=int(n))
@@ -185,7 +193,7 @@ class Roll:
 
 def _sma(st, x, n):
     st[0] = st[0] or Roll(n)
-    return sum(st[0].q) / st[0].n if st[0].push(x) else NAN
+    return seqsum(st[0].q) / st[0].n if st[0].push(x) else NAN
 
 
 def _recursive(st, x, n, alpha):
@@ -209,7 +217,7 @@ def _recursive(st, x, n, alpha):
 
 def _wma_of(r):
     n = r.n
-    return sum(v * (i + 1) for i, v in enumerate(r.q)) / (n * (n + 1) / 2.0)
+    return seqsum(v * (n - j) for j, v in enumerate(reversed(r.q))) / (n * (n + 1) / 2.0)
 
 
 def _wma(st, x, n):
@@ -231,16 +239,16 @@ def _stdev(st, x, n):
     st[0] = st[0] or Roll(n)
     if not st[0].push(x):
         return NAN
-    mu = sum(st[0].q) / st[0].n
-    return math.sqrt(sum((v - mu) ** 2 for v in st[0].q) / st[0].n)
+    mu = seqsum(st[0].q) / st[0].n
+    return math.sqrt(seqsum((v - mu) ** 2 for v in st[0].q) / st[0].n)
 
 
 def _dev(st, x, n):
     st[0] = st[0] or Roll(n)
     if not st[0].push(x):
         return NAN
-    mu = sum(st[0].q) / st[0].n
-    return sum(abs(v - mu) for v in st[0].q) / st[0].n
+    mu = seqsum(st[0].q) / st[0].n
+    return seqsum(abs(v - mu) for v in st[0].q) / st[0].n
 
 
 def _highest(st, x, n):
@@ -255,7 +263,7 @@ def _lowest(st, x, n):
 
 def _sum(st, x, n):
     st[0] = st[0] or Roll(n)
-    return sum(st[0].q) if st[0].push(x) else NAN
+    return seqsum(st[0].q) / st[0].n * st[0].n if st[0].push(x) else NAN
 
 
 def _prank(st, x, n):
@@ -334,7 +342,7 @@ class Replay:
 
     def ev(self, e):
         k = e[0]
-        if k == "num":
+        if k == "num" or k == "str":
             return e[1]
         if k == "var":
             return self.var(e[1])

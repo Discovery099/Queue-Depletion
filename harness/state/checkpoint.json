@@ -1,65 +1,65 @@
 {
  "batch": 16,
- "best_generation": 7677,
+ "best_generation": 14703,
  "best_score": {
-  "A": 0.49745846281190914,
+  "A": 0.534710507850965,
   "B": 0.5467725852625576
  },
  "complexity_ceiling": 22,
  "counts": {
   "confirmed": 0,
   "error": 0,
-  "stage1_fail": 8208,
+  "stage1_fail": 15008,
   "stage1_pass": 0,
   "void": 0
  },
  "decoy": null,
  "engine_version": "1.1.0",
- "epoch": 16,
+ "epoch": 30,
  "frozen": {
   "costs": "c9f34a1fb7a405c307f0b6dfec3b8525b6a44e58883b264d491f6062ae3fa829",
   "partition": "2c5cfaf77cb2f204ea322fb4d184917f4b9a5ae96f2e61fc25dbe620f8b39c48",
   "raw_ES": "ead01c6e2173c3925d897b5e160350e31c71ceb06e6c7f2d1a029d22b16f47f1",
   "raw_YM": "77dd831221c15938a00dd0f6ea922c70f7cb2ee5353aecefe89bccc342adddfd"
  },
- "ledger_last_hash": "6d069c9faf9d9954d9f4ab8bf788329114c9cb6a279a0eccaeb19eb53cc9c6b8",
+ "ledger_last_hash": "450dfde9449947277b23fab5ec327cd5b8f6734608357f838012dab03a8c275c",
  "llm_queue_cursor": 10,
  "master_seed": 20261114,
  "n_eff": {
-  "n_eff": 9663,
-  "raw": 16100,
-  "var_sharpe": 0.009307312940556835
+  "n_eff": 18061,
+  "raw": 30100,
+  "var_sharpe": 0.012222163056171362
  },
- "next_generation": 8209,
+ "next_generation": 15009,
  "operator_share": {
-  "ATOM_ADD": 0.05964056654796041,
-  "ATOM_DROP": 0.05988818019622545,
-  "ATOM_SWAP": 0.1375821282535477,
-  "ENSEMBLE": 0.04651213994935277,
-  "ENTRY_TRANSPLANT": 0.07870911945524277,
-  "EXIT_TRANSPLANT": 0.07616604735615938,
-  "INVERT": 0.03344967544914084,
-  "LIBRARY_PROBE": 0.03601406966947884,
-  "LLM_HYPOTHESIS": 0.09302427989870554,
-  "PARAM_STEP": 0.19975319188877957,
-  "SIMPLIFY": 0.06058303942982924,
-  "SLOT_CROSSOVER": 0.11867756190557747
+  "ATOM_ADD": 0.05681547428807201,
+  "ATOM_DROP": 0.058514024088681574,
+  "ATOM_SWAP": 0.13800999977195821,
+  "ENSEMBLE": 0.04636357099922857,
+  "ENTRY_TRANSPLANT": 0.07797056456214353,
+  "EXIT_TRANSPLANT": 0.07541382682577845,
+  "INVERT": 0.03292048208332788,
+  "LIBRARY_PROBE": 0.03588759478559263,
+  "LLM_HYPOTHESIS": 0.09272714199845714,
+  "PARAM_STEP": 0.2086902144743388,
+  "SIMPLIFY": 0.058603553743024915,
+  "SLOT_CROSSOVER": 0.11808355237939637
  },
  "operator_stats": {
   "ATOM_ADD": {
-   "improved": 70,
-   "passed": 0,
-   "uses": 514
-  },
-  "ATOM_DROP": {
-   "improved": 21,
-   "passed": 0,
-   "uses": 155
-  },
-  "ATOM_SWAP": {
    "improved": 116,
    "passed": 0,
-   "uses": 1222
+   "uses": 1036
+  },
+  "ATOM_DROP": {
+   "improved": 37,
+   "passed": 0,
+   "uses": 288
+  },
+  "ATOM_SWAP": {
+   "improved": 226,
+   "passed": 0,
+   "uses": 2380
   },
   "ENSEMBLE": {
    "improved": 0,
@@ -67,24 +67,24 @@
    "uses": 0
   },
   "ENTRY_TRANSPLANT": {
-   "improved": 86,
+   "improved": 161,
    "passed": 0,
-   "uses": 653
+   "uses": 1238
   },
   "EXIT_TRANSPLANT": {
-   "improved": 65,
+   "improved": 127,
    "passed": 0,
-   "uses": 574
+   "uses": 1162
   },
   "INVERT": {
-   "improved": 9,
+   "improved": 14,
    "passed": 0,
-   "uses": 256
+   "uses": 459
   },
   "LIBRARY_PROBE": {
-   "improved": 243,
+   "improved": 366,
    "passed": 0,
-   "uses": 3035
+   "uses": 4559
   },
   "LLM_HYPOTHESIS": {
    "improved": 2,
@@ -92,23 +92,23 @@
    "uses": 10
   },
   "PARAM_STEP": {
-   "improved": 134,
+   "improved": 349,
    "passed": 0,
-   "uses": 896
+   "uses": 1998
   },
   "SIMPLIFY": {
-   "improved": 17,
+   "improved": 32,
    "passed": 0,
-   "uses": 121
+   "uses": 249
   },
   "SLOT_CROSSOVER": {
-   "improved": 103,
+   "improved": 222,
    "passed": 0,
-   "uses": 772
+   "uses": 1629
   }
  },
  "placebo": false,
- "seconds_stage1": 1719.4323937892914,
+ "seconds_stage1": 3154.8798933029175,
  "started_utc": "2026-11-14T17:25:05.788848Z",
  "survey_cursor": 205,
  "tier_counts": {
@@ -116,7 +116,7 @@
   "gold": 0,
   "silver": 0
  },
- "updated_utc": "2026-11-14T17:40:27.011129Z",
+ "updated_utc": "2026-11-14T17:54:15.251259Z",
  "vault": {
   "a_used": 0,
   "b_used": 0,
