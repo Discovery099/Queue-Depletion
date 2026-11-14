@@ -1,0 +1,23 @@
+{
+ "note": "Frozen in Generation 0 (SPEC 7.5, Article 11). Strategies cannot alter these.",
+ "quantity": 1,
+ "min_bar_volume_multiple_of_qty": 20,
+ "levels": {
+  "base":   {"commission_per_side_usd": 1.25, "slippage_ticks_per_side": 1, "edge_extra_ticks": 0, "edge_minutes": 0},
+  "stress": {"commission_per_side_usd": 2.50, "slippage_ticks_per_side": 2, "edge_extra_ticks": 0, "edge_minutes": 0},
+  "shock":  {"commission_per_side_usd": 2.50, "slippage_ticks_per_side": 3, "edge_extra_ticks": 1, "edge_minutes": 10}
+ },
+ "fill_rules": {
+  "market": "next bar open plus slippage against the order",
+  "stop": "triggered when the bar trades at the stop price; fills at stop plus slippage against, or at the bar open plus slippage against if the bar opens beyond the stop",
+  "limit_entry": "filled only if the bar trades through the limit by at least 1 tick; fills at the limit price",
+  "profit_target": "filled only if the bar trades through the target by at least 1 tick; fills at the target price",
+  "stop_and_target_same_bar": "stop first, always",
+  "entry_bar": "the stop is assumed hit if reachable in the entry bar; a limit or stop entry cannot reach its target in the entry bar",
+  "session_gap": "a stop gapped through fills at the open",
+  "zero_volume_bar": "no fills",
+  "thin_bar": "fill refused when bar volume is below 20 times order quantity; logged as a liquidity miss",
+  "session_end": "INTRADAY_FLAT forces flat on the session's last bar at its close minus slippage"
+ },
+ "round_trip_cost_usd_base": {"ES": 27.5, "YM": 12.5}
+}

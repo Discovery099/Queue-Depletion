@@ -1,0 +1,73 @@
+{
+ "blocks": {
+  "ES": {
+   "embargo_rows": 390,
+   "research_rows": 85695,
+   "research_sha256": "962d9c44e8067316792dc574fe00a119860ec88ceb57654d5eae07999b5488f3",
+   "vault_rows": 36192,
+   "vault_sha256": "aca817f266832941ecd1a09e091c1baa4f14fc4c5f3b7cf1221e95e7faf466cd"
+  },
+  "YM": {
+   "embargo_rows": 390,
+   "research_rows": 85659,
+   "research_sha256": "5cb9be2a417510a321676b40ebe633bfaebbb533d620444a329b9a7d5330d5b7",
+   "vault_rows": 36192,
+   "vault_sha256": "cf508b36e479999de044d6fa1874b369566a06921544121f1b1b64021467f268"
+  }
+ },
+ "common_sessions": 1593,
+ "created_note": "Computed once in Generation 0. Never changed (Constitution Article 3).",
+ "embargo": {
+  "first": 20240430,
+  "last": 20240506,
+  "sessions": 5
+ },
+ "instruments": {
+  "ES": {
+   "point_value": 50.0,
+   "tick": 0.25,
+   "tick_value": 12.5
+  },
+  "YM": {
+   "point_value": 5.0,
+   "tick": 1.0,
+   "tick_value": 5.0
+  }
+ },
+ "raw_sha256": {
+  "ES": "ead01c6e2173c3925d897b5e160350e31c71ceb06e6c7f2d1a029d22b16f47f1",
+  "YM": "77dd831221c15938a00dd0f6ea922c70f7cb2ee5353aecefe89bccc342adddfd"
+ },
+ "research": {
+  "first": 20200102,
+  "inner_holdout_first": 20230904,
+  "inner_holdout_sessions": 168,
+  "last": 20240429,
+  "search_last": 20230901,
+  "search_sessions": 947,
+  "sessions": 1115
+ },
+ "rule": "first 70% of common sessions (rounded down) = Research; next 5 sessions = embargo; rest = Vault; Vault-A = first two-thirds of vault sessions, Vault-B = final third; inner holdout = final 15% of Research sessions",
+ "self_sha256": "6abe26006bf8b87503020d8a6b0988ffb795bad38feb8e773668ae1ffb18fccf",
+ "sessions_not_common_dropped": {
+  "ES": [
+   20200228
+  ],
+  "YM": []
+ },
+ "vault": {
+  "first": 20240507,
+  "last": 20260306,
+  "sessions": 473,
+  "vault_a": {
+   "first": 20240507,
+   "last": 20250725,
+   "sessions": 315
+  },
+  "vault_b": {
+   "first": 20250728,
+   "last": 20260306,
+   "sessions": 158
+  }
+ }
+}
