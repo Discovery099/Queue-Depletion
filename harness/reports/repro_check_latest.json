@@ -1,0 +1,147 @@
+{
+ "checked": 20,
+ "engine_version": "1.3.0",
+ "mismatches": [],
+ "results": [
+  {
+   "generation": 17729,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 250
+  },
+  {
+   "generation": 19628,
+   "identical": true,
+   "score": 0.29992314198592585,
+   "score_rerun": 0.29992314198592585,
+   "trades": 317
+  },
+  {
+   "generation": 15458,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 989
+  },
+  {
+   "generation": 18857,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 111
+  },
+  {
+   "generation": 19183,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 8
+  },
+  {
+   "generation": 16558,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 2
+  },
+  {
+   "generation": 17737,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 90
+  },
+  {
+   "generation": 18000,
+   "identical": true,
+   "score": 0.47898109208795864,
+   "score_rerun": 0.47898109208795864,
+   "trades": 345
+  },
+  {
+   "generation": 16348,
+   "identical": true,
+   "score": 0.011922803987444726,
+   "score_rerun": 0.011922803987444726,
+   "trades": 439
+  },
+  {
+   "generation": 15095,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 682
+  },
+  {
+   "generation": 17170,
+   "identical": true,
+   "score": 0.032123543599461006,
+   "score_rerun": 0.032123543599461006,
+   "trades": 30
+  },
+  {
+   "generation": 17939,
+   "identical": true,
+   "score": 0.6185090401584407,
+   "score_rerun": 0.6185090401584407,
+   "trades": 298
+  },
+  {
+   "generation": 16070,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 4
+  },
+  {
+   "generation": 15196,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 7
+  },
+  {
+   "generation": 19184,
+   "identical": true,
+   "score": 0.2938298948497797,
+   "score_rerun": 0.2938298948497797,
+   "trades": 242
+  },
+  {
+   "generation": 19045,
+   "identical": true,
+   "score": 0.27143009570555415,
+   "score_rerun": 0.27143009570555415,
+   "trades": 1410
+  },
+  {
+   "generation": 18404,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 1719
+  },
+  {
+   "generation": 16167,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 1779
+  },
+  {
+   "generation": 16217,
+   "identical": true,
+   "score": 0.4599259808407344,
+   "score_rerun": 0.4599259808407344,
+   "trades": 773
+  },
+  {
+   "generation": 15547,
+   "identical": true,
+   "score": 0.0,
+   "score_rerun": 0.0,
+   "trades": 2115
+  }
+ ]
+}

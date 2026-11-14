@@ -1,50 +1,7 @@
 {
  "atoms_checked": 196,
- "failures": {
-  "tr_cci_breakout": {
-   "match": false,
-   "mismatches": [
-    {
-     "count": 1,
-     "first_bar": 3431,
-     "pine_name": "x33",
-     "series": "sigS"
-    }
-   ],
-   "trades": 194
-  },
-  "tr_stochastic_cross": {
-   "match": false,
-   "mismatches": [
-    {
-     "count": 3,
-     "first_bar": 3720,
-     "pine_name": "x1",
-     "series": "sigL"
-    },
-    {
-     "count": 1,
-     "first_bar": 3429,
-     "pine_name": "x37",
-     "series": "sigS"
-    }
-   ],
-   "trades": 214
-  },
-  "tr_stochastic_hook": {
-   "match": false,
-   "mismatches": [
-    {
-     "count": 2,
-     "first_bar": 3099,
-     "pine_name": "x35",
-     "series": "sigS"
-    }
-   ],
-   "trades": 167
-  }
- },
- "matching": 193,
+ "failures": {},
+ "matching": 196,
  "results": {
   "f_adx_high": {
    "match": true,
@@ -492,15 +449,8 @@
    "trades": 117
   },
   "tr_cci_breakout": {
-   "match": false,
-   "mismatches": [
-    {
-     "count": 1,
-     "first_bar": 3431,
-     "pine_name": "x33",
-     "series": "sigS"
-    }
-   ],
+   "match": true,
+   "mismatches": [],
    "trades": 194
   },
   "tr_cci_hook": {
@@ -809,33 +759,13 @@
    "trades": 88
   },
   "tr_stochastic_cross": {
-   "match": false,
-   "mismatches": [
-    {
-     "count": 3,
-     "first_bar": 3720,
-     "pine_name": "x1",
-     "series": "sigL"
-    },
-    {
-     "count": 1,
-     "first_bar": 3429,
-     "pine_name": "x37",
-     "series": "sigS"
-    }
-   ],
+   "match": true,
+   "mismatches": [],
    "trades": 214
   },
   "tr_stochastic_hook": {
-   "match": false,
-   "mismatches": [
-    {
-     "count": 2,
-     "first_bar": 3099,
-     "pine_name": "x35",
-     "series": "sigS"
-    }
-   ],
+   "match": true,
+   "mismatches": [],
    "trades": 167
   },
   "tr_supertrend_flip": {
