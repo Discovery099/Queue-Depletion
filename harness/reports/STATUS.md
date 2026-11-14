@@ -56,8 +56,11 @@ generations. The real leaders' score on unseen folds (0.10 to 0.22) is below tha
 
 **Frontier** (`reports/frontier.md`; home-fold screening numbers, best of many attempts):
 
-- 80% win rate with profit factor above 1.0 and at least 150 trades: reached by 1 genome on its home folds, by none on unseen folds.
-- At 200 or more trades a year per instrument, the best profit factor at 65 to 80% wins is about 1.3 to 1.4 on home folds.
+- 80% win rate with profit factor above 1.0 and at least 150 out-of-sample trades: reached by 10 genomes on their home folds, all
+  trading fewer than 150 times a year per instrument. None passed the stage 1 screen, and none was among the leaders re-scored on
+  unseen folds, so their win rate there is not known.
+- At 200 or more trades a year per instrument, the best profit factor at 65 to 80% wins is about 1.4 to 1.5 on home folds, and no
+  genome reaches 80% wins.
 - Profit factors above 1.8 occur only below about 100 trades a year per instrument.
 - The binding constraints are win rate and profit factor together on unseen folds, then trade frequency and participation.
 
