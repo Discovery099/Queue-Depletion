@@ -1,61 +1,127 @@
 {
- "generations": 20008,
+ "generations": 30008,
  "grid_wr_pf": {
   "0.55": [
-   3322,
-   1243,
-   416,
-   110,
-   28
+   5696,
+   1955,
+   626,
+   163,
+   36
   ],
   "0.6": [
-   2737,
-   1018,
-   339,
-   86,
-   23
+   4822,
+   1640,
+   521,
+   133,
+   29
   ],
   "0.65": [
-   1873,
-   815,
-   266,
-   68,
-   21
+   3353,
+   1348,
+   419,
+   107,
+   26
   ],
   "0.7": [
-   833,
-   508,
-   204,
-   60,
-   21
+   1433,
+   810,
+   305,
+   94,
+   26
   ],
   "0.75": [
-   129,
-   119,
-   65,
-   28,
-   14
+   212,
+   196,
+   112,
+   53,
+   19
   ],
   "0.8": [
-   10,
-   10,
-   10,
-   10,
-   9
+   14,
+   14,
+   14,
+   13,
+   11
   ]
  },
  "leading_failed_gates": {
   "freq.max_gap_sessions": 6,
   "freq.session_share": 15,
   "freq.trades_per_year_per_instrument": 15,
-  "freq.worst_regime_cell_share": 3,
-  "sample.trades_per_complexity_point": 1,
   "sample.trades_per_instrument": 7,
-  "twin.random_exit_wilson_lower": 3,
-  "wf.in_sample_expectancy_costs": 3,
-  "wr.skew": 3
+  "wf.in_sample_expectancy_costs": 9
  },
  "top": [
+  {
+   "alpha": 13.35345376642928,
+   "cx": 10,
+   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; market",
+   "gen": 21335,
+   "island": "A",
+   "n": 303,
+   "pf": 1.6979794933655006,
+   "score": 0.671066103774366,
+   "status": "STAGE1_FAIL",
+   "tf": 5,
+   "tpy": 107.54366197183097,
+   "wr": 0.7722772277227723
+  },
+  {
+   "alpha": 13.21416783406475,
+   "cx": 10,
+   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; market",
+   "gen": 21055,
+   "island": "A",
+   "n": 303,
+   "pf": 1.6979794933655006,
+   "score": 0.6700428716206736,
+   "status": "DEMOTED_EXCHANGE",
+   "tf": 5,
+   "tpy": 107.54366197183097,
+   "wr": 0.7722772277227723
+  },
+  {
+   "alpha": 12.594079841420669,
+   "cx": 10,
+   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; market",
+   "gen": 21129,
+   "island": "A",
+   "n": 303,
+   "pf": 1.6979794933655006,
+   "score": 0.665487537414118,
+   "status": "STAGE1_FAIL",
+   "tf": 5,
+   "tpy": 107.54366197183097,
+   "wr": 0.7722772277227723
+  },
+  {
+   "alpha": 12.490699232436786,
+   "cx": 10,
+   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; market",
+   "gen": 22279,
+   "island": "A",
+   "n": 303,
+   "pf": 1.6967003164080157,
+   "score": 0.6646431018843615,
+   "status": "STAGE1_FAIL",
+   "tf": 5,
+   "tpy": 107.54366197183097,
+   "wr": 0.7722772277227723
+  },
+  {
+   "alpha": 13.121084835279461,
+   "cx": 10,
+   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; market",
+   "gen": 22469,
+   "island": "A",
+   "n": 302,
+   "pf": 1.6582021582021582,
+   "score": 0.6556888727178491,
+   "status": "STAGE1_FAIL",
+   "tf": 5,
+   "tpy": 107.18873239436618,
+   "wr": 0.7682119205298014
+  },
   {
    "alpha": 13.537497473216087,
    "cx": 12,
@@ -65,7 +131,7 @@
    "n": 340,
    "pf": 1.72092795614722,
    "score": 0.6363498604902745,
-   "status": "STAGE1_FAIL",
+   "status": "DEMOTED_EXCHANGE",
    "tf": 5,
    "tpy": 120.67605633802816,
    "wr": 0.7470588235294118
@@ -93,10 +159,24 @@
    "n": 365,
    "pf": 1.6704007285974498,
    "score": 0.631105507816928,
-   "status": "STAGE1_FAIL",
+   "status": "DEMOTED_EXCHANGE",
    "tf": 5,
    "tpy": 129.54929577464787,
    "wr": 0.7561643835616438
+  },
+  {
+   "alpha": 13.606308632789133,
+   "cx": 12,
+   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; limit",
+   "gen": 22361,
+   "island": "A",
+   "n": 330,
+   "pf": 1.7291322830707676,
+   "score": 0.6299785095737177,
+   "status": "STAGE1_FAIL",
+   "tf": 5,
+   "tpy": 117.12676056338027,
+   "wr": 0.7484848484848485
   },
   {
    "alpha": 12.898629608183754,
@@ -107,10 +187,24 @@
    "n": 314,
    "pf": 1.6760146409731942,
    "score": 0.6290540412498595,
-   "status": "STAGE1_FAIL",
+   "status": "DEMOTED_EXCHANGE",
    "tf": 5,
    "tpy": 111.44788732394366,
    "wr": 0.7515923566878981
+  },
+  {
+   "alpha": 12.242420395670795,
+   "cx": 10,
+   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; market",
+   "gen": 20711,
+   "island": "A",
+   "n": 306,
+   "pf": 1.607295097849254,
+   "score": 0.6283857904680995,
+   "status": "STAGE1_FAIL",
+   "tf": 5,
+   "tpy": 108.60845070422535,
+   "wr": 0.7679738562091504
   },
   {
    "alpha": 13.606903184908303,
@@ -167,104 +261,6 @@
    "tf": 5,
    "tpy": 133.80845070422535,
    "wr": 0.7506631299734748
-  },
-  {
-   "alpha": 13.329053575417294,
-   "cx": 12,
-   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; limit",
-   "gen": 18529,
-   "island": "A",
-   "n": 299,
-   "pf": 1.740062579673195,
-   "score": 0.6264006273251095,
-   "status": "STAGE1_FAIL",
-   "tf": 5,
-   "tpy": 106.12394366197182,
-   "wr": 0.7558528428093646
-  },
-  {
-   "alpha": 12.291895526048924,
-   "cx": 12,
-   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; limit",
-   "gen": 19109,
-   "island": "A",
-   "n": 338,
-   "pf": 1.7070771339075959,
-   "score": 0.623403643186719,
-   "status": "STAGE1_FAIL",
-   "tf": 5,
-   "tpy": 119.96619718309859,
-   "wr": 0.7455621301775148
-  },
-  {
-   "alpha": 12.509928961919915,
-   "cx": 12,
-   "desc": "tr_trail_flip with st_gap_direction; r_stop_swing; x_target_atr; limit",
-   "gen": 17939,
-   "island": "A",
-   "n": 298,
-   "pf": 1.7337466682118439,
-   "score": 0.6185090401584407,
-   "status": "STAGE1_FAIL",
-   "tf": 5,
-   "tpy": 105.76901408450703,
-   "wr": 0.7550335570469798
-  },
-  {
-   "alpha": 14.342836647246394,
-   "cx": 16,
-   "desc": "tr_trail_flip with st_gap_direction, f_stop_before_close; r_stop_swing; x_target_atr; limit",
-   "gen": 18231,
-   "island": "A",
-   "n": 277,
-   "pf": 1.7280834693401725,
-   "score": 0.6179522134943779,
-   "status": "STAGE1_FAIL",
-   "tf": 5,
-   "tpy": 98.31549295774647,
-   "wr": 0.7725631768953068
-  },
-  {
-   "alpha": 12.245480468374371,
-   "cx": 8,
-   "desc": "tr_false_break_prior_day with st_ichimoku_cloud; r_stop_atr; x_target_r; market",
-   "gen": 19413,
-   "island": "A",
-   "n": 267,
-   "pf": 1.9672220069740411,
-   "score": 0.6053811890002173,
-   "status": "STAGE1_FAIL",
-   "tf": 15,
-   "tpy": 94.76619718309858,
-   "wr": 0.8202247191011236
-  },
-  {
-   "alpha": 11.969646569646564,
-   "cx": 8,
-   "desc": "tr_false_break_prior_day with st_ichimoku_cloud; r_stop_atr; x_target_r; market",
-   "gen": 15525,
-   "island": "A",
-   "n": 273,
-   "pf": 1.923430776079537,
-   "score": 0.5974409841666766,
-   "status": "STAGE1_FAIL",
-   "tf": 15,
-   "tpy": 96.89577464788732,
-   "wr": 0.8131868131868132
-  },
-  {
-   "alpha": 11.668875871210505,
-   "cx": 8,
-   "desc": "tr_false_break_prior_day with st_ichimoku_cloud; r_stop_atr; x_target_r; market",
-   "gen": 15905,
-   "island": "A",
-   "n": 273,
-   "pf": 1.923430776079537,
-   "score": 0.5954518872810195,
-   "status": "STAGE1_FAIL",
-   "tf": 15,
-   "tpy": 96.89577464788732,
-   "wr": 0.8131868131868132
   }
  ]
 }

@@ -1,90 +1,90 @@
 {
  "batch": 16,
- "best_generation": 18133,
+ "best_generation": 21335,
  "best_score": {
-  "A": 0.6363498604902745,
+  "A": 0.671066103774366,
   "B": 0.5467725852625576
  },
  "complexity_ceiling": 22,
  "counts": {
   "confirmed": 0,
   "error": 19,
-  "stage1_fail": 21012,
-  "stage1_pass": 1,
+  "stage1_fail": 29985,
+  "stage1_pass": 4,
   "void": 0
  },
  "decoy": null,
  "engine_version": "1.1.0",
- "epoch": 42,
+ "epoch": 60,
  "frozen": {
   "costs": "c9f34a1fb7a405c307f0b6dfec3b8525b6a44e58883b264d491f6062ae3fa829",
   "partition": "2c5cfaf77cb2f204ea322fb4d184917f4b9a5ae96f2e61fc25dbe620f8b39c48",
   "raw_ES": "ead01c6e2173c3925d897b5e160350e31c71ceb06e6c7f2d1a029d22b16f47f1",
   "raw_YM": "77dd831221c15938a00dd0f6ea922c70f7cb2ee5353aecefe89bccc342adddfd"
  },
- "ledger_last_hash": "e7ebdfcd2fdbb54f47b1355fa2e492a66eacc9439072655d063b3470a3b20082",
+ "ledger_last_hash": "cbc4683c1fa0697a47587a7388dd16fd6a494e3b18cdc94cad719a0bece9d541",
  "llm_queue_cursor": 20,
  "master_seed": 20261114,
  "n_eff": {
-  "n_eff": 25253,
-  "raw": 42086,
-  "var_sharpe": 0.011216629748009674
+  "n_eff": 36052,
+  "raw": 60086,
+  "var_sharpe": 0.01258727595737552
  },
- "next_generation": 21033,
+ "next_generation": 30009,
  "operator_share": {
-  "ATOM_ADD": 0.05568982276664344,
-  "ATOM_DROP": 0.059867473040440294,
-  "ATOM_SWAP": 0.13534661863973207,
-  "ENSEMBLE": 0.026154138775605792,
-  "ENTRY_TRANSPLANT": 0.07730364442553059,
-  "EXIT_TRANSPLANT": 0.0756447913040098,
-  "INVERT": 0.03299379845600084,
-  "LIBRARY_PROBE": 0.035712688419481435,
-  "LLM_HYPOTHESIS": 0.11472237198986814,
-  "PARAM_STEP": 0.20952200413731298,
-  "SIMPLIFY": 0.06074402516899428,
-  "SLOT_CROSSOVER": 0.11629862287638042
+  "ATOM_ADD": 0.05497850261487789,
+  "ATOM_DROP": 0.060018554264195605,
+  "ATOM_SWAP": 0.13519065625285587,
+  "ENSEMBLE": 0.027072636834594488,
+  "ENTRY_TRANSPLANT": 0.0777739674904869,
+  "EXIT_TRANSPLANT": 0.07560207858113999,
+  "INVERT": 0.03289916312192561,
+  "LIBRARY_PROBE": 0.03556762806310922,
+  "LLM_HYPOTHESIS": 0.11536600945683231,
+  "PARAM_STEP": 0.20800754530671672,
+  "SIMPLIFY": 0.060468027051637556,
+  "SLOT_CROSSOVER": 0.1170552309616279
  },
  "operator_stats": {
   "ATOM_ADD": {
-   "improved": 149,
+   "improved": 193,
    "passed": 0,
-   "uses": 1485
+   "uses": 2154
   },
   "ATOM_DROP": {
-   "improved": 57,
+   "improved": 81,
    "passed": 0,
-   "uses": 398
+   "uses": 567
   },
   "ATOM_SWAP": {
-   "improved": 284,
-   "passed": 0,
-   "uses": 3383
+   "improved": 386,
+   "passed": 1,
+   "uses": 4817
   },
   "ENSEMBLE": {
-   "improved": 1,
+   "improved": 20,
    "passed": 0,
-   "uses": 30
+   "uses": 258
   },
   "ENTRY_TRANSPLANT": {
-   "improved": 224,
+   "improved": 331,
    "passed": 0,
-   "uses": 1784
+   "uses": 2635
   },
   "EXIT_TRANSPLANT": {
-   "improved": 192,
-   "passed": 0,
-   "uses": 1719
+   "improved": 273,
+   "passed": 1,
+   "uses": 2523
   },
   "INVERT": {
-   "improved": 21,
+   "improved": 26,
    "passed": 0,
-   "uses": 643
+   "uses": 910
   },
   "LIBRARY_PROBE": {
-   "improved": 455,
+   "improved": 557,
    "passed": 0,
-   "uses": 5839
+   "uses": 7690
   },
   "LLM_HYPOTHESIS": {
    "improved": 8,
@@ -92,23 +92,23 @@
    "uses": 19
   },
   "PARAM_STEP": {
-   "improved": 528,
+   "improved": 737,
    "passed": 0,
-   "uses": 2972
+   "uses": 4347
   },
   "SIMPLIFY": {
-   "improved": 55,
+   "improved": 76,
    "passed": 0,
-   "uses": 358
+   "uses": 515
   },
   "SLOT_CROSSOVER": {
-   "improved": 306,
-   "passed": 1,
-   "uses": 2402
+   "improved": 457,
+   "passed": 2,
+   "uses": 3573
   }
  },
  "placebo": false,
- "seconds_stage1": 4470.169122695923,
+ "seconds_stage1": 6233.964168310165,
  "started_utc": "2026-11-14T17:25:05.788848Z",
  "survey_cursor": 205,
  "tier_counts": {
@@ -116,7 +116,7 @@
   "gold": 0,
   "silver": 0
  },
- "updated_utc": "2026-11-14T18:34:34.624174Z",
+ "updated_utc": "2026-11-14T18:53:45.995306Z",
  "vault": {
   "a_used": 0,
   "b_used": 0,
