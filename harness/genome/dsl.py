@@ -92,7 +92,9 @@ def ext(name):
 def shift(x, k):
     if k < 0:
         raise ValueError("negative shift is lookahead")
-    return x if k == 0 else E("shift", x, int(k), typ=x.typ)
+    if k == 0 or x.op in ("const", "true", "false", "mintgt"):     # a constant has no history to look back into
+        return x
+    return E("shift", x, int(k), typ=x.typ)
 
 
 def absx(x): return E("abs", w(x))

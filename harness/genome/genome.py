@@ -138,25 +138,30 @@ def _slot_sets(g):
 
 
 def _param_index(g):
+    """Grid index of every free parameter."""
     out = {}
     for e in atom_entries(g):
         a = ATOMS[e["atom"]]
         for k, v in e["params"].items():
             grid = a.grid[k]
             if len(grid) > 1:
-                out[(e["atom"], k)] = grid.index(v) / (len(grid) - 1)
+                out[(e["atom"], k)] = grid.index(v)
     ent = g["slots"]["entry"]
     if ent["type"] != "market":
-        out[("entry", "offset")] = ENTRY_OFFSETS.index(ent["offset_atr"]) / (len(ENTRY_OFFSETS) - 1)
-        out[("entry", "valid")] = ENTRY_VALID_MIN.index(ent["valid_minutes"]) / (len(ENTRY_VALID_MIN) - 1)
+        out[("entry", "offset")] = ENTRY_OFFSETS.index(ent["offset_atr"])
+        out[("entry", "valid")] = ENTRY_VALID_MIN.index(ent["valid_minutes"])
     q = g["sequencing"]
-    out[("seq", "cool")] = COOLDOWN_MIN.index(q["cooldown_minutes"]) / (len(COOLDOWN_MIN) - 1)
-    out[("seq", "max")] = MAX_TRADES.index(q["max_trades_per_session"]) / (len(MAX_TRADES) - 1)
+    out[("seq", "cool")] = COOLDOWN_MIN.index(q["cooldown_minutes"])
+    out[("seq", "max")] = MAX_TRADES.index(q["max_trades_per_session"])
     return out
 
 
 def distance(g1, g2):
-    """0 = identical logic, 1 = nothing shared.  0.6 * structure + 0.4 * parameters."""
+    """0 = identical logic, 1 = nothing shared.  0.6 * structure + 0.4 * parameters.
+
+    The parameter part is the total number of grid steps between the two genomes divided by 8
+    (a parameter present in only one of them counts as 2 steps), capped at 1.  One grid step is
+    therefore 0.05, the novelty threshold, and three steps are 0.15, the 'same strategy' threshold."""
     a, b = _slot_sets(g1), _slot_sets(g2)
     js = []
     for k in a:
@@ -164,8 +169,8 @@ def distance(g1, g2):
         js.append(1.0 if not u else len(a[k] & b[k]) / len(u))
     structure = 1.0 - sum(js) / len(js)
     pa, pb = _param_index(g1), _param_index(g2)
-    keys = set(pa) | set(pb)
-    pd_ = sum(abs(pa[k] - pb[k]) if k in pa and k in pb else 1.0 for k in keys) / len(keys) if keys else 0.0
+    steps = sum(abs(pa[k] - pb[k]) if k in pa and k in pb else 2 for k in set(pa) | set(pb))
+    pd_ = min(1.0, steps / 8.0)
     extra = 0.0
     if g1["direction"] != g2["direction"]:
         extra += 0.1

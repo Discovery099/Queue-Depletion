@@ -202,7 +202,7 @@ class Run:
         if g["genome_id"] in self.ids:
             return False
         for (js,) in self.db.execute("SELECT genome FROM genomes WHERE trig_key=? ORDER BY generation DESC LIMIT 400", [self.trig_key(g)]):
-            if GN.distance(g, json.loads(js)) < SEARCH["novelty_min_distance"]:
+            if GN.distance(g, json.loads(js)) < SEARCH["novelty_min_distance"] - 1e-9:
                 return False
         return True
 

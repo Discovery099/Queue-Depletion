@@ -1,0 +1,117 @@
+{
+ "best_generation": 5480,
+ "best_score": {
+  "A": 0.44338099509549217,
+  "B": 0.5467725852625576
+ },
+ "canary_adoption_rate": 0.0,
+ "canary_passes": 0,
+ "counts": {
+  "STAGE1_FAIL": 500
+ },
+ "effective_trials": {
+  "n_eff": 9063,
+  "raw": 15100,
+  "var_sharpe": 0.00865319399919184
+ },
+ "epoch": 15,
+ "frozen_ok": true,
+ "generations": [
+  7001,
+  7500
+ ],
+ "honeypot_voided": true,
+ "ledger_chain_ok": true,
+ "ledger_records": 91228,
+ "mean_pairwise_distance_top100": 0.6771000276319425,
+ "notes": [],
+ "occupied_cells": {
+  "A": 200,
+  "B": 166
+ },
+ "operator_share": {
+  "ATOM_ADD": 0.059166286345157824,
+  "ATOM_DROP": 0.06066420245317692,
+  "ATOM_SWAP": 0.13717191251484,
+  "ENSEMBLE": 0.04646619762370998,
+  "ENTRY_TRANSPLANT": 0.07887095205298668,
+  "EXIT_TRANSPLANT": 0.07664405318684604,
+  "INVERT": 0.033625111670718896,
+  "LIBRARY_PROBE": 0.03601009853866498,
+  "LLM_HYPOTHESIS": 0.09293239524741996,
+  "PARAM_STEP": 0.19983501984575927,
+  "SIMPLIFY": 0.060447177439693515,
+  "SLOT_CROSSOVER": 0.11816659308102595
+ },
+ "operator_stats": {
+  "ATOM_ADD": {
+   "improved": 62,
+   "passed": 0,
+   "uses": 459
+  },
+  "ATOM_DROP": {
+   "improved": 21,
+   "passed": 0,
+   "uses": 142
+  },
+  "ATOM_SWAP": {
+   "improved": 99,
+   "passed": 0,
+   "uses": 1104
+  },
+  "ENSEMBLE": {
+   "improved": 0,
+   "passed": 0,
+   "uses": 0
+  },
+  "ENTRY_TRANSPLANT": {
+   "improved": 79,
+   "passed": 0,
+   "uses": 584
+  },
+  "EXIT_TRANSPLANT": {
+   "improved": 61,
+   "passed": 0,
+   "uses": 521
+  },
+  "INVERT": {
+   "improved": 9,
+   "passed": 0,
+   "uses": 232
+  },
+  "LIBRARY_PROBE": {
+   "improved": 234,
+   "passed": 0,
+   "uses": 2891
+  },
+  "LLM_HYPOTHESIS": {
+   "improved": 2,
+   "passed": 0,
+   "uses": 10
+  },
+  "PARAM_STEP": {
+   "improved": 110,
+   "passed": 0,
+   "uses": 763
+  },
+  "SIMPLIFY": {
+   "improved": 16,
+   "passed": 0,
+   "uses": 111
+  },
+  "SLOT_CROSSOVER": {
+   "improved": 92,
+   "passed": 0,
+   "uses": 683
+  }
+ },
+ "outside_false_discovery_set": [],
+ "raw_stage1_trials": 15100,
+ "stage1_pass_rate": 0.0,
+ "tier_counts": {
+  "bronze": 0,
+  "gold": 0,
+  "silver": 0
+ },
+ "utc": "2026-11-14T17:39:21.147305Z"
+}

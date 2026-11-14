@@ -28,3 +28,8 @@ Every entry states what happened, what it could have affected, and what was done
 7. **Canary identities are inferable.** Canary atoms have zero supporting scripts in `library/ontology.json`. The search is programmatic
    and never reads that field, but a human or language-model Strategist could. The information firewall of SPEC 15.7 is therefore
    procedural for the Strategist role, not enforced.
+8. **Genome distance made step-based (after generation 2,868).** The first distance definition scored a one-grid-step parameter move
+   below the novelty threshold of 0.05, so almost every PARAM_STEP child was rejected as "already tried" (11 uses in 500 proposals)
+   and proposals became slow. The parameter part is now total grid steps divided by 8: one step is exactly 0.05 (novel), three steps
+   are 0.15 (the "same strategy" limit used by the archive and the Vault Keeper). No verdict of an earlier generation changes; the
+   search before this point simply under-used parameter refinement.

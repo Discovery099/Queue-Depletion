@@ -1,64 +1,65 @@
 {
  "batch": 16,
- "best_generation": 1040,
+ "best_generation": 7677,
  "best_score": {
-  "A": 0.41871913472547323,
-  "B": 0.3440582540157386
+  "A": 0.49745846281190914,
+  "B": 0.5467725852625576
  },
  "complexity_ceiling": 22,
  "counts": {
   "confirmed": 0,
   "error": 0,
-  "stage1_fail": 2000,
+  "stage1_fail": 8208,
   "stage1_pass": 0,
   "void": 0
  },
  "decoy": null,
  "engine_version": "1.1.0",
- "epoch": 4,
+ "epoch": 16,
  "frozen": {
   "costs": "c9f34a1fb7a405c307f0b6dfec3b8525b6a44e58883b264d491f6062ae3fa829",
   "partition": "2c5cfaf77cb2f204ea322fb4d184917f4b9a5ae96f2e61fc25dbe620f8b39c48",
   "raw_ES": "ead01c6e2173c3925d897b5e160350e31c71ceb06e6c7f2d1a029d22b16f47f1",
   "raw_YM": "77dd831221c15938a00dd0f6ea922c70f7cb2ee5353aecefe89bccc342adddfd"
  },
- "ledger_last_hash": "e3538d9e099ab89f6598bfa6105a475c86ff078aa04d86d61dbf9c7f4cd75b5d",
+ "ledger_last_hash": "6d069c9faf9d9954d9f4ab8bf788329114c9cb6a279a0eccaeb19eb53cc9c6b8",
+ "llm_queue_cursor": 10,
  "master_seed": 20261114,
  "n_eff": {
-  "n_eff": 2461,
-  "raw": 4100,
-  "var_sharpe": 0.005905281958640269
+  "n_eff": 9663,
+  "raw": 16100,
+  "var_sharpe": 0.009307312940556835
  },
- "next_generation": 2001,
+ "next_generation": 8209,
  "operator_share": {
-  "ATOM_ADD": 0.05964442268142114,
-  "ATOM_DROP": 0.06743424006866328,
-  "ATOM_SWAP": 0.13872850905160175,
-  "ENSEMBLE": 0.044181053838089734,
-  "ENTRY_TRANSPLANT": 0.0740558616714647,
-  "EXIT_TRANSPLANT": 0.07742203720198583,
-  "INVERT": 0.03497666762182104,
-  "LIBRARY_PROBE": 0.03423652110133758,
-  "LLM_HYPOTHESIS": 0.11781614356823929,
-  "PARAM_STEP": 0.17999688600703226,
-  "SIMPLIFY": 0.06185347537332562,
-  "SLOT_CROSSOVER": 0.10965418181501788
+  "ATOM_ADD": 0.05964056654796041,
+  "ATOM_DROP": 0.05988818019622545,
+  "ATOM_SWAP": 0.1375821282535477,
+  "ENSEMBLE": 0.04651213994935277,
+  "ENTRY_TRANSPLANT": 0.07870911945524277,
+  "EXIT_TRANSPLANT": 0.07616604735615938,
+  "INVERT": 0.03344967544914084,
+  "LIBRARY_PROBE": 0.03601406966947884,
+  "LLM_HYPOTHESIS": 0.09302427989870554,
+  "PARAM_STEP": 0.19975319188877957,
+  "SIMPLIFY": 0.06058303942982924,
+  "SLOT_CROSSOVER": 0.11867756190557747
  },
  "operator_stats": {
   "ATOM_ADD": {
-   "improved": 6,
+   "improved": 70,
    "passed": 0,
-   "uses": 38
+   "uses": 514
   },
   "ATOM_DROP": {
-   "improved": 4,
+   "improved": 21,
    "passed": 0,
-   "uses": 17
+   "uses": 155
   },
   "ATOM_SWAP": {
-   "improved": 15,
+   "improved": 116,
    "passed": 0,
-   "uses": 123
+   "uses": 1222
   },
   "ENSEMBLE": {
    "improved": 0,
@@ -66,48 +67,48 @@
    "uses": 0
   },
   "ENTRY_TRANSPLANT": {
-   "improved": 8,
+   "improved": 86,
    "passed": 0,
-   "uses": 68
+   "uses": 653
   },
   "EXIT_TRANSPLANT": {
-   "improved": 10,
+   "improved": 65,
    "passed": 0,
-   "uses": 68
+   "uses": 574
   },
   "INVERT": {
-   "improved": 2,
-   "passed": 0,
-   "uses": 30
-  },
-  "LIBRARY_PROBE": {
-   "improved": 125,
-   "passed": 0,
-   "uses": 1550
-  },
-  "LLM_HYPOTHESIS": {
-   "improved": 0,
-   "passed": 0,
-   "uses": 0
-  },
-  "PARAM_STEP": {
-   "improved": 0,
-   "passed": 0,
-   "uses": 7
-  },
-  "SIMPLIFY": {
-   "improved": 3,
-   "passed": 0,
-   "uses": 18
-  },
-  "SLOT_CROSSOVER": {
    "improved": 9,
    "passed": 0,
-   "uses": 81
+   "uses": 256
+  },
+  "LIBRARY_PROBE": {
+   "improved": 243,
+   "passed": 0,
+   "uses": 3035
+  },
+  "LLM_HYPOTHESIS": {
+   "improved": 2,
+   "passed": 0,
+   "uses": 10
+  },
+  "PARAM_STEP": {
+   "improved": 134,
+   "passed": 0,
+   "uses": 896
+  },
+  "SIMPLIFY": {
+   "improved": 17,
+   "passed": 0,
+   "uses": 121
+  },
+  "SLOT_CROSSOVER": {
+   "improved": 103,
+   "passed": 0,
+   "uses": 772
   }
  },
  "placebo": false,
- "seconds_stage1": 345.2540194988251,
+ "seconds_stage1": 1719.4323937892914,
  "started_utc": "2026-11-14T17:25:05.788848Z",
  "survey_cursor": 205,
  "tier_counts": {
@@ -115,7 +116,7 @@
   "gold": 0,
   "silver": 0
  },
- "updated_utc": "2026-11-14T17:27:07.796371Z",
+ "updated_utc": "2026-11-14T17:40:27.011129Z",
  "vault": {
   "a_used": 0,
   "b_used": 0,
