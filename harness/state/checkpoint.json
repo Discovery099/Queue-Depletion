@@ -1,90 +1,90 @@
 {
  "batch": 16,
- "best_generation": 48034,
+ "best_generation": 58054,
  "best_score": {
-  "A": 0.7337517961380592,
-  "B": 0.5741179265099277
+  "A": 0.7610227404496478,
+  "B": 0.6852551118075496
  },
  "complexity_ceiling": 22,
  "counts": {
   "confirmed": 0,
   "error": 19,
-  "stage1_fail": 49969,
-  "stage1_pass": 20,
+  "stage1_fail": 59964,
+  "stage1_pass": 33,
   "void": 0
  },
  "decoy": null,
  "engine_version": "1.1.0",
- "epoch": 100,
+ "epoch": 120,
  "frozen": {
   "costs": "c9f34a1fb7a405c307f0b6dfec3b8525b6a44e58883b264d491f6062ae3fa829",
   "partition": "2c5cfaf77cb2f204ea322fb4d184917f4b9a5ae96f2e61fc25dbe620f8b39c48",
   "raw_ES": "ead01c6e2173c3925d897b5e160350e31c71ceb06e6c7f2d1a029d22b16f47f1",
   "raw_YM": "77dd831221c15938a00dd0f6ea922c70f7cb2ee5353aecefe89bccc342adddfd"
  },
- "ledger_last_hash": "2ec7e3fca89e463ef6a34707e4e43dfb9b09371436f8f9ee5651fb96a11993d7",
+ "ledger_last_hash": "27b21c8856d379971d71c4c6347b90057ddc438561308b690b654f7a186baa62",
  "llm_queue_cursor": 30,
  "master_seed": 20261114,
  "n_eff": {
-  "n_eff": 60053,
-  "raw": 100086,
-  "var_sharpe": 0.016077428224432797
+  "n_eff": 72053,
+  "raw": 120086,
+  "var_sharpe": 0.012301877330019391
  },
- "next_generation": 50009,
+ "next_generation": 60017,
  "operator_share": {
-  "ATOM_ADD": 0.054236883109014346,
-  "ATOM_DROP": 0.05939448392636874,
-  "ATOM_SWAP": 0.13039396071060502,
-  "ENSEMBLE": 0.026854074323241647,
-  "ENTRY_TRANSPLANT": 0.07613180049645411,
-  "EXIT_TRANSPLANT": 0.07409546142497418,
-  "INVERT": 0.032530419341402585,
-  "LIBRARY_PROBE": 0.03436030832303186,
-  "LLM_HYPOTHESIS": 0.13071166832297443,
-  "PARAM_STEP": 0.20524601329832448,
-  "SIMPLIFY": 0.05990358302118797,
-  "SLOT_CROSSOVER": 0.1161413437024206
+  "ATOM_ADD": 0.05419615169758446,
+  "ATOM_DROP": 0.059306948982195115,
+  "ATOM_SWAP": 0.1299068511000022,
+  "ENSEMBLE": 0.02659437473431178,
+  "ENTRY_TRANSPLANT": 0.07598970125891241,
+  "EXIT_TRANSPLANT": 0.07518921302659815,
+  "INVERT": 0.03255711305226124,
+  "LIBRARY_PROBE": 0.034091958778492845,
+  "LLM_HYPOTHESIS": 0.1302643394466451,
+  "PARAM_STEP": 0.20561479076816905,
+  "SIMPLIFY": 0.05953468177888912,
+  "SLOT_CROSSOVER": 0.11675387537593857
  },
  "operator_stats": {
   "ATOM_ADD": {
-   "improved": 338,
+   "improved": 409,
    "passed": 1,
-   "uses": 3462
+   "uses": 4120
   },
   "ATOM_DROP": {
-   "improved": 163,
+   "improved": 211,
    "passed": 0,
-   "uses": 1059
+   "uses": 1358
   },
   "ATOM_SWAP": {
-   "improved": 593,
-   "passed": 1,
-   "uses": 7924
+   "improved": 707,
+   "passed": 5,
+   "uses": 9472
   },
   "ENSEMBLE": {
-   "improved": 51,
-   "passed": 0,
-   "uses": 563
+   "improved": 58,
+   "passed": 1,
+   "uses": 666
   },
   "ENTRY_TRANSPLANT": {
-   "improved": 571,
-   "passed": 5,
-   "uses": 4418
+   "improved": 701,
+   "passed": 6,
+   "uses": 5377
   },
   "EXIT_TRANSPLANT": {
-   "improved": 477,
-   "passed": 8,
-   "uses": 4245
+   "improved": 632,
+   "passed": 10,
+   "uses": 5115
   },
   "INVERT": {
-   "improved": 57,
+   "improved": 73,
    "passed": 0,
-   "uses": 1529
+   "uses": 1840
   },
   "LIBRARY_PROBE": {
-   "improved": 825,
+   "improved": 936,
    "passed": 0,
-   "uses": 12122
+   "uses": 14276
   },
   "LLM_HYPOTHESIS": {
    "improved": 17,
@@ -92,23 +92,23 @@
    "uses": 29
   },
   "PARAM_STEP": {
-   "improved": 1325,
+   "improved": 1634,
    "passed": 1,
-   "uses": 7414
+   "uses": 8968
   },
   "SIMPLIFY": {
-   "improved": 155,
+   "improved": 187,
    "passed": 0,
-   "uses": 971
+   "uses": 1185
   },
   "SLOT_CROSSOVER": {
-   "improved": 878,
-   "passed": 4,
-   "uses": 6272
+   "improved": 1108,
+   "passed": 9,
+   "uses": 7610
   }
  },
  "placebo": false,
- "seconds_stage1": 10325.573100328445,
+ "seconds_stage1": 12288.477486133575,
  "started_utc": "2026-11-14T17:25:05.788848Z",
  "survey_cursor": 205,
  "tier_counts": {
@@ -116,7 +116,7 @@
   "gold": 0,
   "silver": 0
  },
- "updated_utc": "2026-11-14T19:53:36.882265Z",
+ "updated_utc": "2026-11-14T23:09:04.669709Z",
  "vault": {
   "a_used": 0,
   "b_used": 0,

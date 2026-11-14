@@ -41,8 +41,16 @@
    "lines": 5000
   },
   "graveyard_050000.jsonl.xz": {
+   "complete": true,
+   "lines": 5000
+  },
+  "graveyard_055000.jsonl.xz": {
+   "complete": true,
+   "lines": 5000
+  },
+  "graveyard_060000.jsonl.xz": {
    "complete": false,
-   "lines": 9
+   "lines": 17
   },
   "lineage_000000.parquet": {
    "complete": true,
@@ -85,8 +93,16 @@
    "rows": 5000
   },
   "lineage_050000.parquet": {
+   "complete": true,
+   "rows": 5000
+  },
+  "lineage_055000.parquet": {
+   "complete": true,
+   "rows": 5000
+  },
+  "lineage_060000.parquet": {
    "complete": false,
-   "rows": 9
+   "rows": 17
   },
   "trials_0000.jsonl.xz": {
    "complete": true,
@@ -113,13 +129,17 @@
    "lines": 100000
   },
   "trials_0006.jsonl.xz": {
+   "complete": true,
+   "lines": 100000
+  },
+  "trials_0007.jsonl.xz": {
    "complete": false,
-   "lines": 3580
+   "lines": 24016
   }
  },
- "graveyard_sha256": "0c7ee6005f2454165c1001af7fa19249d2cc1b173a87ecf72ab45553dfe7012b",
- "lineage_rows": 50008,
- "top_generation": 50008,
- "trial_records": 603580,
- "trials_jsonl_sha256": "8f21ad9f62e0af33bd3fc7b0665b5cb9499f97a380e46b7a1703d480fb4ed43c"
+ "graveyard_sha256": "3ba24f1a9de85118777e3ac97a7238d3ec7f2625e934e38adb2b334da37af8d2",
+ "lineage_rows": 60016,
+ "top_generation": 60016,
+ "trial_records": 724016,
+ "trials_jsonl_sha256": "b4b8811ff52267e7e0da86dffe66df4a73da8d77df4bf180e438931601b9f011"
 }
