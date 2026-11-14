@@ -52,27 +52,26 @@ def build(g):
     ent = s["entry"]
     out = {k: {} for k in ("sig", "raw", "valid", "ref", "stp", "tgt", "ex", "dist")}
     parts = []
-    for name, dv in (("long", 1), ("short", -1)):
-        d = D(dv)
+    def entry_set(slots, name, tag):
+        """Context AND trigger for one entry set; returns (condition, level)."""
         lvl = None
         ctx = []
         for slot in ("regime", "location", "filter"):
-            for i, e in enumerate(s[slot]):
+            for i, e in enumerate(slots[slot]):
                 c, lv = _side(e, name)
                 ctx.append(c)
-                parts.append((slot, i, e["atom"], name, c))
+                parts.append((tag + slot, i, e["atom"], name, c))
                 if slot == "location" and lvl is None and lv is not None:
                     lvl = lv
         trg = []
         tlvl = None
-        for i, e in enumerate(s["trigger"]["atoms"]):
+        for i, e in enumerate(slots["trigger"]["atoms"]):
             c, lv = _side(e, name)
             trg.append(c)
-            parts.append(("trigger", i, e["atom"], name, c))
+            parts.append((tag + "trigger", i, e["atom"], name, c))
             if tlvl is None and lv is not None:
                 tlvl = lv
-        lvl = tlvl if tlvl is not None else lvl
-        comb = s["trigger"]["combine"]
+        comb = slots["trigger"]["combine"]
         if len(trg) == 1:
             trigger = trg[0]
         elif comb == "AND":
@@ -80,8 +79,15 @@ def build(g):
         elif comb == "OR":
             trigger = trg[0] | trg[1]
         else:   # SEQ: the first fired within the last n bars, the second fires now
-            trigger = any_in(trg[0], ("b", int(s["trigger"]["within_bars"]) + 1)) & trg[1]
-        raw = _and(ctx) & trigger
+            trigger = any_in(trg[0], ("b", int(slots["trigger"]["within_bars"]) + 1)) & trg[1]
+        return _and(ctx) & trigger, (tlvl if tlvl is not None else lvl)
+
+    for name, dv in (("long", 1), ("short", -1)):
+        d = D(dv)
+        raw, lvl = entry_set(s, name, "")
+        for k, m in enumerate(g.get("ensemble", []), 2):          # ensemble: any member's entry set may fire
+            mraw, _ = entry_set(m, name, f"m{k}.")
+            raw = raw | mraw
         if ent["type"] == "market":
             ref = C
         elif ent["type"] == "limit":

@@ -58,3 +58,15 @@ def test_export_keeps_the_owner_webhook_layer_and_paper_defaults():
     assert "http" not in src.lower() and "SMART_TREND_V1" not in src
     order = [src.index(k) for k in ('\\"action\\"', '\\"side\\"', '\\"qty\\"', '\\"symbol\\"', '\\"broker_root\\"', '\\"price\\"', '\\"key\\"', '\\"tag\\"', '\\"live\\"')]
     assert order == sorted(order)                                        # payload field order as in the owner's script
+
+
+def test_ensemble_genome_round_trip_parity():
+    import numpy as np
+    from genome.genome import op_ensemble, validate
+    base = new_genome([A("tr_ema_cross")], stop=A("r_stop_swing"), exits=[A("x_target_r")], tf=15)
+    other = new_genome([A("tr_false_break_prior_day")], regime=[A("st_ichimoku_cloud")])
+    g = op_ensemble(np.random.default_rng(0), base, other)
+    assert not validate(g) and g["complexity"] == base["complexity"] + 3 + 4
+    src = compile_pine.export(g)
+    r = pine_replay.parity(g, src, sessions=25, warm=25, seed=2)
+    assert r["match"], r["details"]

@@ -53,3 +53,8 @@ Every entry states what happened, what it could have affected, and what was done
     (rebuilt and hash-checked by `vault/rebuild.py`), and the generation folders of the 50-generation dry run and of the placebo runs
     (their summaries remain under `reports/`). The per-generation folders therefore exist only on the machine that ran them; the
     ledgers, lineage (every genome and its daily result series), archive, lessons and reports are in the repository.
+14. **Two defects introduced with engine 1.4.0, found within 500 generations.** (a) A genome with no trades at all raised an
+    exception in the new in-sample calculation instead of failing its gates; 19 generations between 20,011 and 20,478 are recorded
+    as ERROR with their trial rows ABORTED. All would have failed stage 1 (no trades). (b) The epoch routine referenced the exchange
+    result before computing it and stopped the loop at generation 20,500; generations 20,489 to 20,500 were re-run after the fix,
+    so their first attempts remain in the trial ledger as extra rows (over-counting only). Both paths now have tests.

@@ -44,8 +44,14 @@ def new_genome(trigger, stop=None, exits=None, regime=(), location=(), filters=(
     return finalize(g)
 
 
+MEMBER_SLOTS = ("regime", "location", "filter")
+
+
 def body(g):
-    return {k: g[k] for k in ("version", "direction", "holding_mode", "slots", "sequencing", "context_tf_multiples")}
+    b = {k: g[k] for k in ("version", "direction", "holding_mode", "slots", "sequencing", "context_tf_multiples")}
+    if g.get("ensemble"):
+        b["ensemble"] = g["ensemble"]          # extra entry sets sharing the primary's entry type, stop and exits (SPEC 9.6 route 7)
+    return b
 
 
 def finalize(g):
@@ -62,6 +68,10 @@ def atom_entries(g, with_slot=False):
         out += [(slot, e) for e in s[slot]]
     out += [("trigger", e) for e in s["trigger"]["atoms"]]
     out.append(("risk", s["risk"]["stop"]))
+    for m in g.get("ensemble", []):
+        for slot in MEMBER_SLOTS:
+            out += [(slot, e) for e in m[slot]]
+        out += [("trigger", e) for e in m["trigger"]["atoms"]]
     return out if with_slot else [e for _, e in out]
 
 
@@ -78,6 +88,7 @@ def complexity(g):
         c += 2
     if len(g["slots"]["trigger"]["atoms"]) > 1 and g["slots"]["trigger"]["combine"] == "SEQ":
         c += 1
+    c += 3 * len(g.get("ensemble", []))          # 3 per ensemble member, on top of its atoms and parameters
     return c
 
 
@@ -90,6 +101,11 @@ def validate(g):
             p.append(f"{slot}: {len(s[slot])} atoms outside {lo}..{hi}")
     if not 1 <= len(s["trigger"]["atoms"]) <= 2:
         p.append("trigger: needs 1 or 2 atoms")
+    if len(g.get("ensemble", [])) > 2:
+        p.append("ensemble: at most 2 extra members (3 in total)")
+    for m in g.get("ensemble", []):
+        if not 1 <= len(m["trigger"]["atoms"]) <= 2 or any(len(m[k]) > SLOT_LIMITS[k][1] for k in MEMBER_SLOTS):
+            p.append("ensemble member outside slot limits")
     for slot, e in atom_entries(g, True):
         a = ATOMS.get(e["atom"])
         if a is None:
@@ -134,6 +150,8 @@ def _slot_sets(g):
     d["trigger"] = {e["atom"] + ("!" if e.get("inv") else "") for e in s["trigger"]["atoms"]}
     d["risk"] = {s["risk"]["stop"]["atom"]}
     d["entry"] = {s["entry"]["type"]}
+    d["ensemble"] = {e["atom"] for m in g.get("ensemble", []) for k in MEMBER_SLOTS + ("trigger",)
+                     for e in (m[k]["atoms"] if k == "trigger" else m[k])}
     return d
 
 
@@ -357,6 +375,17 @@ def op_entry_transplant(rng, g, other, weights=None):
     return finalize(g)
 
 
+def op_ensemble(rng, g, other, weights=None):
+    """Add another archive member's entry rules as an extra entry set.  The primary keeps its entry type,
+    stop and exits.  The caller checks mechanism family and trade overlap (SPEC 15.11)."""
+    g = copy.deepcopy(g)
+    if len(g.get("ensemble", [])) >= 2:
+        return None
+    o = other["slots"]
+    g.setdefault("ensemble", []).append({k: copy.deepcopy(o[k]) for k in MEMBER_SLOTS + ("trigger",)})
+    return finalize(g)
+
+
 def op_invert(rng, g, weights=None):
     """Reverse a trigger or regime condition: test whether the opposite of an idea wins."""
     g = copy.deepcopy(g)
@@ -416,6 +445,9 @@ def describe(g):
     t = s["trigger"]
     lines.append("trigger: " + (f" {t['combine']} ".join(f(e) for e in t["atoms"])) +
                  (f" (within {t['within_bars']} bars)" if t["combine"] == "SEQ" and len(t["atoms"]) > 1 else ""))
+    for i, m in enumerate(g.get("ensemble", []), 2):
+        ctx = "; ".join(f(e) for k in MEMBER_SLOTS for e in m[k])
+        lines.append(f"ensemble member {i}: " + (f" {m['trigger']['combine']} ".join(f(e) for e in m["trigger"]["atoms"])) + (f" with {ctx}" if ctx else ""))
     e = s["entry"]
     lines.append("entry: " + (e["type"] if e["type"] == "market" else f"{e['type']} at {e['offset_atr']} ATR, valid {e['valid_minutes']} min"))
     lines.append("stop: " + f(s["risk"]["stop"]))

@@ -97,3 +97,17 @@ def test_promotion_path_writes_evidence_and_autopsy(run):
         assert os.path.exists(os.path.join(d, f)), f
     assert "stage2" in read_json(os.path.join(d, "gates.json"))
     assert run.ledger.count("generation=9000 AND status='OPEN'") == 0 and run.ledger.count("generation=9000") > 50
+
+
+def test_epoch_boundary_and_island_exchange_run(run):
+    run.st["epoch"] = 4                                   # the next boundary is the fifth: exchange included
+    rep = run.epoch_boundary()
+    assert rep["epoch"] == 5 and rep["honeypot_voided"] and rep["ledger_chain_ok"]
+    assert rep["exchange"] is None or {"leaders", "retention", "survivors", "demoted"} <= set(rep["exchange"])
+    assert os.path.exists(os.path.join(run.root, "reports/epochs/epoch_0005.md"))
+
+
+def test_genome_with_no_trades_fails_cleanly():
+    g = new_genome([A("tr_opening_drive", m=45, k=3.0)], regime=[A("st_late_session_trend")])    # contradictory time windows: never fires
+    res, _ = S1.stage1(g, "A", 1)
+    assert res["pooled"]["n"] == 0 and not res["passed"] and res["score"] == 0.0

@@ -164,6 +164,8 @@ class Run:
                        "decoy": list(self.decoy_spec) if self.decoy_spec else None, "seconds_stage1": 0.0}
         self.archive = read_json(self.p("archive/map_elites.json")) if os.path.exists(self.p("archive/map_elites.json")) else {"A": {}, "B": {}}
         self.ids = {r[0] for r in self.db.execute("SELECT genome_id FROM genomes")}
+        self.beh = {(r[0], r[1], r[2], round(r[3] or 0, 6), round(r[4] or 0, 6))
+                    for r in self.db.execute("SELECT island, tf, n_trades, win_rate, pf FROM genomes WHERE n_trades > 0")}
 
     def checkpoint(self):
         self.st["ledger_last_hash"] = self.ledger.last_hash
@@ -198,7 +200,8 @@ class Run:
         return min(c, SEARCH["survey_complexity_ceiling"]) if self.phase(n) == "survey" else c
 
     def trig_key(self, g):
-        return "+".join(sorted(e["atom"] for e in g["slots"]["trigger"]["atoms"]))
+        t = [e["atom"] for e in g["slots"]["trigger"]["atoms"]] + [e["atom"] for m in g.get("ensemble", []) for e in m["trigger"]["atoms"]]
+        return "+".join(sorted(t))
 
     def novel(self, g):
         if g["genome_id"] in self.ids:
@@ -272,7 +275,16 @@ class Run:
                 if g is None:
                     op, note = "LIBRARY_PROBE", "LLM_HYPOTHESIS queue empty; share given to LIBRARY_PROBE"
             if op == "ENSEMBLE":
-                op, note = "LIBRARY_PROBE", "ENSEMBLE operator not implemented yet; share given to LIBRARY_PROBE"
+                other = self.parent(rng, island) if par is not None and phase != "survey" else None
+                if other is not None and other["generation"] != par["generation"]:
+                    fa = ATOMS[par["genome"]["slots"]["trigger"]["atoms"][0]["atom"]].fam
+                    fb = ATOMS[other["genome"]["slots"]["trigger"]["atoms"][0]["atom"]].fam
+                    if fa != fb and self.entry_overlap(par["genome"], other["genome"]) < 0.30:     # SPEC 15.11
+                        g = GN.op_ensemble(rng, par["genome"], other["genome"])
+                        if g is not None:
+                            parents = [par["generation"], other["generation"]]
+                if g is None:
+                    op, note = "LIBRARY_PROBE", "no pair with different mechanism families and trade overlap below 30% was drawn; share given to LIBRARY_PROBE"
             if op == "LIBRARY_PROBE" or (par is None and op != "LLM_HYPOTHESIS"):
                 item = self.survey_item(self.st["survey_cursor"]) if phase == "survey" else None
                 tf = self.draw_tf(rng)
@@ -296,8 +308,10 @@ class Run:
                 op = "LIBRARY_PROBE" if op != "LLM_HYPOTHESIS" else op
             elif op != "LLM_HYPOTHESIS":
                 pg = par["genome"]
-                parents = [par["generation"]]
-                if op in ("SLOT_CROSSOVER", "EXIT_TRANSPLANT", "ENTRY_TRANSPLANT"):
+                if op == "ENSEMBLE":
+                    pass                                          # built above
+                elif op in ("SLOT_CROSSOVER", "EXIT_TRANSPLANT", "ENTRY_TRANSPLANT"):
+                    parents = [par["generation"]]
                     other = self.parent(rng, island)
                     if other is None or other["generation"] == par["generation"]:
                         continue
@@ -305,6 +319,7 @@ class Run:
                     g = {"SLOT_CROSSOVER": GN.op_slot_crossover, "EXIT_TRANSPLANT": GN.op_exit_transplant,
                          "ENTRY_TRANSPLANT": GN.op_entry_transplant}[op](rng, pg, other["genome"])
                 else:
+                    parents = [par["generation"]]
                     fn = {"PARAM_STEP": GN.op_param_step, "ATOM_SWAP": GN.op_atom_swap, "ATOM_ADD": GN.op_atom_add,
                           "ATOM_DROP": GN.op_atom_drop, "INVERT": GN.op_invert, "SIMPLIFY": GN.op_simplify}[op]
                     g = fn(rng, pg, self.weights)
@@ -324,6 +339,18 @@ class Run:
                     "parent": par if parents else None, "note": note, "attempts": attempt + 1, "phase": phase,
                     "seed": int(np.random.default_rng([self.st["master_seed"], n, 1]).integers(2 ** 31))}
         return None
+
+    def entry_overlap(self, g1, g2):
+        """Share of the rarer genome's entry-signal bars that coincide with the other's (ES, primary timeframe of g1)."""
+        try:
+            ctx = EV.ctx_for("ES", g1["primary_timeframe_min"])
+            sigs = []
+            for g in (g1, g2):
+                x = compile_py.build(g)
+                sigs.append(ctx.ev(x["raw"]["long"]) | ctx.ev(x["raw"]["short"]))
+            return float((sigs[0] & sigs[1]).sum() / max(1, min(sigs[0].sum(), sigs[1].sum())))
+        except Exception:
+            return 1.0
 
     def next_llm_hypothesis(self):
         f = self.p("state/hypothesis_queue.jsonl")
@@ -530,13 +557,17 @@ class Run:
                                  "alpha": res["twin"]["win_rate_alpha_pts"], "n": m["n"]}, "complexity": g["complexity"]}
             cells = self.archive[prop["island"]]
             cur = cells.get(cell)
-            if cur is None or score > cur["best"]["score"]:
+            bkey = (prop["island"], g["primary_timeframe_min"], m["n"], round(m["win_rate"], 6), round(m["profit_factor"], 6))
+            if bkey in self.beh:                         # identical trades to an earlier genome: counted as a trial, kept out of the archive
+                reason = (reason + "; " if reason else "") + "behavioural duplicate of an earlier genome"
+            elif cur is None or score > cur["best"]["score"]:
                 old = cur["best"] if cur else None
                 cells[cell] = {"best": entry}
                 if old and old["score"] >= 0.95 * score and old["complexity"] < g["complexity"]:
                     cells[cell]["simplest"] = old
             elif score >= 0.95 * cur["best"]["score"] and g["complexity"] < cur.get("simplest", cur["best"])["complexity"]:
                 cur["simplest"] = entry
+            self.beh.add(bkey)
             if score > st["best_score"][prop["island"]]:
                 st["best_score"][prop["island"]] = score
                 st["best_generation"] = n
@@ -643,6 +674,7 @@ class Run:
             cands = [json.loads(x) for x in open(f3)]
             keep = set(_stats.benjamini_hochberg([c["p_value"] for c in cands], 0.10))
             demoted = [c["generation"] for i, c in enumerate(cands) if i not in keep]
+        exch = self.exchange() if e % 5 == 0 else None    # every 2,500 generations (SPEC 15.9)
         hp = self.honeypot_check()
         chain_ok, chain_n = self.ledger.verify_chain()
         rep = {"epoch": e, "generations": [lo, hi], "counts": cnt, "stage1_pass_rate": pass_rate, "canary_adoption_rate": adoption,
@@ -650,7 +682,7 @@ class Run:
                "best_score": st["best_score"], "best_generation": st["best_generation"], "operator_share": st["operator_share"],
                "operator_stats": st["operator_stats"], "honeypot_voided": hp, "ledger_chain_ok": chain_ok, "ledger_records": chain_n,
                "frozen_ok": frozen_hashes() == st["frozen"], "notes": notes, "utc": utcnow(), "effective_trials": st["n_eff"],
-               "outside_false_discovery_set": demoted, "tier_counts": st["tier_counts"],
+               "outside_false_discovery_set": demoted, "tier_counts": st["tier_counts"], "exchange": exch,
                "raw_stage1_trials": self.ledger.count("stage='1' AND stress_mode='candidate' AND status='DONE'")}
         if e % 2 == 0:                                   # every 1,000 generations (SPEC 15.8)
             from orchestrator import lessons
@@ -662,6 +694,76 @@ class Run:
         if not chain_ok or not rep["frozen_ok"]:
             self.halt("Ledger chain or frozen-file hash check failed at the epoch boundary.", rep)
         return rep
+
+    def exchange(self, k=10):
+        """Island exchange (SPEC 15.9): each island's leading distinct strategies are scored on the other island's
+        folds, which never influenced them.  A leader that keeps less than half its score there, or whose profit
+        factor there is at or below 1.0, is removed from the archive; survivors migrate to the other island."""
+        from gates import stage1 as S1
+        gen_now = self.st["next_generation"] - 1
+        rows = []
+        for isl in ("A", "B"):
+            away = "B" if isl == "A" else "A"
+            cells = self.archive[isl]
+            lead = sorted(((c, v["best"]) for c, v in cells.items() if not v["best"].get("migrated_from")), key=lambda cv: -cv[1]["score"])[:k]
+            for cell, e in lead:
+                g = e["genome"]
+                tid = self.ledger.open(generation=e["generation"], stage="1e", genome_id=g["genome_id"], lineage_id=e.get("lineage_id"),
+                                       operator="ISLAND_EXCHANGE", data_slice=f"away_folds_island_{away}", instrument="ES+YM",
+                                       timeframe_min=g["primary_timeframe_min"], cost_level="base", stress_mode="candidate+twins",
+                                       seed=e["generation"], code_hash="n/a", data_hash=self.st["frozen"]["partition"][:16])
+                self.ledger.commit()
+                try:
+                    res, _ = S1.stage1(g, away, e["generation"], n_twins=200)
+                except Exception:
+                    self.ledger.close(tid, status="ABORTED")
+                    continue
+                m = res["pooled"]
+                self.ledger.close(tid, n_trades=m["n"], win_rate=m["win_rate"], profit_factor=m["profit_factor"], score=res["score"])
+                keep = res["score"] >= 0.5 * e["score"] and m["profit_factor"] > 1.0
+                rows.append({"generation": e["generation"], "home": isl, "tf": g["primary_timeframe_min"], "home_score": e["score"],
+                             "home_wr": e["metrics"]["win_rate"], "home_pf": e["metrics"]["pf"], "away_score": res["score"], "away_wr": m["win_rate"],
+                             "away_pf": m["profit_factor"], "away_alpha": res["twin"]["win_rate_alpha_pts"], "away_n": m["n"], "survived": bool(keep),
+                             "strategy": GN.describe(g).split("\n")[1][:90]})
+                if not keep:
+                    if "simplest" in cells[cell] and cells[cell]["simplest"]["generation"] != e["generation"]:
+                        cells[cell] = {"best": cells[cell]["simplest"]}
+                    else:
+                        del cells[cell]
+                    self.db.execute("UPDATE genomes SET status='DEMOTED_EXCHANGE' WHERE generation=?", [e["generation"]])
+                else:
+                    tgt = self.archive[away]
+                    if cell not in tgt or res["score"] > tgt[cell]["best"]["score"]:
+                        mig = dict(e)
+                        mig.update({"score": res["score"], "migrated_from": isl,
+                                    "metrics": {"win_rate": m["win_rate"], "pf": m["profit_factor"], "tpy": res["trades_per_year_per_instrument"],
+                                                "alpha": res["twin"]["win_rate_alpha_pts"], "n": m["n"]}})
+                        tgt[cell] = {"best": mig}
+        self.ledger.commit()
+        self.db.commit()
+        if not rows:
+            return None
+        hs, aw = np.array([r["home_score"] for r in rows]), np.array([r["away_score"] for r in rows])
+        summ = {"generation": gen_now, "leaders": len(rows), "mean_home_score": float(hs.mean()), "mean_away_score": float(aw.mean()),
+                "retention": float(aw.mean() / hs.mean()) if hs.mean() > 0 else 0.0, "mean_home_pf": float(np.mean([r["home_pf"] for r in rows])),
+                "mean_away_pf": float(np.mean([r["away_pf"] for r in rows])), "mean_home_wr": float(np.mean([r["home_wr"] for r in rows])),
+                "mean_away_wr": float(np.mean([r["away_wr"] for r in rows])), "survivors": int(sum(r["survived"] for r in rows)),
+                "demoted": int(sum(not r["survived"] for r in rows))}
+        write_json(self.p(f"reports/exchange_{gen_now:06d}.json"), {"summary": summ, "rows": rows})
+        L = [f"# Island exchange at generation {gen_now}", "", f"The {k} leading distinct strategies of each island, re-scored on the other "
+             "island's three test folds (200 geometry-matched twins). Research data only.", "",
+             f"- Mean composite score: {summ['mean_home_score']:.3f} at home, {summ['mean_away_score']:.3f} away (retention {100 * summ['retention']:.0f}%).",
+             f"- Mean win rate: {100 * summ['mean_home_wr']:.1f}% at home, {100 * summ['mean_away_wr']:.1f}% away.",
+             f"- Mean profit factor: {summ['mean_home_pf']:.2f} at home, {summ['mean_away_pf']:.2f} away.",
+             f"- Survivors (kept at least half their score and a profit factor above 1.0): {summ['survivors']} of {len(rows)}; "
+             f"{summ['demoted']} removed from the archive.", "",
+             "| Generation | Home | Timeframe | Home: score / win rate / PF | Away: score / win rate / PF / alpha / trades | Survived | Strategy |", "|---|---|---|---|---|---|---|"]
+        for r in rows:
+            L.append(f"| {r['generation']} | {r['home']} | {r['tf']} min | {r['home_score']:.3f} / {100 * r['home_wr']:.1f}% / {r['home_pf']:.2f} | "
+                     f"{r['away_score']:.3f} / {100 * r['away_wr']:.1f}% / {r['away_pf']:.2f} / {r['away_alpha']:+.1f} / {r['away_n']} | "
+                     f"{'yes' if r['survived'] else 'no'} | {r['strategy']} |")
+        write_text(self.p(f"reports/exchange_{gen_now:06d}.md"), "\n".join(L) + "\n")
+        return summ
 
     def honeypot_check(self):
         """A synthetic genome that uses the honeypot must be voided by the static audit (SPEC 15.2)."""

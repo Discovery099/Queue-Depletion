@@ -45,11 +45,15 @@ class Ledger:
         return json.loads(last)["h"]
 
     def _append(self, rec):
+        size = os.path.getsize(self.jsonl) if os.path.exists(self.jsonl) else 0
+        if size != getattr(self, "_size", size):          # another writer appended since our last write: chain from its tail
+            self.last_hash = self._tail_hash()
         body = json.dumps(rec, sort_keys=True, separators=(",", ":"))
         h = sha256_bytes((self.last_hash + body).encode())
         with open(self.jsonl, "a") as f:
             f.write(json.dumps({"p": self.last_hash, "r": rec, "h": h}, sort_keys=True, separators=(",", ":")) + "\n")
         self.last_hash = h
+        self._size = os.path.getsize(self.jsonl)
 
     def open(self, **kw):
         """Insert an OPEN row and return its trial_id.  Call before running the backtest."""

@@ -1219,26 +1219,26 @@
     "status": "STAGE1_FAIL"
    },
    "simplest": {
-    "complexity": 9,
-    "generation": 18543,
+    "complexity": 8,
+    "generation": 20903,
     "genome": {
-     "complexity": 9,
+     "complexity": 8,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "a494892043b398f0b0473a4f1741fc40dd9391696efb38836f87973dc045fcad",
+     "genome_id": "db52b57a010b46d9565c8c7097c91783c01f928a91abb15ec4e041b9de0537e1",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
-      "cooldown_minutes": 10,
+      "cooldown_minutes": 15,
       "loss_standdown": 3,
-      "max_trades_per_session": 4
+      "max_trades_per_session": 6
      },
      "slots": {
       "entry": {
-       "offset_atr": 0.5,
+       "offset_atr": 0.25,
        "type": "stop",
        "valid_minutes": 15
       },
@@ -1246,7 +1246,7 @@
        {
         "atom": "x_target_r",
         "params": {
-         "k": 0.5
+         "k": 0.4
         }
        }
       ],
@@ -1255,19 +1255,18 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_atr",
+        "atom": "r_stop_level",
         "params": {
-         "k": 1.25
+         "buf": 0.5
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_swing_break_failure",
+         "atom": "tr_false_break_prior_day",
          "params": {
-          "q": 4,
-          "r": 3
+          "q": 8
          }
         }
        ],
@@ -1277,13 +1276,13 @@
      },
      "version": 1
     },
-    "lineage_id": "L001037",
+    "lineage_id": "L000321",
     "metrics": {
-     "alpha": 0.2145414418905256,
-     "n": 2629,
-     "pf": 0.7138764102302313,
-     "tpy": 913.5887323943662,
-     "win_rate": 0.600228223659186
+     "alpha": 3.528229320325549,
+     "n": 1434,
+     "pf": 0.8199012355317862,
+     "tpy": 481.2845070422535,
+     "win_rate": 0.6617852161785216
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
@@ -2622,16 +2621,35 @@
   },
   "bofail|2|1|stop": {
    "best": {
-    "complexity": 11,
-    "generation": 14241,
+    "complexity": 13,
+    "generation": 20789,
     "genome": {
-     "complexity": 11,
+     "complexity": 13,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "1361386398b1aff307bbc1cbde8be866085e479405c7a303ed82356efa1cf89a",
+     "ensemble": [
+      {
+       "filter": [],
+       "location": [],
+       "regime": [],
+       "trigger": {
+        "atoms": [
+         {
+          "atom": "tr_range_expansion_break",
+          "params": {
+           "n": 10
+          }
+         }
+        ],
+        "combine": "SEQ",
+        "within_bars": 2
+       }
+      }
+     ],
+     "genome_id": "fe6c05d6739e31d597122968ff01325cf573a76f26808ba82e30518a020074e8",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 15,
      "sequencing": {
@@ -2671,13 +2689,6 @@
          "params": {
           "q": 8
          }
-        },
-        {
-         "atom": "tr_rsi_divergence",
-         "params": {
-          "n": 14,
-          "r": 2
-         }
         }
        ],
        "combine": "OR",
@@ -2688,13 +2699,13 @@
     },
     "lineage_id": "L003177",
     "metrics": {
-     "alpha": 2.8959215360456314,
-     "n": 967,
-     "pf": 0.9800562760555745,
-     "tpy": 340.7323943661972,
-     "win_rate": 0.49120992761116855
+     "alpha": 1.0216422909611222,
+     "n": 1138,
+     "pf": 0.9593320874299179,
+     "tpy": 393.2619718309859,
+     "win_rate": 0.5026362038664324
     },
-    "score": 0.05700919028942472,
+    "score": 0.06387520239242377,
     "status": "STAGE1_FAIL"
    }
   },
@@ -4198,16 +4209,16 @@
     "status": "STAGE1_FAIL"
    },
    "simplest": {
-    "complexity": 13,
-    "generation": 18295,
+    "complexity": 12,
+    "generation": 20259,
     "genome": {
-     "complexity": 13,
+     "complexity": 12,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "3e1d8734ceaa99915beb2be1b6e9550ee948275a45bbd83aba46bece646bb9a4",
+     "genome_id": "0e9d741d62e959e581697353cfd4e50c22d15b98046bb1c0a5c2f13a9d14f6db",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -4231,12 +4242,7 @@
       ],
       "filter": [],
       "location": [],
-      "regime": [
-       {
-        "atom": "st_both_vwap_side",
-        "params": {}
-       }
-      ],
+      "regime": [],
       "risk": {
        "stop": {
         "atom": "r_stop_atr",
@@ -4267,11 +4273,11 @@
     },
     "lineage_id": "L001037",
     "metrics": {
-     "alpha": -0.18694117430043677,
-     "n": 1517,
-     "pf": 0.7772426450141816,
-     "tpy": 538.0732394366197,
-     "win_rate": 0.6130520764667106
+     "alpha": 0.18627598455639438,
+     "n": 3558,
+     "pf": 0.822450930476616,
+     "tpy": 1235.8647887323943,
+     "win_rate": 0.6247892074198989
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
@@ -4840,7 +4846,7 @@
   "close|1|2|limit": {
    "best": {
     "complexity": 13,
-    "generation": 18797,
+    "generation": 20767,
     "genome": {
      "complexity": 13,
      "context_tf_multiples": [
@@ -4848,7 +4854,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "d2a659a176e74f8d7db93e9ba357c3a2ab488e8e6d96dc5521b98d634dea1133",
+     "genome_id": "794bd43f2120e13a63962a2a58e42b09bff2d4708024c4345402e860b7117b49",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -4878,7 +4884,7 @@
         "atom": "r_stop_swing",
         "params": {
          "buf": 0.05,
-         "n": 8
+         "n": 12
         }
        }
       },
@@ -4904,13 +4910,13 @@
     },
     "lineage_id": "L000099",
     "metrics": {
-     "alpha": 3.779020095255037,
-     "n": 2830,
-     "pf": 1.0139686547753528,
-     "tpy": 976.7661971830985,
-     "win_rate": 0.5342756183745583
+     "alpha": 3.6064103779451684,
+     "n": 2827,
+     "pf": 1.0166993220644538,
+     "tpy": 973.9267605633802,
+     "win_rate": 0.5355500530597807
     },
-    "score": 0.11321330657883992,
+    "score": 0.11565172029408337,
     "status": "STAGE1_FAIL"
    }
   },
@@ -5763,73 +5769,87 @@
   },
   "exhaust|0|0|stop": {
    "best": {
-    "complexity": 9,
-    "generation": 13495,
+    "complexity": 16,
+    "generation": 20257,
     "genome": {
-     "complexity": 9,
+     "complexity": 16,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "7ecf233043bcb1faca8efe2c195dd6501cbd00efe87c0795d2c871c42b25abf6",
+     "genome_id": "407ce343e76f16c93ad51fabf1dde867021b79504ad6937f36ca767c55cf94df",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
       "cooldown_minutes": 10,
       "loss_standdown": 3,
-      "max_trades_per_session": 6
+      "max_trades_per_session": 4
      },
      "slots": {
       "entry": {
        "offset_atr": 0.5,
        "type": "stop",
-       "valid_minutes": 30
+       "valid_minutes": 15
       },
       "exit": [
        {
-        "atom": "x_target_atr",
+        "atom": "x_target_r",
         "params": {
-         "k": 1.5
+         "k": 0.6
         }
        }
       ],
       "filter": [],
       "location": [],
-      "regime": [],
+      "regime": [
+       {
+        "atom": "st_late_session_trend",
+        "params": {
+         "start": 330
+        }
+       }
+      ],
       "risk": {
        "stop": {
         "atom": "r_stop_swing",
         "params": {
-         "buf": 0.5,
-         "n": 12
+         "buf": 0.05,
+         "n": 8
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_climax_reversal",
+         "atom": "tr_macd_histogram_fade",
          "params": {
-          "n": 10
+          "n": 20
+         }
+        },
+        {
+         "atom": "tr_roc_thrust",
+         "params": {
+          "k": 2.0,
+          "n": 8
          }
         }
        ],
-       "combine": "AND",
-       "within_bars": 3
+       "combine": "OR",
+       "within_bars": 5
       }
      },
      "version": 1
     },
     "lineage_id": "L001037",
     "metrics": {
-     "alpha": 5.544836404933218,
-     "n": 256,
-     "pf": 1.0642286772364309,
-     "tpy": 79.50422535211267,
-     "win_rate": 0.58984375
+     "alpha": 8.25538511472258,
+     "n": 449,
+     "pf": 1.269553011361144,
+     "tpy": 156.87887323943661,
+     "win_rate": 0.5924276169265034
     },
-    "score": 0.013910802632906984,
+    "score": 0.027040952750131905,
     "status": "STAGE1_FAIL"
    }
   },
@@ -7351,16 +7371,16 @@
   },
   "exhaust|2|0|market": {
    "best": {
-    "complexity": 4,
-    "generation": 9447,
+    "complexity": 6,
+    "generation": 20539,
     "genome": {
-     "complexity": 4,
+     "complexity": 6,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "d2406a1a509aa5920ea73f872ebf513c8b55895f7f3012ecfd91ec05d75819cf",
+     "genome_id": "cddbe2bce95258ff4be01b0a8482417eb7cc586989521ce9532d8eaeef4cf1cd",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 15,
      "sequencing": {
@@ -7376,8 +7396,10 @@
       },
       "exit": [
        {
-        "atom": "x_target_location_level",
-        "params": {}
+        "atom": "x_partial",
+        "params": {
+         "r": 0.5
+        }
        }
       ],
       "filter": [],
@@ -7385,9 +7407,10 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_atr",
+        "atom": "r_stop_swing",
         "params": {
-         "k": 1.25
+         "buf": 0.25,
+         "n": 8
         }
        }
       },
@@ -7404,15 +7427,15 @@
      },
      "version": 1
     },
-    "lineage_id": "L007577",
+    "lineage_id": "L000759",
     "metrics": {
-     "alpha": 3.304886629694809,
-     "n": 444,
-     "pf": 1.0469038666347887,
-     "tpy": 151.2,
-     "win_rate": 0.5157657657657657
+     "alpha": 4.961437192032192,
+     "n": 425,
+     "pf": 1.1652318132327248,
+     "tpy": 147.65070422535211,
+     "win_rate": 0.6164705882352941
     },
-    "score": 0.09668352747600513,
+    "score": 0.2479291118933849,
     "status": "STAGE1_FAIL"
    }
   },
@@ -7499,7 +7522,7 @@
   "exhaust|2|1|limit": {
    "best": {
     "complexity": 7,
-    "generation": 18851,
+    "generation": 20099,
     "genome": {
      "complexity": 7,
      "context_tf_multiples": [
@@ -7507,7 +7530,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "51c2612c035a96fe03174e5adb3b9a772f3df6e2696b432bba011b64d0f8a0be",
+     "genome_id": "3ecd28265b43684f6c1b51cb756b2b9b0997cf4520dba0c25cfa6e6852123e63",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 15,
      "sequencing": {
@@ -7525,7 +7548,7 @@
        {
         "atom": "x_target_r",
         "params": {
-         "k": 1.0
+         "k": 0.8
         }
        }
       ],
@@ -7555,13 +7578,13 @@
     },
     "lineage_id": "L000759",
     "metrics": {
-     "alpha": 0.9523008465378735,
-     "n": 813,
-     "pf": 1.030589941680684,
-     "tpy": 271.1661971830986,
-     "win_rate": 0.4969249692496925
+     "alpha": 2.3197227608992232,
+     "n": 840,
+     "pf": 1.0168431384833865,
+     "tpy": 278.9746478873239,
+     "win_rate": 0.5392857142857143
     },
-    "score": 0.06825685136168566,
+    "score": 0.12321807874590124,
     "status": "STAGE1_FAIL"
    }
   },
@@ -7703,6 +7726,73 @@
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 7,
+    "generation": 20687,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "d025cc28cfa09454f3ea8b20c0bd1f67cdaea38f6e3a4786a5a14e6cb06b58d0",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 1.0,
+       "type": "stop",
+       "valid_minutes": 60
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 3.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_signal_bar",
+        "params": {
+         "buf": 0.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_engulfing",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L001037",
+    "metrics": {
+     "alpha": 4.199572515274902,
+     "n": 1236,
+     "pf": 1.0584983317503227,
+     "tpy": 420.9464788732394,
+     "win_rate": 0.36650485436893204
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
    }
   },
   "exhaust|2|2|market": {
@@ -7777,7 +7867,7 @@
   "exhaust|3|0|limit": {
    "best": {
     "complexity": 7,
-    "generation": 19295,
+    "generation": 20383,
     "genome": {
      "complexity": 7,
      "context_tf_multiples": [
@@ -7785,17 +7875,17 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "e776e54268b8cf207627c7e52fc2ebb2f4825e3e1164fee0da992787bda27ccf",
+     "genome_id": "9872f19e38109acfd6c9d7a1f1e892c68b01dec3ac4a0ba9216acc631e3ab916",
      "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 15,
+     "primary_timeframe_min": 60,
      "sequencing": {
       "cooldown_minutes": 10,
       "loss_standdown": 3,
-      "max_trades_per_session": 4
+      "max_trades_per_session": 6
      },
      "slots": {
       "entry": {
-       "offset_atr": 0.25,
+       "offset_atr": 0.1,
        "type": "limit",
        "valid_minutes": 10
       },
@@ -7803,7 +7893,7 @@
        {
         "atom": "x_target_r",
         "params": {
-         "k": 2.0
+         "k": 3.0
         }
        }
       ],
@@ -7812,16 +7902,16 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_atr",
+        "atom": "r_stop_level",
         "params": {
-         "k": 2.5
+         "buf": 0.75
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_engulfing",
+         "atom": "tr_pin_bar",
          "params": {}
         }
        ],
@@ -7831,15 +7921,15 @@
      },
      "version": 1
     },
-    "lineage_id": "L007577",
+    "lineage_id": "L000775",
     "metrics": {
-     "alpha": 1.2172141583906282,
-     "n": 693,
-     "pf": 1.0971805811808117,
-     "tpy": 234.25352112676055,
-     "win_rate": 0.46464646464646464
+     "alpha": 3.7233828846926444,
+     "n": 131,
+     "pf": 1.3766528925619834,
+     "tpy": 38.33239436619718,
+     "win_rate": 0.48854961832061067
     },
-    "score": 0.022822220659863363,
+    "score": 0.023788194285329568,
     "status": "STAGE1_FAIL"
    }
   },
@@ -8851,18 +8941,18 @@
   },
   "intermarket|1|1|limit": {
    "best": {
-    "complexity": 8,
-    "generation": 9327,
+    "complexity": 9,
+    "generation": 20493,
     "genome": {
-     "complexity": 8,
+     "complexity": 9,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "76329a8b2c8b34ee783046fc5fb51f08cd8239061efa01d3bb32122da5986142",
+     "genome_id": "26cc76183bc26630c396ef8acbbc0c345fc5fce7edda7fbe2662bf12a7eb4025",
      "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 15,
+     "primary_timeframe_min": 5,
      "sequencing": {
       "cooldown_minutes": 10,
       "loss_standdown": 3,
@@ -8870,7 +8960,7 @@
      },
      "slots": {
       "entry": {
-       "offset_atr": 0.25,
+       "offset_atr": 0.5,
        "type": "limit",
        "valid_minutes": 15
       },
@@ -8889,16 +8979,18 @@
        "stop": {
         "atom": "r_stop_swing",
         "params": {
-         "buf": 0.1,
-         "n": 12
+         "buf": 0.25,
+         "n": 8
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_relative_strength_turn",
-         "params": {}
+         "atom": "tr_companion_leads_break",
+         "params": {
+          "n": 10
+         }
         }
        ],
        "combine": "AND",
@@ -8907,80 +8999,15 @@
      },
      "version": 1
     },
-    "lineage_id": "L000759",
+    "lineage_id": "L002239",
     "metrics": {
-     "alpha": 0.9520202363087926,
-     "n": 891,
-     "pf": 0.8668464243845252,
-     "tpy": 298.14084507042253,
-     "win_rate": 0.5443322109988776
+     "alpha": 5.852390289253306,
+     "n": 1130,
+     "pf": 1.066874318194867,
+     "tpy": 375.51549295774646,
+     "win_rate": 0.6469026548672566
     },
-    "score": 0.0,
-    "status": "STAGE1_FAIL"
-   },
-   "simplest": {
-    "complexity": 6,
-    "generation": 19205,
-    "genome": {
-     "complexity": 6,
-     "context_tf_multiples": [
-      4,
-      12
-     ],
-     "direction": "both_mirrored",
-     "genome_id": "0d27074b532716de10d93915f083812add5d43a84cc65ea8aef258306028a810",
-     "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 5,
-     "sequencing": {
-      "cooldown_minutes": 10,
-      "loss_standdown": 3,
-      "max_trades_per_session": 6
-     },
-     "slots": {
-      "entry": {
-       "offset_atr": 0.25,
-       "type": "limit",
-       "valid_minutes": 15
-      },
-      "exit": [
-       {
-        "atom": "x_target_location_level",
-        "params": {}
-       }
-      ],
-      "filter": [],
-      "location": [],
-      "regime": [],
-      "risk": {
-       "stop": {
-        "atom": "r_stop_session_extreme",
-        "params": {
-         "buf": 0.1
-        }
-       }
-      },
-      "trigger": {
-       "atoms": [
-        {
-         "atom": "tr_companion_reclaim",
-         "params": {}
-        }
-       ],
-       "combine": "AND",
-       "within_bars": 3
-      }
-     },
-     "version": 1
-    },
-    "lineage_id": "L002003",
-    "metrics": {
-     "alpha": 1.3422200011161067,
-     "n": 878,
-     "pf": 0.8344162572685936,
-     "tpy": 307.369014084507,
-     "win_rate": 0.4612756264236902
-    },
-    "score": 0.0,
+    "score": 0.2563445141324935,
     "status": "STAGE1_FAIL"
    }
   },
@@ -11889,6 +11916,76 @@
     },
     "score": 0.2743628355513642,
     "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 6,
+    "generation": 20299,
+    "genome": {
+     "complexity": 6,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "59066a69ea2a9259d31e38a7bbf4f37d5a14ecbc3742926868ec9269fbc8d233",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 15,
+      "loss_standdown": 3,
+      "max_trades_per_session": 3
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_r",
+        "params": {
+         "k": 0.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_internal_bar_strength",
+         "inv": true,
+         "params": {
+          "thr": 0.2
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000759",
+    "metrics": {
+     "alpha": 1.3588541228999218,
+     "n": 1969,
+     "pf": 1.0012085999090778,
+     "tpy": 697.081690140845,
+     "win_rate": 0.6663280853224988
+    },
+    "score": 0.2636091719463441,
+    "status": "STAGE1_FAIL"
    }
   },
   "meanrev|1|2|stop": {
@@ -13180,6 +13277,88 @@
     },
     "score": 0.40348836046623293,
     "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 13,
+    "generation": 20085,
+    "genome": {
+     "complexity": 13,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "e09a60ba819dd67ce1971de32edd3bc50ce326c71b563a958ba49c288dea7864",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 4
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 0.5
+        }
+       },
+       {
+        "atom": "x_invalidate_macd",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_opening_drive",
+         "inv": true,
+         "params": {
+          "k": 2.0,
+          "m": 15
+         }
+        },
+        {
+         "atom": "tr_roc_thrust",
+         "params": {
+          "k": 3.0,
+          "n": 8
+         }
+        }
+       ],
+       "combine": "OR",
+       "within_bars": 5
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000759",
+    "metrics": {
+     "alpha": 14.370151153309275,
+     "n": 491,
+     "pf": 1.0858015913835355,
+     "tpy": 173.91549295774647,
+     "win_rate": 0.7209775967413442
+    },
+    "score": 0.38720885452738946,
+    "status": "STAGE1_FAIL"
    }
   },
   "open|0|0|stop": {
@@ -13270,16 +13449,16 @@
   },
   "open|0|1|limit": {
    "best": {
-    "complexity": 9,
-    "generation": 16281,
+    "complexity": 10,
+    "generation": 20367,
     "genome": {
-     "complexity": 9,
+     "complexity": 10,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "8147de40008f673bf7e470f26edfc1fee96003d9cea8ba94104fb9f7ebf08ef5",
+     "genome_id": "6f7ab284c62864cde575e88e556d98c386c68f1a69c1860ce80d703cbf4ddda2",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -13295,8 +13474,10 @@
       },
       "exit": [
        {
-        "atom": "x_target_location_level",
-        "params": {}
+        "atom": "x_target_r",
+        "params": {
+         "k": 0.5
+        }
        }
       ],
       "filter": [],
@@ -13306,7 +13487,7 @@
        "stop": {
         "atom": "r_stop_atr",
         "params": {
-         "k": 1.0
+         "k": 1.5
         }
        }
       },
@@ -13327,13 +13508,13 @@
     },
     "lineage_id": "L002003",
     "metrics": {
-     "alpha": 3.5178380869897774,
-     "n": 1192,
-     "pf": 0.9800153614368852,
-     "tpy": 410.29859154929574,
-     "win_rate": 0.5067114093959731
+     "alpha": 2.5135789737370517,
+     "n": 1208,
+     "pf": 1.0407560453015,
+     "tpy": 416.68732394366197,
+     "win_rate": 0.6647350993377483
     },
-    "score": 0.07638543635476967,
+    "score": 0.23612036573426645,
     "status": "STAGE1_FAIL"
    }
   },
@@ -14338,7 +14519,7 @@
   "open|1|2|stop": {
    "best": {
     "complexity": 15,
-    "generation": 19059,
+    "generation": 20293,
     "genome": {
      "complexity": 15,
      "context_tf_multiples": [
@@ -14346,7 +14527,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "c66eb620a2993468e4f5657fca0ee736d8370dbd1630ea578f6833a7fb3bfc33",
+     "genome_id": "6c2d253719a13f90eebb3eb2e44e709f26865a08b0aef96fbdda31ea2753ced2",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -14364,7 +14545,7 @@
        {
         "atom": "x_target_r",
         "params": {
-         "k": 0.5
+         "k": 0.6
         }
        }
       ],
@@ -14375,7 +14556,7 @@
        "stop": {
         "atom": "r_stop_swing",
         "params": {
-         "buf": 0.25,
+         "buf": 0.05,
          "n": 8
         }
        }
@@ -14405,90 +14586,13 @@
     },
     "lineage_id": "L001037",
     "metrics": {
-     "alpha": 6.070103738510091,
-     "n": 1536,
-     "pf": 1.026869029207397,
-     "tpy": 542.3323943661971,
-     "win_rate": 0.666015625
+     "alpha": 8.823059511894172,
+     "n": 1499,
+     "pf": 1.0954315580101144,
+     "tpy": 526.0056338028169,
+     "win_rate": 0.6397598398932621
     },
-    "score": 0.2811167803618745,
-    "status": "STAGE1_FAIL"
-   },
-   "simplest": {
-    "complexity": 14,
-    "generation": 19419,
-    "genome": {
-     "complexity": 14,
-     "context_tf_multiples": [
-      4,
-      12
-     ],
-     "direction": "both_mirrored",
-     "genome_id": "cef4c11449c7b306c2cba3e4a8323e9969c1fc74227d0bbcfe393260b5cd77c5",
-     "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 5,
-     "sequencing": {
-      "cooldown_minutes": 10,
-      "loss_standdown": 3,
-      "max_trades_per_session": 6
-     },
-     "slots": {
-      "entry": {
-       "offset_atr": 0.5,
-       "type": "stop",
-       "valid_minutes": 15
-      },
-      "exit": [
-       {
-        "atom": "x_target_r",
-        "params": {
-         "k": 0.5
-        }
-       }
-      ],
-      "filter": [],
-      "location": [],
-      "regime": [],
-      "risk": {
-       "stop": {
-        "atom": "r_stop_swing",
-        "params": {
-         "buf": 0.05,
-         "n": 12
-        }
-       }
-      },
-      "trigger": {
-       "atoms": [
-        {
-         "atom": "tr_initial_balance_extension",
-         "params": {
-          "x": 0.5
-         }
-        },
-        {
-         "atom": "tr_roc_thrust",
-         "params": {
-          "k": 2.0,
-          "n": 5
-         }
-        }
-       ],
-       "combine": "OR",
-       "within_bars": 5
-      }
-     },
-     "version": 1
-    },
-    "lineage_id": "L001037",
-    "metrics": {
-     "alpha": 6.600475537241135,
-     "n": 2066,
-     "pf": 1.0289785062013654,
-     "tpy": 717.6676056338027,
-     "win_rate": 0.6631171345595354
-    },
-    "score": 0.2746045498327761,
+    "score": 0.28561899952730896,
     "status": "STAGE1_FAIL"
    }
   },
@@ -15167,6 +15271,86 @@
     "status": "STAGE1_FAIL"
    }
   },
+  "open|2|2|stop": {
+   "best": {
+    "complexity": 15,
+    "generation": 20927,
+    "genome": {
+     "complexity": 15,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "f9d1615e126175df4fc4295ca686923a3b4e8566903691aff7f4898bc11d6ba1",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.5,
+       "type": "stop",
+       "valid_minutes": 15
+      },
+      "exit": [
+       {
+        "atom": "x_trail_r",
+        "params": {
+         "dist": 0.75,
+         "start": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.25,
+         "n": 5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_initial_balance_extension",
+         "params": {
+          "x": 0.25
+         }
+        },
+        {
+         "atom": "tr_roc_thrust",
+         "params": {
+          "k": 2.0,
+          "n": 5
+         }
+        }
+       ],
+       "combine": "OR",
+       "within_bars": 5
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L001037",
+    "metrics": {
+     "alpha": 5.956668606813742,
+     "n": 1512,
+     "pf": 1.1151028205416338,
+     "tpy": 535.9436619718309,
+     "win_rate": 0.5231481481481481
+    },
+    "score": 0.12674655268612278,
+    "status": "STAGE1_FAIL"
+   }
+  },
   "open|3|0|limit": {
    "best": {
     "complexity": 12,
@@ -15472,6 +15656,83 @@
   },
   "open|3|1|market": {
    "best": {
+    "complexity": 12,
+    "generation": 20139,
+    "genome": {
+     "complexity": 12,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "886dfac142007472d2bf9e1748c19f29b23baf9e71645d6df2b528a5e2494101",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 30,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 3
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_trail_r",
+        "params": {
+         "dist": 0.75,
+         "start": 1.0
+        }
+       },
+       {
+        "atom": "x_partial",
+        "params": {
+         "r": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.5,
+         "n": 5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_opening_range_break",
+         "params": {
+          "m": 60
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L004849",
+    "metrics": {
+     "alpha": 4.055276619931797,
+     "n": 715,
+     "pf": 1.1423484581325183,
+     "tpy": 247.03098591549295,
+     "win_rate": 0.5286713286713287
+    },
+    "score": 0.12242716644883832,
+    "status": "STAGE1_FAIL"
+   },
+   "simplest": {
     "complexity": 10,
     "generation": 13811,
     "genome": {
@@ -15922,7 +16183,7 @@
   "sweep|0|1|market": {
    "best": {
     "complexity": 6,
-    "generation": 19483,
+    "generation": 20857,
     "genome": {
      "complexity": 6,
      "context_tf_multiples": [
@@ -15930,13 +16191,13 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "aee849300909a9f6ab6e1bd638fda84bbf0294e65a36cdb901dd0af5524639d3",
+     "genome_id": "5e4a87b373e13d41e774357ce793174a110f16428611cfe801cd7b3da3f30da4",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
-      "cooldown_minutes": 10,
+      "cooldown_minutes": 15,
       "loss_standdown": 3,
-      "max_trades_per_session": 6
+      "max_trades_per_session": 4
      },
      "slots": {
       "entry": {
@@ -15946,9 +16207,9 @@
       },
       "exit": [
        {
-        "atom": "x_target_atr",
+        "atom": "x_target_r",
         "params": {
-         "k": 1.0
+         "k": 0.5
         }
        }
       ],
@@ -15959,7 +16220,7 @@
        "stop": {
         "atom": "r_stop_swing",
         "params": {
-         "buf": 0.05,
+         "buf": 0.1,
          "n": 12
         }
        }
@@ -15980,13 +16241,13 @@
     },
     "lineage_id": "L000099",
     "metrics": {
-     "alpha": 1.9001897533206913,
-     "n": 816,
-     "pf": 0.9861721823651932,
-     "tpy": 284.65352112676055,
-     "win_rate": 0.5551470588235294
+     "alpha": 3.78880706607736,
+     "n": 765,
+     "pf": 1.0555416038841454,
+     "tpy": 261.2281690140845,
+     "win_rate": 0.6745098039215687
     },
-    "score": 0.12726390630742776,
+    "score": 0.2838933130753067,
     "status": "STAGE1_FAIL"
    }
   },
@@ -17996,7 +18257,7 @@
   "sweep|3|0|market": {
    "best": {
     "complexity": 10,
-    "generation": 17915,
+    "generation": 20217,
     "genome": {
      "complexity": 10,
      "context_tf_multiples": [
@@ -18004,7 +18265,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "82a4e768bebb3799cdb282db603438c24491c10c188abb39c45217cd876892e9",
+     "genome_id": "a1392dbe366671a5dd0c9181b1aa5114e6263c099cbff8c0969de4b188a6241c",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 60,
      "sequencing": {
@@ -18028,7 +18289,7 @@
        {
         "atom": "x_trail_r",
         "params": {
-         "dist": 1.0,
+         "dist": 0.75,
          "start": 1.0
         }
        }
@@ -18066,13 +18327,13 @@
     },
     "lineage_id": "L000291",
     "metrics": {
-     "alpha": 10.327812284334026,
+     "alpha": 7.964816874716762,
      "n": 135,
-     "pf": 1.2511080009330535,
+     "pf": 1.2734803406837008,
      "tpy": 42.59154929577465,
-     "win_rate": 0.5555555555555556
+     "win_rate": 0.562962962962963
     },
-    "score": 0.07645928127751661,
+    "score": 0.08368012131338534,
     "status": "STAGE1_FAIL"
    }
   },
@@ -18979,7 +19240,7 @@
   "trend|1|0|market": {
    "best": {
     "complexity": 10,
-    "generation": 18739,
+    "generation": 20711,
     "genome": {
      "complexity": 10,
      "context_tf_multiples": [
@@ -18987,11 +19248,11 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "dc966b8df7deebb4d2f87a6e1057359c714e4ba5e18224503831f06751479eb0",
+     "genome_id": "e1c41d9d3bf3352cc195394faff19171e0ea75670fb6acddda9a133e7b627051",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
-      "cooldown_minutes": 10,
+      "cooldown_minutes": 15,
       "loss_standdown": 3,
       "max_trades_per_session": 6
      },
@@ -19015,7 +19276,7 @@
        {
         "atom": "st_gap_direction",
         "params": {
-         "g": 0.001
+         "g": 0.002
         }
        }
       ],
@@ -19033,7 +19294,7 @@
         {
          "atom": "tr_trail_flip",
          "params": {
-          "f": 3.0,
+          "f": 3.5,
           "n": 7
          }
         }
@@ -19046,13 +19307,13 @@
     },
     "lineage_id": "L000099",
     "metrics": {
-     "alpha": 10.872580931492248,
-     "n": 455,
-     "pf": 1.5197451768197778,
-     "tpy": 157.5887323943662,
-     "win_rate": 0.7494505494505495
+     "alpha": 12.242420395670795,
+     "n": 306,
+     "pf": 1.607295097849254,
+     "tpy": 105.05915492957746,
+     "win_rate": 0.7679738562091504
     },
-    "score": 0.5902163772608485,
+    "score": 0.6283857904680995,
     "status": "STAGE1_FAIL"
    }
   },
@@ -19274,22 +19535,22 @@
   },
   "trend|1|1|market": {
    "best": {
-    "complexity": 10,
-    "generation": 16201,
+    "complexity": 8,
+    "generation": 20987,
     "genome": {
-     "complexity": 10,
+     "complexity": 8,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "8f350449401166f39909dedc9323f5290669ba23706520ab8202b64254d44374",
+     "genome_id": "2eeb5ae3eb8e89f6c8b15e04a71127bcc4924c502834630954b6bb0ebb5f5e66",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
       "cooldown_minutes": 15,
       "loss_standdown": 3,
-      "max_trades_per_session": 4
+      "max_trades_per_session": 6
      },
      "slots": {
       "entry": {
@@ -19307,14 +19568,7 @@
       ],
       "filter": [],
       "location": [],
-      "regime": [
-       {
-        "atom": "st_hma_slope",
-        "params": {
-         "n": 36
-        }
-       }
-      ],
+      "regime": [],
       "risk": {
        "stop": {
         "atom": "r_stop_swing",
@@ -19329,8 +19583,8 @@
         {
          "atom": "tr_trail_flip",
          "params": {
-          "f": 3.0,
-          "n": 14
+          "f": 3.5,
+          "n": 7
          }
         }
        ],
@@ -19342,13 +19596,13 @@
     },
     "lineage_id": "L000099",
     "metrics": {
-     "alpha": 7.885835221309955,
-     "n": 772,
-     "pf": 1.3443350465457098,
-     "tpy": 261.2281690140845,
-     "win_rate": 0.7331606217616581
+     "alpha": 7.786737636424423,
+     "n": 812,
+     "pf": 1.2512505765069004,
+     "tpy": 287.49295774647885,
+     "win_rate": 0.7364532019704434
     },
-    "score": 0.46962619884852946,
+    "score": 0.47599923093811736,
     "status": "STAGE1_FAIL"
    }
   },
@@ -19817,18 +20071,18 @@
   },
   "trend|2|0|stop": {
    "best": {
-    "complexity": 10,
-    "generation": 16773,
+    "complexity": 12,
+    "generation": 20627,
     "genome": {
-     "complexity": 10,
+     "complexity": 12,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "0e67d7f0579ee0eb4a192e3ff1b9220773aaec21f32baa2c73a118650390c2aa",
+     "genome_id": "2cbb89e406501a4ce212251a66bf7af44c9310cc5fab4438cb72dc25a82e0002",
      "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 15,
+     "primary_timeframe_min": 5,
      "sequencing": {
       "cooldown_minutes": 10,
       "loss_standdown": 3,
@@ -19838,35 +20092,42 @@
       "entry": {
        "offset_atr": 0.5,
        "type": "stop",
-       "valid_minutes": 60
+       "valid_minutes": 15
       },
       "exit": [
        {
-        "atom": "x_target_r",
+        "atom": "x_partial",
         "params": {
-         "k": 0.5
+         "r": 0.5
         }
        }
       ],
       "filter": [],
       "location": [],
-      "regime": [],
+      "regime": [
+       {
+        "atom": "st_session_range_position",
+        "params": {
+         "thr": 0.6
+        }
+       }
+      ],
       "risk": {
        "stop": {
         "atom": "r_stop_swing",
         "params": {
-         "buf": 0.05,
-         "n": 12
+         "buf": 0.25,
+         "n": 8
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_ema_cross",
+         "atom": "tr_trail_flip",
          "params": {
-          "f": 13,
-          "s": 55
+          "f": 3.0,
+          "n": 7
          }
         }
        ],
@@ -19876,15 +20137,15 @@
      },
      "version": 1
     },
-    "lineage_id": "L000759",
+    "lineage_id": "L000099",
     "metrics": {
-     "alpha": 7.767433369843002,
-     "n": 264,
-     "pf": 1.1850929296800152,
-     "tpy": 92.99154929577465,
-     "win_rate": 0.6439393939393939
+     "alpha": 8.509152682504617,
+     "n": 488,
+     "pf": 1.2229002104572662,
+     "tpy": 167.52676056338026,
+     "win_rate": 0.6557377049180327
     },
-    "score": 0.24079272489756942,
+    "score": 0.3429035122657213,
     "status": "STAGE1_FAIL"
    }
   },
@@ -20048,40 +20309,34 @@
   },
   "trend|2|1|stop": {
    "best": {
-    "complexity": 13,
-    "generation": 2741,
+    "complexity": 10,
+    "generation": 20909,
     "genome": {
-     "complexity": 13,
+     "complexity": 10,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "8e8d27cf3f5ed47fbab6373ad95cd007e7ba1c6d826c1a84cba12ee70f008a30",
+     "genome_id": "07416b8a720a60dc9374fe39fc91b0ffcc53ceb06b1eca983eb5090e3d268bb4",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
-      "cooldown_minutes": 10,
+      "cooldown_minutes": 15,
       "loss_standdown": 3,
-      "max_trades_per_session": 6
+      "max_trades_per_session": 3
      },
      "slots": {
       "entry": {
-       "offset_atr": 1.0,
+       "offset_atr": 0.5,
        "type": "stop",
-       "valid_minutes": 60
+       "valid_minutes": 15
       },
       "exit": [
        {
-        "atom": "x_target_r",
-        "params": {
-         "k": 3.0
-        }
-       },
-       {
         "atom": "x_trail_r",
         "params": {
-         "dist": 1.5,
+         "dist": 0.75,
          "start": 1.0
         }
        }
@@ -20093,18 +20348,17 @@
        "stop": {
         "atom": "r_stop_swing",
         "params": {
-         "buf": 0.05,
-         "n": 12
+         "buf": 0.25,
+         "n": 5
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_supertrend_flip",
+         "atom": "tr_macd_signal_cross",
          "params": {
-          "m": 2.0,
-          "n": 10
+          "s": 3
          }
         }
        ],
@@ -20116,81 +20370,13 @@
     },
     "lineage_id": "L001037",
     "metrics": {
-     "alpha": 5.165780979338718,
-     "n": 1009,
-     "pf": 1.1405729380733671,
-     "tpy": 356.3492957746479,
-     "win_rate": 0.4222001982160555
+     "alpha": 7.652932264212753,
+     "n": 738,
+     "pf": 1.1892883396441005,
+     "tpy": 248.4507042253521,
+     "win_rate": 0.5311653116531165
     },
-    "score": 0.0,
-    "status": "STAGE1_FAIL"
-   },
-   "simplest": {
-    "complexity": 8,
-    "generation": 15837,
-    "genome": {
-     "complexity": 8,
-     "context_tf_multiples": [
-      4,
-      12
-     ],
-     "direction": "both_mirrored",
-     "genome_id": "3843e836d31741bbbef872cc0093174869392e6cf47239ceb3cb87145a9a4353",
-     "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 5,
-     "sequencing": {
-      "cooldown_minutes": 10,
-      "loss_standdown": 3,
-      "max_trades_per_session": 6
-     },
-     "slots": {
-      "entry": {
-       "offset_atr": 1.0,
-       "type": "stop",
-       "valid_minutes": 60
-      },
-      "exit": [
-       {
-        "atom": "x_target_r",
-        "params": {
-         "k": 3.0
-        }
-       }
-      ],
-      "filter": [],
-      "location": [],
-      "regime": [],
-      "risk": {
-       "stop": {
-        "atom": "r_stop_swing",
-        "params": {
-         "buf": 0.05,
-         "n": 12
-        }
-       }
-      },
-      "trigger": {
-       "atoms": [
-        {
-         "atom": "tr_vwap_retest_hold",
-         "params": {}
-        }
-       ],
-       "combine": "AND",
-       "within_bars": 3
-      }
-     },
-     "version": 1
-    },
-    "lineage_id": "L001037",
-    "metrics": {
-     "alpha": 0.5055006225976877,
-     "n": 773,
-     "pf": 0.948860588652605,
-     "tpy": 263.3577464788732,
-     "win_rate": 0.3738680465717982
-    },
-    "score": 0.0,
+    "score": 0.14068577124303264,
     "status": "STAGE1_FAIL"
    }
   },
@@ -22319,16 +22505,16 @@
   },
   "volcon|1|1|stop": {
    "best": {
-    "complexity": 13,
-    "generation": 3321,
+    "complexity": 10,
+    "generation": 20693,
     "genome": {
-     "complexity": 13,
+     "complexity": 10,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "b31d3ebfb6c6580fe9bf4647515f014549a980a4e1762b75e2ccd2bd1c60a909",
+     "genome_id": "0d40d06378221e1cf83a543af93afba23a2b252bfcb4a52f2516e21bd7ba8282",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -22338,22 +22524,15 @@
      },
      "slots": {
       "entry": {
-       "offset_atr": 1.0,
+       "offset_atr": 0.5,
        "type": "stop",
-       "valid_minutes": 60
+       "valid_minutes": 30
       },
       "exit": [
        {
-        "atom": "x_target_r",
+        "atom": "x_partial",
         "params": {
-         "k": 3.0
-        }
-       },
-       {
-        "atom": "x_trail_r",
-        "params": {
-         "dist": 1.5,
-         "start": 1.0
+         "r": 0.5
         }
        }
       ],
@@ -22364,19 +22543,18 @@
        "stop": {
         "atom": "r_stop_swing",
         "params": {
-         "buf": 0.05,
-         "n": 12
+         "buf": 0.25,
+         "n": 8
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_coil_break",
-         "inv": true,
+         "atom": "tr_squeeze_release",
          "params": {
-          "k": 2.0,
-          "n": 8
+          "m": 2.0,
+          "n": 20
          }
         }
        ],
@@ -22388,82 +22566,13 @@
     },
     "lineage_id": "L001037",
     "metrics": {
-     "alpha": -7.463850684838374,
-     "n": 921,
-     "pf": 0.9408925306782759,
-     "tpy": 317.3070422535211,
-     "win_rate": 0.30836047774158526
+     "alpha": 5.737828233389042,
+     "n": 981,
+     "pf": 1.0512294667056192,
+     "tpy": 344.28169014084506,
+     "win_rate": 0.6432212028542303
     },
-    "score": 0.0,
-    "status": "STAGE1_FAIL"
-   },
-   "simplest": {
-    "complexity": 8,
-    "generation": 8231,
-    "genome": {
-     "complexity": 8,
-     "context_tf_multiples": [
-      4,
-      12
-     ],
-     "direction": "both_mirrored",
-     "genome_id": "48f05a0ed3f6126b57c0e173d1e8b1c11cc870070ea76464c9e6ed674aef1d4c",
-     "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 5,
-     "sequencing": {
-      "cooldown_minutes": 10,
-      "loss_standdown": 3,
-      "max_trades_per_session": 6
-     },
-     "slots": {
-      "entry": {
-       "offset_atr": 0.25,
-       "type": "stop",
-       "valid_minutes": 15
-      },
-      "exit": [
-       {
-        "atom": "x_target_session_mid",
-        "params": {}
-       }
-      ],
-      "filter": [],
-      "location": [],
-      "regime": [],
-      "risk": {
-       "stop": {
-        "atom": "r_stop_percent",
-        "params": {
-         "pct": 0.002
-        }
-       }
-      },
-      "trigger": {
-       "atoms": [
-        {
-         "atom": "tr_coil_break",
-         "inv": true,
-         "params": {
-          "k": 2.0,
-          "n": 8
-         }
-        }
-       ],
-       "combine": "AND",
-       "within_bars": 3
-      }
-     },
-     "version": 1
-    },
-    "lineage_id": "L001037",
-    "metrics": {
-     "alpha": -4.073536607581968,
-     "n": 798,
-     "pf": 0.6373614490402811,
-     "tpy": 274.71549295774645,
-     "win_rate": 0.36215538847117795
-    },
-    "score": 0.0,
+    "score": 0.26548477149697647,
     "status": "STAGE1_FAIL"
    }
   },
@@ -22971,7 +23080,7 @@
   "volcon|2|0|stop": {
    "best": {
     "complexity": 10,
-    "generation": 19125,
+    "generation": 20497,
     "genome": {
      "complexity": 10,
      "context_tf_multiples": [
@@ -22979,7 +23088,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "d698170d29eecbf6df975385152d532fc29658235eb7a024fae7857b9948154c",
+     "genome_id": "68f23f9feec5037534f3e5fd899796d9a145b7dcfa2f45182685fc2f9a4217a2",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -23009,7 +23118,7 @@
         "atom": "r_stop_swing",
         "params": {
          "buf": 0.25,
-         "n": 8
+         "n": 12
         }
        }
       },
@@ -23031,13 +23140,13 @@
     },
     "lineage_id": "L001037",
     "metrics": {
-     "alpha": 6.221606648199451,
+     "alpha": 7.0764562469256,
      "n": 560,
-     "pf": 1.1165776976033575,
-     "tpy": 190.95211267605632,
-     "win_rate": 0.6571428571428571
+     "pf": 1.1237861039735537,
+     "tpy": 191.6619718309859,
+     "win_rate": 0.6589285714285714
     },
-    "score": 0.269334124008901,
+    "score": 0.27636702515824774,
     "status": "STAGE1_FAIL"
    }
   },
@@ -23254,6 +23363,75 @@
      "win_rate": 0.6520179372197309
     },
     "score": 0.304239706541715,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "volcon|2|2|market": {
+   "best": {
+    "complexity": 5,
+    "generation": 20975,
+    "genome": {
+     "complexity": 5,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "044f78945175427d18a404f41dfd4180079a1799a14d904bb3d4b23fed03361a",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 10,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_narrow_range_break",
+         "params": {
+          "n": 7
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L014433",
+    "metrics": {
+     "alpha": 2.31478317691024,
+     "n": 1506,
+     "pf": 0.9763506927007947,
+     "tpy": 527.425352112676,
+     "win_rate": 0.5159362549800797
+    },
+    "score": 0.0,
     "status": "STAGE1_FAIL"
    }
   },
@@ -24860,6 +25038,77 @@
   },
   "volexp|1|2|limit": {
    "best": {
+    "complexity": 10,
+    "generation": 20019,
+    "genome": {
+     "complexity": 10,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "16eb97007440a5cc56c6bd08b9f55c8fb7e84ee4ad8706dd6033ab3ab27483fd",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.25,
+       "type": "limit",
+       "valid_minutes": 15
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.0
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.05,
+         "n": 12
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_bollinger_break",
+         "params": {
+          "k": 1.5,
+          "n": 30
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L001037",
+    "metrics": {
+     "alpha": 3.793358815099257,
+     "n": 1908,
+     "pf": 1.002023725420935,
+     "tpy": 670.1070422535211,
+     "win_rate": 0.6645702306079665
+    },
+    "score": 0.24695679272862936,
+    "status": "STAGE1_FAIL"
+   },
+   "simplest": {
     "complexity": 9,
     "generation": 15425,
     "genome": {
@@ -26109,6 +26358,73 @@
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 7,
+    "generation": 20664,
+    "genome": {
+     "complexity": 7,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "73bad255cb056c3fd39e1617b6f4587525bff30736bf97221cf8f0922e9b0536",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.75,
+       "type": "stop",
+       "valid_minutes": 15
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 0.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_signal_bar",
+        "params": {
+         "buf": 0.1
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_two_bar_reversal",
+         "params": {}
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000062",
+    "metrics": {
+     "alpha": 2.500000000000002,
+     "n": 40,
+     "pf": 0.4663912880210289,
+     "tpy": 12.067605633802817,
+     "win_rate": 0.525
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
    }
   },
   "bofail|0|1|limit": {
@@ -26929,18 +27245,18 @@
   },
   "bofail|1|1|limit": {
    "best": {
-    "complexity": 13,
-    "generation": 19426,
+    "complexity": 11,
+    "generation": 20738,
     "genome": {
-     "complexity": 13,
+     "complexity": 11,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "67f757fa4a80f5b30fc9a49c01e59699817e5541c714ef0bb791a62d7eba00dc",
+     "genome_id": "8da31a2f6006093f34b9db13b02063f16f29e628052373c2e56057f1fae0cf46",
      "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 15,
+     "primary_timeframe_min": 5,
      "sequencing": {
       "cooldown_minutes": 10,
       "loss_standdown": 3,
@@ -26948,33 +27264,32 @@
      },
      "slots": {
       "entry": {
-       "offset_atr": 0.25,
+       "offset_atr": 0.75,
        "type": "limit",
-       "valid_minutes": 10
+       "valid_minutes": 15
       },
       "exit": [
        {
-        "atom": "x_target_atr",
+        "atom": "x_target_r",
         "params": {
-         "k": 0.75
+         "k": 0.5
         }
        }
       ],
-      "filter": [
-       {
-        "atom": "f_weekday_block",
-        "params": {
-         "day": 3
-        }
-       }
-      ],
+      "filter": [],
       "location": [],
-      "regime": [],
+      "regime": [
+       {
+        "atom": "st_vwap_side",
+        "params": {}
+       }
+      ],
       "risk": {
        "stop": {
-        "atom": "r_stop_atr",
+        "atom": "r_stop_swing",
         "params": {
-         "k": 1.0
+         "buf": 0.5,
+         "n": 12
         }
        }
       },
@@ -26984,7 +27299,7 @@
          "atom": "tr_failed_break",
          "params": {
           "n": 20,
-          "q": 4
+          "q": 8
          }
         }
        ],
@@ -26994,15 +27309,15 @@
      },
      "version": 1
     },
-    "lineage_id": "L000088",
+    "lineage_id": "L000180",
     "metrics": {
-     "alpha": 2.84877058620292,
-     "n": 800,
-     "pf": 1.002529239021575,
-     "tpy": 271.87605633802815,
-     "win_rate": 0.54875
+     "alpha": 3.6817451481157004,
+     "n": 925,
+     "pf": 0.9976628456047189,
+     "tpy": 327.2450704225352,
+     "win_rate": 0.6454054054054054
     },
-    "score": 0.05882581539902547,
+    "score": 0.2373616690034928,
     "status": "STAGE1_FAIL"
    }
   },
@@ -27438,6 +27753,74 @@
      "pf": 0.9140629320356135,
      "tpy": 1230.8957746478873,
      "win_rate": 0.4542595769010863
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 8,
+    "generation": 20710,
+    "genome": {
+     "complexity": 8,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "69910942ec1dbfe9718f3649b697e0af12aa6edde9b021086ad0ba0ea8c37e5d",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.1,
+       "type": "stop",
+       "valid_minutes": 15
+      },
+      "exit": [
+       {
+        "atom": "x_target_vwap",
+        "params": {}
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_swing_break_failure",
+         "params": {
+          "q": 8,
+          "r": 3
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000066",
+    "metrics": {
+     "alpha": -0.9038938751383563,
+     "n": 2638,
+     "pf": 0.788249781476941,
+     "tpy": 934.1746478873239,
+     "win_rate": 0.44275966641395
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
@@ -28512,7 +28895,7 @@
   "close|0|0|market": {
    "best": {
     "complexity": 9,
-    "generation": 12438,
+    "generation": 20650,
     "genome": {
      "complexity": 9,
      "context_tf_multiples": [
@@ -28520,7 +28903,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "159269b7885fdf378fcdb2506fea2da2c4d382494c24c3edefb5991ae5d638f4",
+     "genome_id": "369708d2c01fe3f6f02d2209a2463619ea867905573a41f8706a3853e98065c6",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 15,
      "sequencing": {
@@ -28536,9 +28919,9 @@
       },
       "exit": [
        {
-        "atom": "x_target_r",
+        "atom": "x_target_atr",
         "params": {
-         "k": 0.4
+         "k": 0.5
         }
        }
       ],
@@ -28547,9 +28930,9 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_level",
+        "atom": "r_stop_percent",
         "params": {
-         "buf": 0.25
+         "pct": 0.003
         }
        }
       },
@@ -28574,13 +28957,13 @@
     },
     "lineage_id": "L000576",
     "metrics": {
-     "alpha": 5.68695403237196,
-     "n": 491,
-     "pf": 0.9481027867136933,
-     "tpy": 167.52676056338026,
-     "win_rate": 0.6802443991853361
+     "alpha": 6.27581271723574,
+     "n": 292,
+     "pf": 1.075639801809173,
+     "tpy": 96.54084507042253,
+     "win_rate": 0.6575342465753424
     },
-    "score": 0.23374773021976808,
+    "score": 0.26065238684774555,
     "status": "STAGE1_FAIL"
    }
   },
@@ -29941,6 +30324,89 @@
     "status": "STAGE1_FAIL"
    }
   },
+  "close|1|2|stop": {
+   "best": {
+    "complexity": 15,
+    "generation": 20158,
+    "genome": {
+     "complexity": 15,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "4745dbdab323467ddf08e31e49b5ca4af58da9af9a6dace5d6409ea270199bf2",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.1,
+       "type": "stop",
+       "valid_minutes": 15
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       },
+       {
+        "atom": "x_partial",
+        "params": {
+         "r": 0.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.1,
+         "n": 12
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_final_hour_thrust",
+         "params": {
+          "k": 3.0
+         }
+        },
+        {
+         "atom": "tr_bollinger_break",
+         "params": {
+          "k": 2.0,
+          "n": 20
+         }
+        }
+       ],
+       "combine": "OR",
+       "within_bars": 5
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000066",
+    "metrics": {
+     "alpha": 6.262579247368394,
+     "n": 1957,
+     "pf": 0.941601357712544,
+     "tpy": 692.1126760563379,
+     "win_rate": 0.625447112927951
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
   "close|2|0|limit": {
    "best": {
     "complexity": 11,
@@ -30302,20 +30768,20 @@
   },
   "close|2|1|market": {
    "best": {
-    "complexity": 9,
-    "generation": 19548,
+    "complexity": 11,
+    "generation": 20210,
     "genome": {
-     "complexity": 9,
+     "complexity": 11,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "2649e8e41cff9df46da4507e5d56709f04255cfdacd9f3f659380f0e1587c6c4",
+     "genome_id": "f888db0613075474ac9add7d52f28375b8ebdd03a46c25b023a42e81bce8832f",
      "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 15,
+     "primary_timeframe_min": 10,
      "sequencing": {
-      "cooldown_minutes": 10,
+      "cooldown_minutes": 30,
       "loss_standdown": 3,
       "max_trades_per_session": 6
      },
@@ -30327,9 +30793,13 @@
       },
       "exit": [
        {
-        "atom": "x_target_atr",
+        "atom": "x_target_location_level",
+        "params": {}
+       },
+       {
+        "atom": "x_partial",
         "params": {
-         "k": 1.5
+         "r": 0.5
         }
        }
       ],
@@ -30338,9 +30808,10 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_atr",
+        "atom": "r_stop_swing",
         "params": {
-         "k": 1.25
+         "buf": 0.1,
+         "n": 12
         }
        }
       },
@@ -30363,15 +30834,93 @@
      },
      "version": 1
     },
+    "lineage_id": "L002610",
+    "metrics": {
+     "alpha": 3.2191625658064105,
+     "n": 817,
+     "pf": 1.0435798864123447,
+     "tpy": 285.3633802816901,
+     "win_rate": 0.6070991432068543
+    },
+    "score": 0.09704916331561045,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "close|2|1|stop": {
+   "best": {
+    "complexity": 13,
+    "generation": 20304,
+    "genome": {
+     "complexity": 13,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "96a3a83f80142cc5eba9a7f941aba80555a616e65a7fcc04605c81822d60769f",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 15,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.1,
+       "type": "stop",
+       "valid_minutes": 60
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.004
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_final_hour_thrust",
+         "params": {
+          "k": 3.0
+         }
+        },
+        {
+         "atom": "tr_bollinger_break",
+         "params": {
+          "k": 2.0,
+          "n": 20
+         }
+        }
+       ],
+       "combine": "OR",
+       "within_bars": 5
+      }
+     },
+     "version": 1
+    },
     "lineage_id": "L000576",
     "metrics": {
-     "alpha": 3.0372541455015667,
-     "n": 728,
-     "pf": 1.0336311469455945,
-     "tpy": 257.6788732394366,
-     "win_rate": 0.49038461538461536
+     "alpha": 3.8835807609413022,
+     "n": 765,
+     "pf": 1.003137554559874,
+     "tpy": 267.6169014084507,
+     "win_rate": 0.5241830065359477
     },
-    "score": 0.004037550228095715,
+    "score": 0.0,
     "status": "STAGE1_FAIL"
    }
   },
@@ -30445,6 +30994,84 @@
      "pf": 0.9476473280506432,
      "tpy": 855.3802816901408,
      "win_rate": 0.45424969499796664
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "close|3|0|limit": {
+   "best": {
+    "complexity": 13,
+    "generation": 20588,
+    "genome": {
+     "complexity": 13,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "8ccd24af77e8bb3a89a2bf6f70277497f331b251ffaa36d58bebfa6bae44a327",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.25,
+       "type": "limit",
+       "valid_minutes": 10
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_final_hour_thrust",
+         "params": {
+          "k": 3.0
+         }
+        },
+        {
+         "atom": "tr_bollinger_break",
+         "params": {
+          "k": 2.0,
+          "n": 20
+         }
+        }
+       ],
+       "combine": "OR",
+       "within_bars": 5
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000422",
+    "metrics": {
+     "alpha": -4.727877025342747,
+     "n": 166,
+     "pf": 0.7835415535035307,
+     "tpy": 58.918309859154924,
+     "win_rate": 0.42168674698795183
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
@@ -31760,16 +32387,16 @@
   },
   "exhaust|1|1|limit": {
    "best": {
-    "complexity": 13,
-    "generation": 17062,
+    "complexity": 12,
+    "generation": 20696,
     "genome": {
-     "complexity": 13,
+     "complexity": 12,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "c8c4e4f84f367c80ba4d3bb1807c2d4b337c503173bd51ed09c93709ee05d545",
+     "genome_id": "7d057a8b9a4a5b3a2ed0bb3a63e0460c91511c1a55ac0de2a82d282770eb7a45",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -31781,7 +32408,7 @@
       "entry": {
        "offset_atr": 0.75,
        "type": "limit",
-       "valid_minutes": 30
+       "valid_minutes": 15
       },
       "exit": [
        {
@@ -31807,7 +32434,7 @@
        "stop": {
         "atom": "r_stop_swing",
         "params": {
-         "buf": 0.1,
+         "buf": 0.5,
          "n": 12
         }
        }
@@ -31819,10 +32446,9 @@
          "params": {}
         },
         {
-         "atom": "tr_cmo_hook",
+         "atom": "tr_companion_leads_break",
          "params": {
-          "lvl": 50,
-          "n": 20
+          "n": 10
          }
         }
        ],
@@ -31834,13 +32460,13 @@
     },
     "lineage_id": "L000180",
     "metrics": {
-     "alpha": 7.738646238989411,
-     "n": 1222,
-     "pf": 1.065702523042693,
-     "tpy": 419.52676056338026,
-     "win_rate": 0.5973813420621932
+     "alpha": 9.18946717747584,
+     "n": 1401,
+     "pf": 1.1265491067211502,
+     "tpy": 471.3464788732394,
+     "win_rate": 0.6366880799428979
     },
-    "score": 0.20525922528019055,
+    "score": 0.2945044996817861,
     "status": "STAGE1_FAIL"
    }
   },
@@ -32240,16 +32866,16 @@
     "status": "STAGE1_FAIL"
    },
    "simplest": {
-    "complexity": 9,
-    "generation": 17092,
+    "complexity": 7,
+    "generation": 20246,
     "genome": {
-     "complexity": 9,
+     "complexity": 7,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "40505766882b052ad4fe35d8ff55918f8992b51f6c02ccabb859633a0ff7bc17",
+     "genome_id": "606320600d4b64f628a64ab89d4b764d326c3d534802fbef20fb5547429ae44d",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -32265,7 +32891,7 @@
       },
       "exit": [
        {
-        "atom": "x_target_atr",
+        "atom": "x_target_r",
         "params": {
          "k": 1.0
         }
@@ -32276,20 +32902,17 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_swing",
+        "atom": "r_stop_percent",
         "params": {
-         "buf": 0.5,
-         "n": 8
+         "pct": 0.004
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_volume_pressure_turn",
-         "params": {
-          "lvl": 30
-         }
+         "atom": "tr_engulfing",
+         "params": {}
         }
        ],
        "combine": "AND",
@@ -32298,13 +32921,13 @@
      },
      "version": 1
     },
-    "lineage_id": "L000062",
+    "lineage_id": "L000354",
     "metrics": {
-     "alpha": -0.7976994101716484,
-     "n": 2417,
-     "pf": 0.8339439326744251,
-     "tpy": 851.8309859154929,
-     "win_rate": 0.5738518824989657
+     "alpha": -1.7338681127044009,
+     "n": 2027,
+     "pf": 0.8158305121764771,
+     "tpy": 676.4957746478873,
+     "win_rate": 0.46768623581647756
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
@@ -35012,16 +35635,16 @@
   },
   "intermarket|2|0|limit": {
    "best": {
-    "complexity": 8,
-    "generation": 4346,
+    "complexity": 10,
+    "generation": 20630,
     "genome": {
-     "complexity": 8,
+     "complexity": 10,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "7c95bdab27a890ab706233ad11f1a51d972359d0303730b15fc9885b98ee0ffb",
+     "genome_id": "b2f5369b45f03e573cf2864169b56c2e13c3142ee3afd635e3a53ab80812a3ad",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 60,
      "sequencing": {
@@ -35041,6 +35664,13 @@
         "params": {
          "k": 1.5
         }
+       },
+       {
+        "atom": "x_trail_r",
+        "params": {
+         "dist": 1.0,
+         "start": 1.0
+        }
        }
       ],
       "filter": [],
@@ -35050,17 +35680,15 @@
        "stop": {
         "atom": "r_stop_atr",
         "params": {
-         "k": 1.25
+         "k": 1.0
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_companion_leads_break",
-         "params": {
-          "n": 10
-         }
+         "atom": "tr_companion_reclaim",
+         "params": {}
         }
        ],
        "combine": "AND",
@@ -35071,80 +35699,13 @@
     },
     "lineage_id": "L000422",
     "metrics": {
-     "alpha": 0.8363599677158995,
-     "n": 118,
-     "pf": 0.9385952102803738,
-     "tpy": 35.49295774647887,
-     "win_rate": 0.4661016949152542
+     "alpha": 0.5046581170019493,
+     "n": 310,
+     "pf": 1.0638158871566443,
+     "tpy": 105.76901408450703,
+     "win_rate": 0.46774193548387094
     },
-    "score": 0.0,
-    "status": "STAGE1_FAIL"
-   },
-   "simplest": {
-    "complexity": 7,
-    "generation": 17586,
-    "genome": {
-     "complexity": 7,
-     "context_tf_multiples": [
-      4,
-      12
-     ],
-     "direction": "both_mirrored",
-     "genome_id": "c539d3e5e96fbb0911934010abda86b941f805449d75b9562dd5b65042e51e23",
-     "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 10,
-     "sequencing": {
-      "cooldown_minutes": 10,
-      "loss_standdown": 3,
-      "max_trades_per_session": 6
-     },
-     "slots": {
-      "entry": {
-       "offset_atr": 0.1,
-       "type": "limit",
-       "valid_minutes": 15
-      },
-      "exit": [
-       {
-        "atom": "x_target_atr",
-        "params": {
-         "k": 1.5
-        }
-       }
-      ],
-      "filter": [],
-      "location": [],
-      "regime": [],
-      "risk": {
-       "stop": {
-        "atom": "r_stop_percent",
-        "params": {
-         "pct": 0.004
-        }
-       }
-      },
-      "trigger": {
-       "atoms": [
-        {
-         "atom": "tr_divergence_at_session_extreme",
-         "params": {}
-        }
-       ],
-       "combine": "AND",
-       "within_bars": 3
-      }
-     },
-     "version": 1
-    },
-    "lineage_id": "L000490",
-    "metrics": {
-     "alpha": 0.41150977648011233,
-     "n": 395,
-     "pf": 0.9335629215095422,
-     "tpy": 128.4845070422535,
-     "win_rate": 0.5240506329113924
-    },
-    "score": 0.0,
+    "score": 0.011469985858695953,
     "status": "STAGE1_FAIL"
    }
   },
@@ -36502,16 +37063,16 @@
   },
   "meanrev|0|2|market": {
    "best": {
-    "complexity": 7,
-    "generation": 224,
+    "complexity": 6,
+    "generation": 20412,
     "genome": {
-     "complexity": 7,
+     "complexity": 6,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "f57f42e325f1b100fafeb200e76af2716e46affe6d332333bccc68cbee55665e",
+     "genome_id": "bd6619e695f37f1308506cb3dc35e5a27e57a40eb97ebdc23d6d46ca747a1236",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -36529,76 +37090,8 @@
        {
         "atom": "x_target_atr",
         "params": {
-         "k": 1.0
+         "k": 0.75
         }
-       }
-      ],
-      "filter": [],
-      "location": [],
-      "regime": [],
-      "risk": {
-       "stop": {
-        "atom": "r_stop_signal_bar",
-        "params": {
-         "buf": 0.25
-        }
-       }
-      },
-      "trigger": {
-       "atoms": [
-        {
-         "atom": "tr_williams_hook",
-         "params": {
-          "lvl": 10,
-          "n": 21
-         }
-        }
-       ],
-       "combine": "AND",
-       "within_bars": 3
-      }
-     },
-     "version": 1
-    },
-    "lineage_id": "L000104",
-    "metrics": {
-     "alpha": 8.636568434603664,
-     "n": 3343,
-     "pf": 0.8631873146246863,
-     "tpy": 1169.138028169014,
-     "win_rate": 0.4780137600957224
-    },
-    "score": 0.0,
-    "status": "STAGE1_FAIL"
-   },
-   "simplest": {
-    "complexity": 5,
-    "generation": 920,
-    "genome": {
-     "complexity": 5,
-     "context_tf_multiples": [
-      4,
-      12
-     ],
-     "direction": "both_mirrored",
-     "genome_id": "79072c0bba9f65d7739cd66178589a98606a1cc35a4c9ab1af1b6610bcbd787e",
-     "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 5,
-     "sequencing": {
-      "cooldown_minutes": 10,
-      "loss_standdown": 3,
-      "max_trades_per_session": 6
-     },
-     "slots": {
-      "entry": {
-       "offset_atr": 0.0,
-       "type": "market",
-       "valid_minutes": 0
-      },
-      "exit": [
-       {
-        "atom": "x_target_prior_close",
-        "params": {}
        }
       ],
       "filter": [],
@@ -36608,16 +37101,17 @@
        "stop": {
         "atom": "r_stop_level",
         "params": {
-         "buf": 0.5
+         "buf": 0.75
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_internal_bar_strength",
+         "atom": "tr_rsi2_extreme",
+         "inv": true,
          "params": {
-          "thr": 0.1
+          "lvl": 10
          }
         }
        ],
@@ -36627,15 +37121,15 @@
      },
      "version": 1
     },
-    "lineage_id": "L000920",
+    "lineage_id": "L000016",
     "metrics": {
-     "alpha": -6.970533132076453,
-     "n": 2420,
-     "pf": 0.8441021516187412,
-     "tpy": 856.8,
-     "win_rate": 0.2268595041322314
+     "alpha": 2.4379491335260184,
+     "n": 3948,
+     "pf": 0.999985014461045,
+     "tpy": 1374.9971830985914,
+     "win_rate": 0.6702127659574468
     },
-    "score": 0.0,
+    "score": 0.24635007687079621,
     "status": "STAGE1_FAIL"
    }
   },
@@ -37330,16 +37824,16 @@
   },
   "meanrev|1|2|limit": {
    "best": {
-    "complexity": 8,
-    "generation": 5076,
+    "complexity": 13,
+    "generation": 20846,
     "genome": {
-     "complexity": 8,
+     "complexity": 13,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "e6f71143a77db90486502918b1279de8df9acc28b53a1e88b1810ef82afecf55",
+     "genome_id": "3c9acf3d4369bfcfa82b3e93a985123fca4cd41d716cc38cb9d2ec8db8343839",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -37349,14 +37843,16 @@
      },
      "slots": {
       "entry": {
-       "offset_atr": 0.75,
+       "offset_atr": 0.5,
        "type": "limit",
        "valid_minutes": 10
       },
       "exit": [
        {
-        "atom": "x_target_location_level",
-        "params": {}
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.0
+        }
        }
       ],
       "filter": [],
@@ -37364,86 +37860,25 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_atr",
+        "atom": "r_stop_percent",
         "params": {
-         "k": 1.25
+         "pct": 0.004
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_cmo_hook",
+         "atom": "tr_keltner_reentry",
          "params": {
-          "lvl": 40,
-          "n": 9
+          "k": 2.0,
+          "n": 30
          }
-        }
-       ],
-       "combine": "AND",
-       "within_bars": 3
-      }
-     },
-     "version": 1
-    },
-    "lineage_id": "L000066",
-    "metrics": {
-     "alpha": -1.9465123508423277,
-     "n": 1583,
-     "pf": 0.815757328990228,
-     "tpy": 552.2704225352112,
-     "win_rate": 0.4542008843967151
-    },
-    "score": 0.0,
-    "status": "STAGE1_FAIL"
-   },
-   "simplest": {
-    "complexity": 7,
-    "generation": 6442,
-    "genome": {
-     "complexity": 7,
-     "context_tf_multiples": [
-      4,
-      12
-     ],
-     "direction": "both_mirrored",
-     "genome_id": "c6f55dcf452460ecb9182b85eaf3485cd9640ffdbab200166ac567f548c1cde1",
-     "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 5,
-     "sequencing": {
-      "cooldown_minutes": 10,
-      "loss_standdown": 3,
-      "max_trades_per_session": 6
-     },
-     "slots": {
-      "entry": {
-       "offset_atr": 0.75,
-       "type": "limit",
-       "valid_minutes": 30
-      },
-      "exit": [
-       {
-        "atom": "x_target_vwap",
-        "params": {}
-       }
-      ],
-      "filter": [],
-      "location": [],
-      "regime": [],
-      "risk": {
-       "stop": {
-        "atom": "r_stop_atr",
-        "params": {
-         "k": 2.5
-        }
-       }
-      },
-      "trigger": {
-       "atoms": [
+        },
         {
-         "atom": "tr_internal_bar_strength",
+         "atom": "tr_opening_range_break",
          "params": {
-          "thr": 0.2
+          "m": 30
          }
         }
        ],
@@ -37453,15 +37888,15 @@
      },
      "version": 1
     },
-    "lineage_id": "L000180",
+    "lineage_id": "L000354",
     "metrics": {
-     "alpha": -0.7765657271984971,
-     "n": 2093,
-     "pf": 0.938777044681291,
-     "tpy": 732.5746478873239,
-     "win_rate": 0.5317725752508361
+     "alpha": 2.2184837695473636,
+     "n": 1424,
+     "pf": 1.051711268797086,
+     "tpy": 503.29014084507037,
+     "win_rate": 0.6678370786516854
     },
-    "score": 0.0,
+    "score": 0.2799795659773197,
     "status": "STAGE1_FAIL"
    }
   },
@@ -37935,7 +38370,7 @@
   "meanrev|2|1|limit": {
    "best": {
     "complexity": 15,
-    "generation": 16122,
+    "generation": 20208,
     "genome": {
      "complexity": 15,
      "context_tf_multiples": [
@@ -37943,7 +38378,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "65972109f00f574e02765c20e42679b7c4d94a240732c58bea22be096e233ea3",
+     "genome_id": "448852286dc8ac46d9805d48c4baf9ca399f61c092a4a1d6b597e6190fd7c68f",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 15,
      "sequencing": {
@@ -37977,7 +38412,7 @@
         "atom": "r_stop_swing",
         "params": {
          "buf": 0.1,
-         "n": 12
+         "n": 8
         }
        }
       },
@@ -38005,13 +38440,13 @@
     },
     "lineage_id": "L000044",
     "metrics": {
-     "alpha": 7.4645612321311505,
-     "n": 1133,
-     "pf": 1.0566872321872276,
-     "tpy": 391.84225352112674,
-     "win_rate": 0.6125330979699912
+     "alpha": 8.058108459708368,
+     "n": 1146,
+     "pf": 1.062778038346196,
+     "tpy": 396.81126760563376,
+     "win_rate": 0.612565445026178
     },
-    "score": 0.01440305143645455,
+    "score": 0.030196153673215785,
     "status": "STAGE1_FAIL"
    }
   },
@@ -38661,6 +39096,83 @@
      "win_rate": 0.5150602409638554
     },
     "score": 0.08913959960791867,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "meanrev|3|0|stop": {
+   "best": {
+    "complexity": 10,
+    "generation": 20586,
+    "genome": {
+     "complexity": 10,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "4b4ff07ae95d878d75304ec7b57d2ad817032fb180e2f840edea4d1c611b4807",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.25,
+       "type": "stop",
+       "valid_minutes": 15
+      },
+      "exit": [
+       {
+        "atom": "x_target_atr",
+        "params": {
+         "k": 1.5
+        }
+       },
+       {
+        "atom": "x_partial",
+        "params": {
+         "r": 0.75
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_rsi2_extreme",
+         "params": {
+          "lvl": 10
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000422",
+    "metrics": {
+     "alpha": -0.9629360105345486,
+     "n": 524,
+     "pf": 0.976092874861538,
+     "tpy": 184.56338028169012,
+     "win_rate": 0.4732824427480916
+    },
+    "score": 0.02678343992446272,
     "status": "STAGE1_FAIL"
    }
   },
@@ -39568,7 +40080,7 @@
   "open|1|0|market": {
    "best": {
     "complexity": 11,
-    "generation": 17348,
+    "generation": 20180,
     "genome": {
      "complexity": 11,
      "context_tf_multiples": [
@@ -39576,13 +40088,13 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "e0191658a6ecadddfe887b0766c867418d680dd41bf685868b406ced9d34ca54",
+     "genome_id": "94cef5b78df63ae6e20cd25f7b3ec2e085804446e7db50e1525e9c2bc2e12ae6",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 15,
      "sequencing": {
-      "cooldown_minutes": 15,
+      "cooldown_minutes": 10,
       "loss_standdown": 3,
-      "max_trades_per_session": 4
+      "max_trades_per_session": 3
      },
      "slots": {
       "entry": {
@@ -39631,13 +40143,13 @@
     },
     "lineage_id": "L000576",
     "metrics": {
-     "alpha": 4.382195187320259,
-     "n": 533,
-     "pf": 1.1245289292839724,
+     "alpha": 4.934398235745874,
+     "n": 532,
+     "pf": 1.1350973372119042,
      "tpy": 185.9830985915493,
-     "win_rate": 0.7054409005628518
+     "win_rate": 0.706766917293233
     },
-    "score": 0.34899870844555136,
+    "score": 0.3546891136170681,
     "status": "STAGE1_FAIL"
    }
   },
@@ -40086,22 +40598,22 @@
   },
   "open|1|2|market": {
    "best": {
-    "complexity": 10,
-    "generation": 5258,
+    "complexity": 11,
+    "generation": 20462,
     "genome": {
-     "complexity": 10,
+     "complexity": 11,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "428c6cc85d4469dd46343aef19338ef1c6f7cf9cdb021e58f361089684eb79de",
+     "genome_id": "367c14f152320a102899b748218bb38c477f3bd8c440097193efb773b06f5c12",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
-      "cooldown_minutes": 10,
+      "cooldown_minutes": 15,
       "loss_standdown": 3,
-      "max_trades_per_session": 6
+      "max_trades_per_session": 4
      },
      "slots": {
       "entry": {
@@ -40111,8 +40623,10 @@
       },
       "exit": [
        {
-        "atom": "x_target_location_level",
-        "params": {}
+        "atom": "x_target_r",
+        "params": {
+         "k": 0.4
+        }
        }
       ],
       "filter": [],
@@ -40150,13 +40664,13 @@
     },
     "lineage_id": "L000016",
     "metrics": {
-     "alpha": 2.606029037709928,
-     "n": 2001,
-     "pf": 1.0013429570449084,
-     "tpy": 691.4028169014084,
-     "win_rate": 0.512743628185907
+     "alpha": 2.1249552999807686,
+     "n": 1788,
+     "pf": 0.9618318410636745,
+     "tpy": 629.6450704225351,
+     "win_rate": 0.7063758389261745
     },
-    "score": 0.08973962379535773,
+    "score": 0.26978798345099086,
     "status": "STAGE1_FAIL"
    }
   },
@@ -40318,7 +40832,7 @@
   "open|2|0|limit": {
    "best": {
     "complexity": 10,
-    "generation": 12572,
+    "generation": 20402,
     "genome": {
      "complexity": 10,
      "context_tf_multiples": [
@@ -40326,7 +40840,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "9532e27f22af00ff350606f9c75e763ccef1fc269b17414923c4f7d140f1fc16",
+     "genome_id": "7b14b7947849751314e33859e5845bdbf87cfe9f675a9126d120b6cd25d7b25a",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 15,
      "sequencing": {
@@ -40338,7 +40852,7 @@
       "entry": {
        "offset_atr": 0.1,
        "type": "limit",
-       "valid_minutes": 15
+       "valid_minutes": 30
       },
       "exit": [
        {
@@ -40376,13 +40890,13 @@
     },
     "lineage_id": "L000088",
     "metrics": {
-     "alpha": 9.087447580232732,
-     "n": 350,
-     "pf": 1.1735135981625515,
-     "tpy": 100.09014084507041,
-     "win_rate": 0.6771428571428572
+     "alpha": 9.150768738476545,
+     "n": 372,
+     "pf": 1.1794821353923328,
+     "tpy": 107.89859154929577,
+     "win_rate": 0.6774193548387096
     },
-    "score": 0.31882014957108823,
+    "score": 0.34197019586695204,
     "status": "STAGE1_FAIL"
    }
   },
@@ -40755,7 +41269,7 @@
   "open|2|1|stop": {
    "best": {
     "complexity": 10,
-    "generation": 12994,
+    "generation": 20230,
     "genome": {
      "complexity": 10,
      "context_tf_multiples": [
@@ -40763,7 +41277,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "c7d7c131e1f56595ff1454eca022820cabad835c2d6a75feb9ad3f1584ba1844",
+     "genome_id": "1bdf467bee863da93506aeb025c022c7575d4c21f8fb475b31f1539e94c7256f",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -40773,15 +41287,15 @@
      },
      "slots": {
       "entry": {
-       "offset_atr": 0.75,
+       "offset_atr": 0.1,
        "type": "stop",
        "valid_minutes": 15
       },
       "exit": [
        {
-        "atom": "x_target_r",
+        "atom": "x_time_stop",
         "params": {
-         "k": 1.5
+         "m": 60
         }
        }
       ],
@@ -40790,9 +41304,9 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_level",
+        "atom": "r_stop_percent",
         "params": {
-         "buf": 0.25
+         "pct": 0.003
         }
        }
       },
@@ -40811,15 +41325,15 @@
      },
      "version": 1
     },
-    "lineage_id": "L000062",
+    "lineage_id": "L000066",
     "metrics": {
-     "alpha": 6.703574670670625,
-     "n": 816,
-     "pf": 1.0115325784336382,
-     "tpy": 288.912676056338,
-     "win_rate": 0.44607843137254904
+     "alpha": 2.2188267171659115,
+     "n": 1394,
+     "pf": 0.9904000903520908,
+     "tpy": 477.02535211267605,
+     "win_rate": 0.45408895265423244
     },
-    "score": 0.0,
+    "score": 0.005529980191842931,
     "status": "STAGE1_FAIL"
    }
   },
@@ -40896,6 +41410,81 @@
      "pf": 0.9691100414073057,
      "tpy": 863.1887323943662,
      "win_rate": 0.4556809024979855
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   },
+   "simplest": {
+    "complexity": 12,
+    "generation": 20956,
+    "genome": {
+     "complexity": 12,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "7fae934eab63442a96c6d9b68408ba59063e5b411f23162ba23532a6efca2149",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.1,
+       "type": "stop",
+       "valid_minutes": 15
+      },
+      "exit": [
+       {
+        "atom": "x_time_stop",
+        "params": {
+         "m": 60
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.003
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_opening_range_break",
+         "params": {
+          "m": 30
+         }
+        },
+        {
+         "atom": "tr_rsi2_extreme",
+         "params": {
+          "lvl": 10
+         }
+        }
+       ],
+       "combine": "OR",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000066",
+    "metrics": {
+     "alpha": -1.056868883037676,
+     "n": 3258,
+     "pf": 0.8671771924525903,
+     "tpy": 1140.743661971831,
+     "win_rate": 0.41866175567833025
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
@@ -41046,6 +41635,78 @@
      "win_rate": 0.5283018867924528
     },
     "score": 0.1448923171768661,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "open|3|0|stop": {
+   "best": {
+    "complexity": 10,
+    "generation": 20258,
+    "genome": {
+     "complexity": 10,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "5a34c172525c4677dc364302831035a1d1c7f95c386828fecb7de743f25e1c21",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 60,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.1,
+       "type": "stop",
+       "valid_minutes": 60
+      },
+      "exit": [
+       {
+        "atom": "x_target_prior_extreme",
+        "params": {
+         "n": 20
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_atr",
+        "params": {
+         "k": 1.25
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_opening_range_break",
+         "inv": true,
+         "params": {
+          "m": 15
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000422",
+    "metrics": {
+     "alpha": -5.033065275516796,
+     "n": 482,
+     "pf": 0.6514820027591589,
+     "tpy": 168.9464788732394,
+     "win_rate": 0.38589211618257263
+    },
+    "score": 0.0,
     "status": "STAGE1_FAIL"
    }
   },
@@ -42502,22 +43163,22 @@
   },
   "sweep|1|1|market": {
    "best": {
-    "complexity": 11,
-    "generation": 18400,
+    "complexity": 15,
+    "generation": 20784,
     "genome": {
-     "complexity": 11,
+     "complexity": 15,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "8355ea7b4c3de49ca4c8e239c41986b5c6c65c019f85291c97ada29d57f84aee",
+     "genome_id": "6818751eef85796a8584d60087d762bb26e662e97f45f9928b9dece0f0c354f4",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 15,
      "sequencing": {
       "cooldown_minutes": 15,
       "loss_standdown": 3,
-      "max_trades_per_session": 6
+      "max_trades_per_session": 4
      },
      "slots": {
       "entry": {
@@ -42533,7 +43194,14 @@
         }
        }
       ],
-      "filter": [],
+      "filter": [
+       {
+        "atom": "f_stop_before_close",
+        "params": {
+         "m": 30
+        }
+       }
+      ],
       "location": [],
       "regime": [],
       "risk": {
@@ -42568,13 +43236,13 @@
     },
     "lineage_id": "L000576",
     "metrics": {
-     "alpha": 4.135222144552076,
-     "n": 734,
-     "pf": 1.1433754535218317,
-     "tpy": 256.969014084507,
-     "win_rate": 0.6975476839237057
+     "alpha": 5.7191980772225985,
+     "n": 713,
+     "pf": 1.1639436133982843,
+     "tpy": 247.03098591549295,
+     "win_rate": 0.7068723702664796
     },
-    "score": 0.3376246589240451,
+    "score": 0.3691662310214782,
     "status": "STAGE1_FAIL"
    }
   },
@@ -47463,7 +48131,7 @@
   "volcon|1|0|stop": {
    "best": {
     "complexity": 13,
-    "generation": 16900,
+    "generation": 20488,
     "genome": {
      "complexity": 13,
      "context_tf_multiples": [
@@ -47471,7 +48139,7 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "dd5b279d977e80e7d70f35f1d4192c63d452977f9afda694ffcf73e9b249f9d8",
+     "genome_id": "c8370feda44b2c6af3362f6802c07bc54266d4730bf7e9d355db6c1e5d228e2b",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -47483,7 +48151,7 @@
       "entry": {
        "offset_atr": 0.25,
        "type": "stop",
-       "valid_minutes": 60
+       "valid_minutes": 30
       },
       "exit": [
        {
@@ -47534,13 +48202,13 @@
     },
     "lineage_id": "L002160",
     "metrics": {
-     "alpha": 5.397626354774998,
-     "n": 655,
-     "pf": 1.104825257055349,
-     "tpy": 230.70422535211267,
-     "win_rate": 0.6442748091603053
+     "alpha": 4.478312137661089,
+     "n": 642,
+     "pf": 1.1131415671827827,
+     "tpy": 227.15492957746477,
+     "win_rate": 0.6479750778816199
     },
-    "score": 0.2414945430326986,
+    "score": 0.24510472798302002,
     "status": "STAGE1_FAIL"
    }
   },
@@ -48240,7 +48908,7 @@
   "volcon|2|0|stop": {
    "best": {
     "complexity": 11,
-    "generation": 19300,
+    "generation": 20188,
     "genome": {
      "complexity": 11,
      "context_tf_multiples": [
@@ -48248,13 +48916,13 @@
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "3ac4275a72854ba2e9e118bdb6634f6ce3024d16a55e5c45437e0f805374b8cb",
+     "genome_id": "261cc30fb9d8e1a3ac5a190d3ce98469414355a98c747a8b11d001c01d695b73",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
       "cooldown_minutes": 30,
       "loss_standdown": 3,
-      "max_trades_per_session": 2
+      "max_trades_per_session": 3
      },
      "slots": {
       "entry": {
@@ -48306,13 +48974,13 @@
     },
     "lineage_id": "L002160",
     "metrics": {
-     "alpha": 11.184229390681,
-     "n": 250,
-     "pf": 1.3234624145785876,
-     "tpy": 84.4732394366197,
-     "win_rate": 0.596
+     "alpha": 12.930474781719237,
+     "n": 252,
+     "pf": 1.3324438659290596,
+     "tpy": 85.89295774647887,
+     "win_rate": 0.5992063492063492
     },
-    "score": 0.1802258239771009,
+    "score": 0.19698783474026513,
     "status": "STAGE1_FAIL"
    }
   },
@@ -49939,16 +50607,16 @@
   },
   "volexp|1|1|stop": {
    "best": {
-    "complexity": 12,
-    "generation": 19754,
+    "complexity": 14,
+    "generation": 20358,
     "genome": {
-     "complexity": 12,
+     "complexity": 14,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "5a8864a95e5547f56e3ddb1ae9c66632775b1804aaa49b441edc852afcbff431",
+     "genome_id": "c1c1ff275017dcfde94a99fe8ef6645d40c6814407e8ebacb1e67cd4d6b20fe7",
      "holding_mode": "INTRADAY_FLAT",
      "primary_timeframe_min": 5,
      "sequencing": {
@@ -49964,9 +50632,13 @@
       },
       "exit": [
        {
-        "atom": "x_target_r",
+        "atom": "x_target_location_level",
+        "params": {}
+       },
+       {
+        "atom": "x_partial",
         "params": {
-         "k": 1.0
+         "r": 0.5
         }
        }
       ],
@@ -49982,9 +50654,10 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_percent",
+        "atom": "r_stop_swing",
         "params": {
-         "pct": 0.004
+         "buf": 0.1,
+         "n": 12
         }
        }
       },
@@ -50005,13 +50678,13 @@
     },
     "lineage_id": "L000100",
     "metrics": {
-     "alpha": 2.0270496891758527,
-     "n": 784,
-     "pf": 0.9858133544680008,
-     "tpy": 264.06760563380277,
-     "win_rate": 0.5025510204081632
+     "alpha": 0.9979388186914129,
+     "n": 927,
+     "pf": 0.9514065667552232,
+     "tpy": 328.66478873239436,
+     "win_rate": 0.5803667745415318
     },
-    "score": 0.0695504862347995,
+    "score": 0.13763359182643523,
     "status": "STAGE1_FAIL"
    }
   },
@@ -50461,18 +51134,18 @@
     "status": "STAGE1_FAIL"
    },
    "simplest": {
-    "complexity": 9,
-    "generation": 14142,
+    "complexity": 8,
+    "generation": 20416,
     "genome": {
-     "complexity": 9,
+     "complexity": 8,
      "context_tf_multiples": [
       4,
       12
      ],
      "direction": "both_mirrored",
-     "genome_id": "c19fda904e4e854acd66999ab3207eabb203732217742123b6aedf18229fbc83",
+     "genome_id": "3aa9db90257ccc9570c256b589af35f51c477e8e060eb280436e02a0dcfa58f4",
      "holding_mode": "INTRADAY_FLAT",
-     "primary_timeframe_min": 15,
+     "primary_timeframe_min": 60,
      "sequencing": {
       "cooldown_minutes": 10,
       "loss_standdown": 3,
@@ -50486,9 +51159,9 @@
       },
       "exit": [
        {
-        "atom": "x_target_atr",
+        "atom": "x_target_r",
         "params": {
-         "k": 1.5
+         "k": 0.4
         }
        }
       ],
@@ -50497,19 +51170,18 @@
       "regime": [],
       "risk": {
        "stop": {
-        "atom": "r_stop_swing",
+        "atom": "r_stop_session_extreme",
         "params": {
-         "buf": 0.25,
-         "n": 8
+         "buf": 0.25
         }
        }
       },
       "trigger": {
        "atoms": [
         {
-         "atom": "tr_fractal_energy_break",
+         "atom": "tr_volume_climax_follow",
          "params": {
-          "lvl": 30
+          "n": 10
          }
         }
        ],
@@ -50519,13 +51191,13 @@
      },
      "version": 1
     },
-    "lineage_id": "L000576",
+    "lineage_id": "L000422",
     "metrics": {
-     "alpha": -4.072068193454037,
-     "n": 374,
-     "pf": 0.6996621245312442,
-     "tpy": 132.03380281690139,
-     "win_rate": 0.4144385026737968
+     "alpha": 4.2702285921625505,
+     "n": 128,
+     "pf": 0.7068828665381562,
+     "tpy": 42.59154929577465,
+     "win_rate": 0.609375
     },
     "score": 0.0,
     "status": "STAGE1_FAIL"
@@ -50737,6 +51409,153 @@
      "win_rate": 0.5049226441631505
     },
     "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "volexp|2|2|limit": {
+   "best": {
+    "complexity": 8,
+    "generation": 20726,
+    "genome": {
+     "complexity": 8,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "afcf3f60245a5b49972ddca16eb1167e64dd8520aa795f82f9244aefa7550f62",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 5,
+     "sequencing": {
+      "cooldown_minutes": 10,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.25,
+       "type": "limit",
+       "valid_minutes": 10
+      },
+      "exit": [
+       {
+        "atom": "x_time_stop",
+        "params": {
+         "m": 60
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_percent",
+        "params": {
+         "pct": 0.003
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_fractal_energy_break",
+         "params": {
+          "lvl": 35
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L000100",
+    "metrics": {
+     "alpha": -1.2800378084770136,
+     "n": 1508,
+     "pf": 0.831643348120704,
+     "tpy": 529.5549295774648,
+     "win_rate": 0.4151193633952255
+    },
+    "score": 0.0,
+    "status": "STAGE1_FAIL"
+   }
+  },
+  "volexp|2|2|market": {
+   "best": {
+    "complexity": 8,
+    "generation": 20922,
+    "genome": {
+     "complexity": 8,
+     "context_tf_multiples": [
+      4,
+      12
+     ],
+     "direction": "both_mirrored",
+     "genome_id": "20295c58d0cb9a5acf7b19b3a07e253e688b2b7050a552751d7e408b8498afd2",
+     "holding_mode": "INTRADAY_FLAT",
+     "primary_timeframe_min": 10,
+     "sequencing": {
+      "cooldown_minutes": 30,
+      "loss_standdown": 3,
+      "max_trades_per_session": 6
+     },
+     "slots": {
+      "entry": {
+       "offset_atr": 0.0,
+       "type": "market",
+       "valid_minutes": 0
+      },
+      "exit": [
+       {
+        "atom": "x_target_location_level",
+        "params": {}
+       },
+       {
+        "atom": "x_partial",
+        "params": {
+         "r": 0.5
+        }
+       }
+      ],
+      "filter": [],
+      "location": [],
+      "regime": [],
+      "risk": {
+       "stop": {
+        "atom": "r_stop_swing",
+        "params": {
+         "buf": 0.1,
+         "n": 12
+        }
+       }
+      },
+      "trigger": {
+       "atoms": [
+        {
+         "atom": "tr_range_expansion_break",
+         "params": {
+          "n": 5
+         }
+        }
+       ],
+       "combine": "AND",
+       "within_bars": 3
+      }
+     },
+     "version": 1
+    },
+    "lineage_id": "L002610",
+    "metrics": {
+     "alpha": 2.513524534423206,
+     "n": 1595,
+     "pf": 1.019687269270059,
+     "tpy": 559.3690140845071,
+     "win_rate": 0.6094043887147336
+    },
+    "score": 0.05580636198152288,
     "status": "STAGE1_FAIL"
    }
   },

@@ -65,11 +65,12 @@ def wf_efficiency(tr_all, folds):
     """Out-of-sample average trade (in round-trip costs) over the in-sample average, per test fold."""
     rc = tr_all["instrument"].map(M.RT_COST_USD).values.astype(float)
     x = tr_all["net_usd"].values / rc
-    sess = tr_all["sess"].values
+    sess = tr_all["sess"].values.astype(np.int64)
     is_vals, oos_vals = [], []
+    own = np.isin(EV.FOLD_OF[np.minimum(sess, EV.N_SEARCH - 1)], [1, 2] + list(folds))   # never the other island's folds
     for k in folds:
         lo, hi = EV.FOLDS[k - 1]
-        i = sess < lo - EV.PURGE
+        i = (sess < lo - EV.PURGE) & own
         o = (sess >= lo) & (sess < hi)
         if i.sum() >= 20 and o.sum() >= 5:
             is_vals.append(x[i].mean())
@@ -244,7 +245,9 @@ def evaluate_slice(g, runs, folds, n_twins, seed, tier=BR, full_thresholds=False
         f_wr = 0.5 + 0.5 * (wr - pen["half"]) / (pen["full"] - pen["half"])
     else:
         f_wr = max(0.0, 0.5 * (wr - pen["zero"]) / (pen["half"] - pen["zero"]))
-    f_gap = min(1.0, max(0.0, eff))
+    # overfit gap, both directions: the test folds are what the search selects on, so a record far BETTER there
+    # than before them is as suspect as one far worse (tightening, generation 20,009)
+    f_gap = max(0.0, min(eff, 1.0 / eff)) if eff > 0 else 0.0
     f_n = min(1.0, n_inst / need_inst) if sc.get("sample_shrink") else 1.0
     score = base * f_wr * f_gap * f_n
     return {
