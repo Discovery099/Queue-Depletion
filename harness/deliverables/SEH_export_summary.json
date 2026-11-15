@@ -1,0 +1,57 @@
+{
+ "win_rate_50_or_more": 65359,
+ "exported": 54305,
+ "profitable_on_screening_folds": 36637,
+ "not_exported": {
+  "fewer than 30 trades": 4185,
+  "uses a canary (a no-information control series that exists only inside the research harness)": 4316,
+  "identical trades": 2553
+ },
+ "export_errors": 0,
+ "static_audit_hits": 0,
+ "best_archive_files": 993,
+ "best_by_tier": {
+  "01_closest_to_passing": 58,
+  "02_held_up_on_unseen_data": 185,
+  "03_best_by_score_30min": 150,
+  "03_best_by_score_60min": 150,
+  "03_best_by_score_10min": 150,
+  "03_best_by_score_15min": 150,
+  "03_best_by_score_05min": 150
+ },
+ "parts": {
+  "05min_wr50-60": {
+   "files": 7241,
+   "MB": 37.2
+  },
+  "30min": {
+   "files": 2055,
+   "MB": 10.2
+  },
+  "60min": {
+   "files": 2631,
+   "MB": 13.3
+  },
+  "15min": {
+   "files": 11648,
+   "MB": 59.7
+  },
+  "05min_wr60-65": {
+   "files": 7939,
+   "MB": 41.4
+  },
+  "10min": {
+   "files": 2825,
+   "MB": 14.4
+  },
+  "05min_wr65-70": {
+   "files": 11052,
+   "MB": 58.1
+  },
+  "05min_wr70plus": {
+   "files": 8914,
+   "MB": 47.6
+  }
+ },
+ "best_MB": 5.26
+}

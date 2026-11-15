@@ -61,26 +61,33 @@ def export(g, meta=None):
         for ln in meta["win_rate_statement"].split("\n"):
             L.append("//   " + ln)
         L.append("//")
+    compact = bool(meta.get("compact"))
     L += _c("ATOMS (techniques) USED")
     for a in atoms:
         L += _c(f"  {a}: {ATOMS[a].desc} [{FAMILIES[ATOMS[a].fam]}]")
     L += _c("All code in this file is an original implementation of these concepts. No library script text is copied.")
     L.append("//")
-    L += _c("CHANGES FROM THE OWNER'S ORIGINAL SCRIPT, AND WHY")
-    L += _c("  1. Orders are placed on confirmed bars and fill on the NEXT bar (process_orders_on_close=false). The original filled at the "
-            "signal bar's close, a price that cannot be traded once the bar has closed; every research result was measured with next-bar fills.")
-    L += _c("  2. Every entry has a hard stop placed with it (strategy.exit). The original had no stop.")
-    L += _c("  3. All positions are closed by the session's last regular-hours bar. The original held overnight.")
-    L += _c("  4. Stop and target exits send CLOSE_LONG / CLOSE_SHORT payloads through alert_message with their own keys. The original strategy "
-            "had no such exits: VERIFY THE SERVER-SIDE HANDLING OF THESE EXITS IN PAPER MODE before anything else.")
-    L.append("//")
-    L += _c("LIMITS OF THE EVIDENCE")
-    L += _c("  Research used two highly correlated instruments (ES, YM), regular trading hours only, 5-minute bars whose intrabar order of "
-            "events is unknown, about six years of history and no live fills. TradingView's own fill model is more optimistic than the "
-            "research engine's (which assumes the stop fills before the target when both are inside one bar). Use a regular-hours chart. "
-            "Session logic assumes the 09:30 to 16:00 Eastern session; on shortened holiday sessions this script cannot know the bar is the "
-            "last one, so it flattens at the first bar of the next session instead. Timeframes below 5 minutes were never tested. "
-            "No backtest result is a promise of live performance, and nothing here is financial advice.")
+    if compact:
+        L += _c("Orders are placed on confirmed bars and fill on the NEXT bar; every entry has a hard stop; all positions are closed by "
+                "the last regular-hours bar. Stop and target exits send CLOSE_LONG / CLOSE_SHORT payloads: verify server-side handling "
+                "in paper mode first. Use a regular-hours (09:30 to 16:00 Eastern) chart. Research used ES and YM only, 5-minute source "
+                "bars, no live fills; TradingView's fill model is more optimistic than the research engine's. Not financial advice.")
+    L += [] if compact else _c("CHANGES FROM THE OWNER'S ORIGINAL SCRIPT, AND WHY")
+    if not compact:
+        L += _c("  1. Orders are placed on confirmed bars and fill on the NEXT bar (process_orders_on_close=false). The original filled at the "
+                "signal bar's close, a price that cannot be traded once the bar has closed; every research result was measured with next-bar fills.")
+        L += _c("  2. Every entry has a hard stop placed with it (strategy.exit). The original had no stop.")
+        L += _c("  3. All positions are closed by the session's last regular-hours bar. The original held overnight.")
+        L += _c("  4. Stop and target exits send CLOSE_LONG / CLOSE_SHORT payloads through alert_message with their own keys. The original strategy "
+                "had no such exits: VERIFY THE SERVER-SIDE HANDLING OF THESE EXITS IN PAPER MODE before anything else.")
+        L.append("//")
+        L += _c("LIMITS OF THE EVIDENCE")
+        L += _c("  Research used two highly correlated instruments (ES, YM), regular trading hours only, 5-minute bars whose intrabar order of "
+                "events is unknown, about six years of history and no live fills. TradingView's own fill model is more optimistic than the "
+                "research engine's (which assumes the stop fills before the target when both are inside one bar). Use a regular-hours chart. "
+                "Session logic assumes the 09:30 to 16:00 Eastern session; on shortened holiday sessions this script cannot know the bar is the "
+                "last one, so it flattens at the first bar of the next session instead. Timeframes below 5 minutes were never tested. "
+                "No backtest result is a promise of live performance, and nothing here is financial advice.")
     L.append("")
     L.append("//@version=6")
     L.append(f'strategy("{name}", overlay = true, initial_capital = 100000, margin_long = 0, margin_short = 0, '

@@ -15,3 +15,4 @@ ledger/graveyard.jsonl
 state/placebo/*/ledger/
 reports/dryrun_001/runs_000/
 reports/dryrun_001/lineage.sqlite
+deliverables/all_50pct/
