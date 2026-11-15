@@ -1,90 +1,90 @@
 {
  "batch": 16,
- "best_generation": 73770,
+ "best_generation": 88594,
  "best_score": {
-  "A": 0.7610227404496478,
-  "B": 0.7654782513653184
+  "A": 0.7640258042741608,
+  "B": 0.7878606559408204
  },
  "complexity_ceiling": 22,
  "counts": {
   "confirmed": 0,
   "error": 19,
-  "stage1_fail": 79950,
-  "stage1_pass": 47,
+  "stage1_fail": 89940,
+  "stage1_pass": 57,
   "void": 0
  },
  "decoy": null,
  "engine_version": "1.1.0",
- "epoch": 160,
+ "epoch": 180,
  "frozen": {
   "costs": "c9f34a1fb7a405c307f0b6dfec3b8525b6a44e58883b264d491f6062ae3fa829",
   "partition": "2c5cfaf77cb2f204ea322fb4d184917f4b9a5ae96f2e61fc25dbe620f8b39c48",
   "raw_ES": "ead01c6e2173c3925d897b5e160350e31c71ceb06e6c7f2d1a029d22b16f47f1",
   "raw_YM": "77dd831221c15938a00dd0f6ea922c70f7cb2ee5353aecefe89bccc342adddfd"
  },
- "ledger_last_hash": "602ec5a35da3ba64acd749aad21b86f84d44f7d82e81a5320686d0829b02f558",
+ "ledger_last_hash": "19f469a7f3de30ddc92ef04748affcf02f3edd921c20811aa6b8f3a0267ae898",
  "llm_queue_cursor": 30,
  "master_seed": 20261114,
  "n_eff": {
-  "n_eff": 96053,
-  "raw": 160086,
-  "var_sharpe": 0.013323608732632422
+  "n_eff": 108053,
+  "raw": 180086,
+  "var_sharpe": 0.013484805381668089
  },
- "next_generation": 80017,
+ "next_generation": 90017,
  "operator_share": {
-  "ATOM_ADD": 0.05376405318117431,
-  "ATOM_DROP": 0.061263414220616486,
-  "ATOM_SWAP": 0.12921624693282388,
-  "ENSEMBLE": 0.02654658522404638,
-  "ENTRY_TRANSPLANT": 0.07646989972001751,
-  "EXIT_TRANSPLANT": 0.0764326449543067,
-  "INVERT": 0.03271686945418125,
-  "LIBRARY_PROBE": 0.03367487606649654,
-  "LLM_HYPOTHESIS": 0.1295088149442214,
-  "PARAM_STEP": 0.20490765909321007,
-  "SIMPLIFY": 0.05788673777402205,
-  "SLOT_CROSSOVER": 0.11761219843488344
+  "ATOM_ADD": 0.05372907048924981,
+  "ATOM_DROP": 0.061720427449426074,
+  "ATOM_SWAP": 0.1288671497461124,
+  "ENSEMBLE": 0.026648174856057718,
+  "ENTRY_TRANSPLANT": 0.07643387476212614,
+  "EXIT_TRANSPLANT": 0.07687842805515205,
+  "INVERT": 0.032965128023499796,
+  "LIBRARY_PROBE": 0.03359296762124213,
+  "LLM_HYPOTHESIS": 0.12951044907959744,
+  "PARAM_STEP": 0.20382392047376632,
+  "SIMPLIFY": 0.05770309772395606,
+  "SLOT_CROSSOVER": 0.11812731171981404
  },
  "operator_stats": {
   "ATOM_ADD": {
-   "improved": 526,
+   "improved": 588,
    "passed": 1,
-   "uses": 5367
+   "uses": 6025
   },
   "ATOM_DROP": {
-   "improved": 363,
+   "improved": 433,
    "passed": 1,
-   "uses": 1998
+   "uses": 2324
   },
   "ATOM_SWAP": {
-   "improved": 936,
-   "passed": 9,
-   "uses": 12476
+   "improved": 1032,
+   "passed": 10,
+   "uses": 14058
   },
   "ENSEMBLE": {
-   "improved": 75,
-   "passed": 1,
-   "uses": 836
+   "improved": 82,
+   "passed": 2,
+   "uses": 891
   },
   "ENTRY_TRANSPLANT": {
-   "improved": 998,
-   "passed": 10,
-   "uses": 7234
+   "improved": 1121,
+   "passed": 13,
+   "uses": 8142
   },
   "EXIT_TRANSPLANT": {
-   "improved": 931,
-   "passed": 15,
-   "uses": 6763
+   "improved": 1070,
+   "passed": 19,
+   "uses": 7568
   },
   "INVERT": {
-   "improved": 112,
+   "improved": 137,
    "passed": 0,
-   "uses": 2455
+   "uses": 2751
   },
   "LIBRARY_PROBE": {
-   "improved": 1158,
+   "improved": 1272,
    "passed": 0,
-   "uses": 18702
+   "uses": 21007
   },
   "LLM_HYPOTHESIS": {
    "improved": 17,
@@ -92,23 +92,23 @@
    "uses": 29
   },
   "PARAM_STEP": {
-   "improved": 2209,
+   "improved": 2434,
    "passed": 1,
-   "uses": 12013
+   "uses": 13496
   },
   "SIMPLIFY": {
-   "improved": 246,
+   "improved": 275,
    "passed": 0,
-   "uses": 1713
+   "uses": 1936
   },
   "SLOT_CROSSOVER": {
-   "improved": 1609,
-   "passed": 9,
-   "uses": 10430
+   "improved": 1852,
+   "passed": 10,
+   "uses": 11789
   }
  },
  "placebo": false,
- "seconds_stage1": 16244.086171865463,
+ "seconds_stage1": 18239.697526693344,
  "started_utc": "2026-11-14T17:25:05.788848Z",
  "survey_cursor": 205,
  "tier_counts": {
@@ -116,7 +116,7 @@
   "gold": 0,
   "silver": 0
  },
- "updated_utc": "2026-11-15T00:23:40.516697Z",
+ "updated_utc": "2026-11-15T01:06:50.968430Z",
  "vault": {
   "a_used": 0,
   "b_used": 0,
