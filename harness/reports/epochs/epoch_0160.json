@@ -1,0 +1,133 @@
+{
+ "best_generation": 73770,
+ "best_score": {
+  "A": 0.7610227404496478,
+  "B": 0.7654782513653184
+ },
+ "canary_adoption_rate": 0.3333333333333333,
+ "canary_passes": 1,
+ "counts": {
+  "HOME_ONLY": 3,
+  "STAGE1_FAIL": 497
+ },
+ "effective_trials": {
+  "n_eff": 96053,
+  "raw": 160086,
+  "var_sharpe": 0.013323608732632422
+ },
+ "epoch": 160,
+ "exchange": {
+  "demoted": 2,
+  "generation": 80000,
+  "leaders": 20,
+  "mean_away_pf": 1.2958132696263704,
+  "mean_away_score": 0.42499566867863486,
+  "mean_away_wr": 0.7041253246427391,
+  "mean_home_pf": 1.7066594670063182,
+  "mean_home_score": 0.7025689431071618,
+  "mean_home_wr": 0.771174794246497,
+  "retention": 0.6049166745103489,
+  "survivors": 18
+ },
+ "frozen_ok": true,
+ "generations": [
+  79501,
+  80000
+ ],
+ "honeypot_voided": true,
+ "ledger_chain_ok": true,
+ "ledger_records": 964312,
+ "mean_pairwise_distance_top100": 0.6621856866537718,
+ "notes": [
+  "canary adoption above 2%: promotion halted for this epoch pending tightening (SPEC 15.1)"
+ ],
+ "occupied_cells": {
+  "A": 326,
+  "B": 317
+ },
+ "operator_share": {
+  "ATOM_ADD": 0.05376405318117431,
+  "ATOM_DROP": 0.061263414220616486,
+  "ATOM_SWAP": 0.12921624693282388,
+  "ENSEMBLE": 0.02654658522404638,
+  "ENTRY_TRANSPLANT": 0.07646989972001751,
+  "EXIT_TRANSPLANT": 0.0764326449543067,
+  "INVERT": 0.03271686945418125,
+  "LIBRARY_PROBE": 0.03367487606649654,
+  "LLM_HYPOTHESIS": 0.1295088149442214,
+  "PARAM_STEP": 0.20490765909321007,
+  "SIMPLIFY": 0.05788673777402205,
+  "SLOT_CROSSOVER": 0.11761219843488344
+ },
+ "operator_stats": {
+  "ATOM_ADD": {
+   "improved": 526,
+   "passed": 1,
+   "uses": 5367
+  },
+  "ATOM_DROP": {
+   "improved": 362,
+   "passed": 1,
+   "uses": 1997
+  },
+  "ATOM_SWAP": {
+   "improved": 935,
+   "passed": 9,
+   "uses": 12471
+  },
+  "ENSEMBLE": {
+   "improved": 75,
+   "passed": 1,
+   "uses": 836
+  },
+  "ENTRY_TRANSPLANT": {
+   "improved": 998,
+   "passed": 10,
+   "uses": 7233
+  },
+  "EXIT_TRANSPLANT": {
+   "improved": 931,
+   "passed": 15,
+   "uses": 6763
+  },
+  "INVERT": {
+   "improved": 112,
+   "passed": 0,
+   "uses": 2455
+  },
+  "LIBRARY_PROBE": {
+   "improved": 1158,
+   "passed": 0,
+   "uses": 18698
+  },
+  "LLM_HYPOTHESIS": {
+   "improved": 17,
+   "passed": 0,
+   "uses": 29
+  },
+  "PARAM_STEP": {
+   "improved": 2208,
+   "passed": 1,
+   "uses": 12009
+  },
+  "SIMPLIFY": {
+   "improved": 246,
+   "passed": 0,
+   "uses": 1713
+  },
+  "SLOT_CROSSOVER": {
+   "improved": 1608,
+   "passed": 9,
+   "uses": 10429
+  }
+ },
+ "outside_false_discovery_set": [],
+ "raw_stage1_trials": 160086,
+ "stage1_pass_rate": 0.006,
+ "tier_counts": {
+  "bronze": 0,
+  "gold": 0,
+  "silver": 0
+ },
+ "utc": "2026-11-15T00:23:35.134641Z"
+}

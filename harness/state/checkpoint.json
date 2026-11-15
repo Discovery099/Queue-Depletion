@@ -1,90 +1,90 @@
 {
  "batch": 16,
- "best_generation": 66118,
+ "best_generation": 73770,
  "best_score": {
   "A": 0.7610227404496478,
-  "B": 0.7137947691048123
+  "B": 0.7654782513653184
  },
  "complexity_ceiling": 22,
  "counts": {
   "confirmed": 0,
   "error": 19,
-  "stage1_fail": 69959,
-  "stage1_pass": 38,
+  "stage1_fail": 79950,
+  "stage1_pass": 47,
   "void": 0
  },
  "decoy": null,
  "engine_version": "1.1.0",
- "epoch": 140,
+ "epoch": 160,
  "frozen": {
   "costs": "c9f34a1fb7a405c307f0b6dfec3b8525b6a44e58883b264d491f6062ae3fa829",
   "partition": "2c5cfaf77cb2f204ea322fb4d184917f4b9a5ae96f2e61fc25dbe620f8b39c48",
   "raw_ES": "ead01c6e2173c3925d897b5e160350e31c71ceb06e6c7f2d1a029d22b16f47f1",
   "raw_YM": "77dd831221c15938a00dd0f6ea922c70f7cb2ee5353aecefe89bccc342adddfd"
  },
- "ledger_last_hash": "0ab95772726c9de5130834e99ceb9752a794c64a57bb7b021f1c5855abc4f797",
+ "ledger_last_hash": "602ec5a35da3ba64acd749aad21b86f84d44f7d82e81a5320686d0829b02f558",
  "llm_queue_cursor": 30,
  "master_seed": 20261114,
  "n_eff": {
-  "n_eff": 84053,
-  "raw": 140086,
-  "var_sharpe": 0.012919215913513126
+  "n_eff": 96053,
+  "raw": 160086,
+  "var_sharpe": 0.013323608732632422
  },
- "next_generation": 70017,
+ "next_generation": 80017,
  "operator_share": {
-  "ATOM_ADD": 0.053943016019072566,
-  "ATOM_DROP": 0.060516436761023265,
-  "ATOM_SWAP": 0.12957967806344073,
-  "ENSEMBLE": 0.026551190578920154,
-  "ENTRY_TRANSPLANT": 0.07632257581110405,
-  "EXIT_TRANSPLANT": 0.07580351951556144,
-  "INVERT": 0.032676156666131724,
-  "LIBRARY_PROBE": 0.03388882993883031,
-  "LLM_HYPOTHESIS": 0.12990225503978634,
-  "PARAM_STEP": 0.20525311568730198,
-  "SIMPLIFY": 0.058564478542144936,
-  "SLOT_CROSSOVER": 0.1169987473766825
+  "ATOM_ADD": 0.05376405318117431,
+  "ATOM_DROP": 0.061263414220616486,
+  "ATOM_SWAP": 0.12921624693282388,
+  "ENSEMBLE": 0.02654658522404638,
+  "ENTRY_TRANSPLANT": 0.07646989972001751,
+  "EXIT_TRANSPLANT": 0.0764326449543067,
+  "INVERT": 0.03271686945418125,
+  "LIBRARY_PROBE": 0.03367487606649654,
+  "LLM_HYPOTHESIS": 0.1295088149442214,
+  "PARAM_STEP": 0.20490765909321007,
+  "SIMPLIFY": 0.05788673777402205,
+  "SLOT_CROSSOVER": 0.11761219843488344
  },
  "operator_stats": {
   "ATOM_ADD": {
-   "improved": 464,
+   "improved": 526,
    "passed": 1,
-   "uses": 4728
+   "uses": 5367
   },
   "ATOM_DROP": {
-   "improved": 286,
-   "passed": 0,
-   "uses": 1675
+   "improved": 363,
+   "passed": 1,
+   "uses": 1998
   },
   "ATOM_SWAP": {
-   "improved": 816,
-   "passed": 6,
-   "uses": 10907
+   "improved": 936,
+   "passed": 9,
+   "uses": 12476
   },
   "ENSEMBLE": {
-   "improved": 67,
+   "improved": 75,
    "passed": 1,
-   "uses": 763
+   "uses": 836
   },
   "ENTRY_TRANSPLANT": {
-   "improved": 849,
-   "passed": 9,
-   "uses": 6300
+   "improved": 998,
+   "passed": 10,
+   "uses": 7234
   },
   "EXIT_TRANSPLANT": {
-   "improved": 777,
-   "passed": 11,
-   "uses": 5955
+   "improved": 931,
+   "passed": 15,
+   "uses": 6763
   },
   "INVERT": {
-   "improved": 93,
+   "improved": 112,
    "passed": 0,
-   "uses": 2153
+   "uses": 2455
   },
   "LIBRARY_PROBE": {
-   "improved": 1050,
+   "improved": 1158,
    "passed": 0,
-   "uses": 16467
+   "uses": 18702
   },
   "LLM_HYPOTHESIS": {
    "improved": 17,
@@ -92,23 +92,23 @@
    "uses": 29
   },
   "PARAM_STEP": {
-   "improved": 1925,
+   "improved": 2209,
    "passed": 1,
-   "uses": 10524
+   "uses": 12013
   },
   "SIMPLIFY": {
-   "improved": 218,
+   "improved": 246,
    "passed": 0,
-   "uses": 1462
+   "uses": 1713
   },
   "SLOT_CROSSOVER": {
-   "improved": 1347,
+   "improved": 1609,
    "passed": 9,
-   "uses": 9053
+   "uses": 10430
   }
  },
  "placebo": false,
- "seconds_stage1": 14173.787824869156,
+ "seconds_stage1": 16244.086171865463,
  "started_utc": "2026-11-14T17:25:05.788848Z",
  "survey_cursor": 205,
  "tier_counts": {
@@ -116,7 +116,7 @@
   "gold": 0,
   "silver": 0
  },
- "updated_utc": "2026-11-14T23:43:29.553166Z",
+ "updated_utc": "2026-11-15T00:23:40.516697Z",
  "vault": {
   "a_used": 0,
   "b_used": 0,
