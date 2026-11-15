@@ -1,0 +1,48 @@
+evaluations: 99993 distinct: 99822
+Discover distribution (candidates with at least 200 trades):
+  0-1 trades/day:  33254 candidates, PF median 1.22, 99th pct 1.99, max 3.00; win% median 58; PF>=2 and win>=60%: 299
+  1-3 trades/day:  33764 candidates, PF median 1.08, 99th pct 1.50, max 1.63; win% median 52; PF>=2 and win>=60%: 0
+  3-5 trades/day:  10953 candidates, PF median 1.00, 99th pct 1.18, max 1.25; win% median 48; PF>=2 and win>=60%: 0
+  5-99 trades/day:   4460 candidates, PF median 0.97, 99th pct 1.11, max 1.17; win% median 49; PF>=2 and win>=60%: 0
+shortlist: 9
+shortlist PF: discover median 1.50 -> confirm median 0.98; confirm PF > 1: 1 of 9; > 1.2: 0; > 1.5: 0; >= 2: 0
+shortlist win rate: discover median 65% -> confirm median 62%
+random 300 candidates: discover PF median 1.08, confirm PF median 0.93
+eligible for finalist (confirm PF > 1 on both instruments): 1
+
+Shortlist, best 15 by Confirm fitness:  discover -> confirm (pooled, per instrument per day)
+  D 1.42/d 61% PF 1.50 $+86/tr DD 12% of net | C 1.40/d 55% PF 1.06 $+10/tr DD 150% of net | C ES PF 1.05 YM PF 1.07
+     Smart Trend arrow (factor 2) within 3 bars + 1 of [squeeze_release, wick_rejection[n=5], hma_turn[n=49], volume_dryup_extreme] within 3 bars; stop 3 ATR, target 2.25 ATR (0.75R), max 12 bars, stop to entry after 1R, half off at 0.5R
+  D 3.20/d 51% PF 1.19 $+40/tr DD 15% of net | C 3.19/d 48% PF 1.00 $-1/tr net loss $2,487 | C ES PF 0.97 YM PF 1.03
+     Smart Trend regime (factor 1) agrees + 1 of [internal_bar_strength[thr=0.25], two_bar_reversal] within 1 bars; exit after 12 bars (8 ATR emergency stop)
+  D 5.05/d 64% PF 1.12 $+21/tr DD 25% of net | C 4.98/d 62% PF 0.98 $-4/tr net loss $18,439 | C ES PF 0.94 YM PF 1.03
+     Smart Trend regime (factor 2) agrees + 1 of [hma_turn[n=49], cci_breakout, rsi_midline_cross, ema_cross] within 1 bars; stop 2 ATR, target 1.5 ATR (0.75R), stop to entry after 0.5R, half off at 0.5R
+  D 3.78/d 65% PF 1.18 $+30/tr DD 19% of net | C 3.78/d 62% PF 0.92 $-12/tr net loss $44,626 | C ES PF 0.86 YM PF 1.03
+     Smart Trend regime (factor 2) agrees + 1 of [cmo_hook[n=9], bollinger_break[k=1.5], ema_cross] within 2 bars; stop 2 ATR, target 1.5 ATR (0.75R), max 24 bars, half off at 0.5R
+  D 0.87/d 71% PF 1.73 $+107/tr DD 8% of net | C 0.79/d 61% PF 0.94 $-11/tr net loss $8,495 | C ES PF 0.98 YM PF 0.89
+     Smart Trend arrow (factor 3) within 1 bars + 1 of [range_expansion_break[n=20], true_range_spike[k=2.0], stochastic_cross, cmo_hook[n=20]] within 1 bars; stop 2 ATR, target 2 ATR (1R), max 24 bars, stop to entry after 1R, half off at 0.5R
+  D 0.93/d 83% PF 1.79 $+73/tr DD 6% of net | C 0.85/d 75% PF 0.98 $-2/tr net loss $1,800 | C ES PF 0.94 YM PF 1.04
+     Smart Trend arrow (factor 1) within 3 bars + 2 of [trail_flip, bollinger_break[k=1.5], rsi_divergence[r=5], snapback] within 3 bars; stop 2 ATR, target 0.66 ATR (0.33R), stop to entry after 1R
+  D 0.83/d 72% PF 1.87 $+93/tr DD 7% of net | C 0.81/d 64% PF 0.98 $-2/tr net loss $1,754 | C ES PF 0.85 YM PF 1.19
+     Smart Trend arrow (factor 1) within 2 bars + 2 of [low_volatility_break, keltner_break[k=1.0], trail_flip[n=10], zscore_revert[n=20]] within 2 bars; stop 1.5 ATR, target 1.5 ATR (1R), half off at 0.5R
+  D 3.03/d 49% PF 1.21 $+33/tr DD 33% of net | C 2.99/d 47% PF 0.94 $-8/tr net loss $22,635 | C ES PF 0.95 YM PF 0.94
+     Smart Trend regime (factor 2) agrees + 1 of [hma_turn, run_then_reverse[n=5], supertrend_flip] within 3 bars; exit after 6 bars (8 ATR emergency stop)
+  D 0.58/d 82% PF 2.10 $+84/tr DD 5% of net | C 0.52/d 72% PF 0.78 $-32/tr net loss $15,550 | C ES PF 0.63 YM PF 1.03
+     Smart Trend arrow (factor 1.5) within 2 bars + 2 of [trail_flip, coil_break[n=6], rsi_divergence[r=5], momentum_bar] within 2 bars; stop 2 ATR, target 0.66 ATR (0.33R), max 12 bars, stop to entry after 0.5R, half off at 0.5R
+
+Shortlist members with the most trades (>= 3 a day on Discover):
+  D 3.20/d 51% PF 1.19 $+40/tr DD 15% of net | C 3.19/d 48% PF 1.00 $-1/tr net loss $2,487
+     Smart Trend regime (factor 1) agrees + 1 of [internal_bar_strength[thr=0.25], two_bar_reversal] within 1 bars; exit after 12 bars (8 ATR emergency stop)
+  D 5.05/d 64% PF 1.12 $+21/tr DD 25% of net | C 4.98/d 62% PF 0.98 $-4/tr net loss $18,439
+     Smart Trend regime (factor 2) agrees + 1 of [hma_turn[n=49], cci_breakout, rsi_midline_cross, ema_cross] within 1 bars; stop 2 ATR, target 1.5 ATR (0.75R), stop to entry after 0.5R, half off at 0.5R
+  D 3.78/d 65% PF 1.18 $+30/tr DD 19% of net | C 3.78/d 62% PF 0.92 $-12/tr net loss $44,626
+     Smart Trend regime (factor 2) agrees + 1 of [cmo_hook[n=9], bollinger_break[k=1.5], ema_cross] within 2 bars; stop 2 ATR, target 1.5 ATR (0.75R), max 24 bars, half off at 0.5R
+  D 3.03/d 49% PF 1.21 $+33/tr DD 33% of net | C 2.99/d 47% PF 0.94 $-8/tr net loss $22,635
+     Smart Trend regime (factor 2) agrees + 1 of [hma_turn, run_then_reverse[n=5], supertrend_flip] within 3 bars; exit after 6 bars (8 ATR emergency stop)
+
+FINALIST 1: Smart Trend arrow (factor 2) within 3 bars + 1 of [squeeze_release, wick_rejection[n=5], hma_turn[n=49], volume_dryup_extreme] within 3 bars; stop 3 ATR, target 2.25 ATR (0.75R), max 12 bars, stop to entry after 1R, half off at 0.5R
+  discover  1.42/d 61% PF 1.50 $+86/tr DD 12% of net
+  confirm   1.40/d 55% PF 1.06 $+10/tr DD 150% of net   ES 1.44/d 54% PF 1.05 $+9/tr DD 180% of net | YM 1.36/d 55% PF 1.07 $+11/tr DD 127% of net
+  all folds 1.41/d 58% PF 1.28 $+48/tr DD 23% of net; twin win 53% PF 0.91; stress costs PF 1.17
+  timeframes: 10m 0.70/d 57% PF 1.07 $+19/tr DD 124% of net; 15m 0.47/d 55% PF 0.94 $-22/tr net loss $19,100; 30m 0.27/d 57% PF 1.34 $+119/tr DD 25% of net
+  neighbours: {'n': 21, 'pf_min': 0.8294583981625546, 'pf_median': 1.1923034402469181, 'pf_max': 1.3998791107081467}

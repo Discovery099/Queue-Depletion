@@ -1,0 +1,530 @@
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+// https://mozilla.org/MPL/2.0/
+// Smart Trail and arrow logic: Smart Trend V1 (owner's script). Lorentzian engine and kernel adapted from (c) jdehorty,
+// in the form used in the owner's 'ARES LC + Smart Trend Sync'. Voter formulas: re-implementations of common library techniques.
+//
+// SMART TREND QUORUM - research test bench, NOT a validated strategy.
+// A trade fires only when the Smart Trend base and at least N other techniques agree within a few candles:
+//   base = 'Arrow'  : a Smart Trend arrow, then a voter's signal on the same candle or up to W candles later
+//   base = 'Regime' : the Smart Trail is on the trade side and the voters agree within W candles
+//   an opposite signal from any switched-on voter inside the window cancels the trade
+// Default settings = the best candidate of a 100,000-candidate search on ES and YM 5-minute regular-hours data:
+//   Smart Trend arrow (factor 2) within 3 bars + 1 of [squeeze_release, wick_rejection[n=5], hma_turn[n=49], volume_dryup_extreme] within 3 bars; stop 3 ATR, target 2.25 ATR (0.75R), max 12 bars, stop to entry after 1R, half off at 0.5R
+//   selected on half of 2020-2023: 1.4 trades/day, 61% wins, profit factor 1.50
+//   on the other half (never used for selection): 1.4 trades/day, 55% wins, profit factor 1.06
+//   That second line is the honest one. It does not meet the goal (5 trades/day, 60% wins, profit factor 2).
+// Research fills: next bar open, 1 tick slippage, $1.25 a side, flat at 16:00 New York. Overnight holding was never tested.
+// Signals use closed bars only; there is no request.security and no lookahead, so arrows do not repaint.
+//@version=6
+strategy("Smart Trend Quorum (research test bench)", shorttitle="ST Quorum", overlay=true, initial_capital=100000, margin_long=0, margin_short=0, default_qty_type=strategy.fixed, default_qty_value=1, pyramiding=0, commission_type=strategy.commission.cash_per_contract, commission_value=1.25, slippage=1, process_orders_on_close=false, calc_on_every_tick=false, max_labels_count=500)
+
+import jdehorty/MLExtensions/2 as ml
+import jdehorty/KernelFunctions/2 as kernels
+
+gBase = "01 Smart Trend base"
+baseMode   = input.string("Arrow", "Base role", options=["Arrow", "Regime"], group=gBase, tooltip="Arrow: a Smart Trend arrow must be followed by the voters within the window. Regime: the Smart Trail must be on the trade side.")
+i_atrLen   = input.int(14, "ATR Length", minval=5, maxval=100, group=gBase)
+i_factor   = input.float(2, "Factor", minval=0.5, maxval=5.0, step=0.1, group=gBase, tooltip="Owner default 3.0. Lower = more arrows.")
+i_confirm  = input.int(1, "Confirm Bars", minval=1, maxval=3, group=gBase)
+i_adaptLen = input.int(10, "Adaptation EMA", minval=1, maxval=30, group=gBase)
+
+gQ = "02 Agreement"
+window  = input.int(3, "Window: candles allowed between signals", minval=0, maxval=10, group=gQ, tooltip="0 = same candle only.")
+quorumN = input.int(1, "How many voters must agree", minval=1, maxval=6, group=gQ)
+
+gV = "03 Voters (switch on the techniques that may vote)"
+use1 = input.bool(true, "Squeeze release (Bollinger leaves Keltner)", group=gV)
+use2 = input.bool(true, "Wick rejection at a 5-bar extreme", group=gV)
+use3 = input.bool(true, "Hull average (49) turns", group=gV)
+use4 = input.bool(true, "New 20-bar extreme on low volume, reversal", group=gV)
+use5 = input.bool(false, "Supertrend (14, 3) flips", group=gV)
+use6 = input.bool(false, "EMA 13 crosses EMA 55", group=gV)
+use7 = input.bool(false, "MACD crosses its signal", group=gV)
+use8 = input.bool(false, "RSI (14) crosses 50", group=gV)
+use9 = input.bool(false, "Donchian (40) breakout", group=gV)
+use10 = input.bool(false, "Momentum thrust (8 bars > 2 ATR)", group=gV)
+use11 = input.bool(false, "Close beyond Bollinger (30, 2)", group=gV)
+use12 = input.bool(false, "Close beyond Keltner (30, 1.5)", group=gV)
+use13 = input.bool(false, "CCI (20) beyond 100", group=gV)
+use14 = input.bool(false, "Widest bar of 10 breaks the range", group=gV)
+use15 = input.bool(false, "Two-bar reversal", group=gV)
+use16 = input.bool(false, "Stochastic %K crosses %D", group=gV)
+useLC = input.bool(false, "Lorentzian classification signal (heavy; off by default)", group=gV)
+
+gX = "04 Exits"
+stopAtr  = input.float(3, "Stop distance (ATR)", minval=0.25, step=0.25, group=gX)
+targetR  = input.float(0.75, "Target (multiple of the stop distance)", minval=0.1, step=0.05, group=gX)
+halfOffR = input.float(0.5, "Take half off at this multiple of the stop distance (0 = off; needs quantity 2 or more)", minval=0.0, step=0.05, group=gX, tooltip="After the half is taken the stop moves to the entry price. The partial exit sends CLOSE_LONG / CLOSE_SHORT with half the quantity; check that your server handles a partial close before using it live.")
+maxBars  = input.int(12, "Exit after this many bars (0 = off)", minval=0, group=gX)
+dayOnly  = input.bool(true, "Day session only: flat at 16:00 New York, entries 09:30 to 15:55", group=gX, tooltip="This is how it was tested. Switched off, positions are held overnight - untested.")
+maxTrades = input.int(20, "Maximum trades per day", minval=1, group=gX)
+
+gAlerts = "06 Webhook / Live Gates"
+executionMode  = input.string("Sim/Paper", "Execution mode", options=["Backtest only", "Sim/Paper", "Live"], group=gAlerts)
+webhookMode    = input.string("internal_paper", "Webhook mode", options=["disabled", "internal_paper", "projectx_sim", "live"], group=gAlerts)
+acceptLiveRisk = input.bool(false, "I accept full live-trading risk", group=gAlerts)
+alertTag       = input.string("ST_QUORUM", "Alert tag", group=gAlerts)
+brokerRoot     = input.string("YM", "Broker root override", group=gAlerts)
+tvSymbol       = input.string("CBOT_MINI_DL:YM1!", "TV symbol override", group=gAlerts)
+qty            = input.int(4, "Quantity", minval=1, maxval=10, group=gAlerts)
+f_num(x) => na(x) ? "null" : str.tostring(x, "#.#####")
+f_bool(x) => x ? "true" : "false"
+liveAuthorized = executionMode == "Live" and webhookMode == "live" and acceptLiveRisk
+ordersOk       = executionMode == "Sim/Paper" or executionMode == "Live"
+f_alert(eventName, side, action, q) =>
+    key = syminfo.ticker + "_" + str.tostring(time) + "_" + eventName + "_" + side
+    "{" + "\"action\":\"" + action + "\",\"side\":\"" + side + "\",\"qty\":" + str.tostring(q) + ",\"symbol\":\"" + tvSymbol + "\",\"broker_root\":\"" + brokerRoot + "\",\"price\":" + f_num(close) + ",\"key\":\"" + key + "\",\"tag\":\"" + alertTag + "\",\"live\":" + f_bool(liveAuthorized) + "}"
+
+// ---- Smart Trend V1 core (owner's algorithm, unchanged)
+_rawAtr = ta.atr(i_atrLen)
+_atr = ta.ema(_rawAtr, i_adaptLen)
+_buffer = i_factor * _atr
+var float trailLevel = na
+var int regime = 0
+var int confirmCount = 0
+if na(trailLevel) and not na(_atr)
+    trailLevel := close
+    regime := close > close[1] ? 1 : -1
+    confirmCount := 0
+if not na(trailLevel) and not na(_buffer)
+    float rawTrail = na
+    int rawRegime = regime
+    if regime == 1
+        rawTrail := math.max(trailLevel, close - _buffer)
+        if close < rawTrail
+            rawRegime := -1
+    else
+        rawTrail := math.min(trailLevel, close + _buffer)
+        if close > rawTrail
+            rawRegime := 1
+    if rawRegime != regime
+        confirmCount += 1
+        if confirmCount >= i_confirm
+            regime := rawRegime
+            confirmCount := 0
+            trailLevel := regime == 1 ? close - _buffer : close + _buffer
+        else
+            trailLevel := regime == 1 ? math.max(trailLevel, close - _buffer) : math.min(trailLevel, close + _buffer)
+    else
+        confirmCount := 0
+        trailLevel := regime == 1 ? math.max(trailLevel, close - _buffer) : math.min(trailLevel, close + _buffer)
+buyArrow  = regime == 1 and regime[1] == -1
+sellArrow = regime == -1 and regime[1] == 1
+
+// ---- Voters from the library (closed-bar formulas; names xN are generated)
+tfMin   = timeframe.in_seconds() / 60.0
+newSess = session.isfirstbar_regular
+var int sessOpenT = na
+sessOpenT := newSess ? time : sessOpenT
+mso     = (time_close - sessOpenT) / 60000.0
+minTgt  = 3.0 * (2.0 * 1.25 / syminfo.pointvalue + 2.0 * syminfo.mintick)
+var int sCount = 0
+sCount  := newSess ? 0 : sCount + 1
+x6 = ta.stdev(close, 20)
+x5 = (2.0 * x6)
+x8 = ta.atr(20)
+x7 = (1.5 * x8)
+x4 = (x5 < x7)
+x3 = x4[1]
+x9 = (not x4)
+x2 = (x3 and x9)
+x11 = ta.sma(close, 20)
+x10 = (close > x11)
+x1 = (x2 and x10)
+x13 = (close < x11)
+x12 = (x2 and x13)
+x18 = math.min(open, close)
+x17 = (x18 - low)
+x21 = (close - open)
+x20 = math.abs(x21)
+x19 = (3.0 * x20)
+x16 = (x17 > x19)
+x24 = ta.atr(14)
+x23 = (0.5 * x24)
+x22 = (x17 > x23)
+x15 = (x16 and x22)
+x26 = ta.lowest(low, 5)
+x25 = (low <= x26)
+x14 = (x15 and x25)
+x31 = math.max(open, close)
+x30 = (high - x31)
+x29 = (x30 > x19)
+x32 = (x30 > x23)
+x28 = (x29 and x32)
+x34 = ta.highest(high, 5)
+x33 = (high >= x34)
+x27 = (x28 and x33)
+x38 = ta.hma(close, 49)
+x39 = x38[1]
+x37 = (x38 - x39)
+x36 = (x37 > 0.0)
+x41 = x37[1]
+x40 = (x41 <= 0.0)
+x35 = (x36 and x40)
+x44 = (0.0 - x37)
+x43 = (x44 > 0.0)
+x46 = x44[1]
+x45 = (x46 <= 0.0)
+x42 = (x43 and x45)
+x50 = ta.lowest(low, 20)
+x49 = (low <= x50)
+x53 = ta.sma(volume, 20)
+x52 = (0.7 * x53)
+x51 = (volume < x52)
+x48 = (x49 and x51)
+x54 = (close > open)
+x47 = (x48 and x54)
+x58 = ta.highest(high, 20)
+x57 = (high >= x58)
+x56 = (x57 and x51)
+x59 = (close < open)
+x55 = (x56 and x59)
+x62a = ta.atr(14)
+var float x62u = na
+var float x62l = na
+var float x62 = 0.0
+x62n = x62 == 0.0 and not na(x62a)
+x62u := na(x62a) ? x62u : x62n ? hl2 + 3.0 * x62a : (hl2 + 3.0 * x62a < x62u or close[1] > x62u ? hl2 + 3.0 * x62a : x62u)
+x62l := na(x62a) ? x62l : x62n ? hl2 - 3.0 * x62a : (hl2 - 3.0 * x62a > x62l or close[1] < x62l ? hl2 - 3.0 * x62a : x62l)
+x62 := na(x62a) ? x62 : x62n ? 1.0 : x62 == 1.0 and close < x62l ? -1.0 : x62 == -1.0 and close > x62u ? 1.0 : x62
+x61 = (x62 > 0.0)
+x64 = x62[1]
+x63 = (x64 < 0.0)
+x60 = (x61 and x63)
+x67 = (0.0 - x62)
+x66 = (x67 > 0.0)
+x69 = x67[1]
+x68 = (x69 < 0.0)
+x65 = (x66 and x68)
+x72 = ta.ema(close, 13)
+x73 = ta.ema(close, 55)
+x71 = (x72 > x73)
+x75 = x72[1]
+x76 = x73[1]
+x74 = (x75 <= x76)
+x70 = (x71 and x74)
+x78 = (x72 < x73)
+x79 = (x75 >= x76)
+x77 = (x78 and x79)
+x83 = ta.ema(close, 12)
+x84 = ta.ema(close, 26)
+x82 = (x83 - x84)
+x85 = ta.ema(x82, 9)
+x81 = (x82 > x85)
+x87 = x82[1]
+x88 = x85[1]
+x86 = (x87 <= x88)
+x80 = (x81 and x86)
+x90 = (x82 < x85)
+x91 = (x87 >= x88)
+x89 = (x90 and x91)
+x94 = ta.rsi(close, 14)
+x93 = (x94 > 50.0)
+x96 = x94[1]
+x95 = (x96 <= 50.0)
+x92 = (x93 and x95)
+x98 = (x94 < 50.0)
+x99 = (x96 >= 50.0)
+x97 = (x98 and x99)
+x103 = ta.highest(high, 40)
+x102 = x103[1]
+x101 = (close > x102)
+x105 = close[1]
+x106 = x102[1]
+x104 = (x105 <= x106)
+x100 = (x101 and x104)
+x110 = ta.lowest(low, 40)
+x109 = x110[1]
+x108 = (close < x109)
+x112 = x109[1]
+x111 = (x105 >= x112)
+x107 = (x108 and x111)
+x117 = close[8]
+x116 = (close - x117)
+x115 = (x24 != 0 ? x116 / x24 : na)
+x114 = (x115 > 2.0)
+x119 = x115[1]
+x118 = (x119 <= 2.0)
+x113 = (x114 and x118)
+x123 = (0.0 - x116)
+x122 = (x24 != 0 ? x123 / x24 : na)
+x121 = (x122 > 2.0)
+x125 = x122[1]
+x124 = (x125 <= 2.0)
+x120 = (x121 and x124)
+x129 = ta.sma(close, 30)
+x131 = ta.stdev(close, 30)
+x130 = (2.0 * x131)
+x128 = (x129 + x130)
+x127 = (close > x128)
+x133 = x128[1]
+x132 = (x105 <= x133)
+x126 = (x127 and x132)
+x136 = (x129 - x130)
+x135 = (close < x136)
+x138 = x136[1]
+x137 = (x105 >= x138)
+x134 = (x135 and x137)
+x142 = ta.ema(close, 30)
+x144 = ta.atr(30)
+x143 = (1.5 * x144)
+x141 = (x142 + x143)
+x140 = (close > x141)
+x146 = x141[1]
+x145 = (x105 <= x146)
+x139 = (x140 and x145)
+x149 = (x142 - x143)
+x148 = (close < x149)
+x151 = x149[1]
+x150 = (x105 >= x151)
+x147 = (x148 and x150)
+x156 = ta.sma(hlc3, 20)
+x155 = (hlc3 - x156)
+x158 = ta.dev(hlc3, 20)
+x157 = (0.015 * x158)
+x154 = (x157 != 0 ? x155 / x157 : na)
+x153 = (x154 > 100.0)
+x160 = x154[1]
+x159 = (x160 <= 100.0)
+x152 = (x153 and x159)
+x163 = (0.0 - x154)
+x162 = (x163 > 100.0)
+x165 = x163[1]
+x164 = (x165 <= 100.0)
+x161 = (x162 and x164)
+x168 = (high - low)
+x169 = ta.highest(x168, 10)
+x167 = (x168 >= x169)
+x172 = ta.highest(high, 10)
+x171 = x172[1]
+x170 = (close > x171)
+x166 = (x167 and x170)
+x176 = ta.lowest(low, 10)
+x175 = x176[1]
+x174 = (close < x175)
+x173 = (x167 and x174)
+x180 = open[1]
+x179 = (x105 < x180)
+x182 = x168[1]
+x184 = x24[1]
+x183 = (1.2 * x184)
+x181 = (x182 > x183)
+x178 = (x179 and x181)
+x185 = (close > x180)
+x177 = (x178 and x185)
+x188 = (x105 > x180)
+x187 = (x188 and x181)
+x189 = (close < x180)
+x186 = (x187 and x189)
+x196 = ta.lowest(low, 14)
+x195 = (close - x196)
+x194 = (100.0 * x195)
+x198 = ta.highest(high, 14)
+x197 = (x198 - x196)
+x193 = (x197 != 0 ? x194 / x197 : na)
+x192 = ta.sma(x193, 3)
+x199 = ta.sma(x192, 3)
+x191 = (x192 > x199)
+x201 = x192[1]
+x202 = x199[1]
+x200 = (x201 <= x202)
+x190 = (x191 and x200)
+x204 = (x192 < x199)
+x205 = (x201 >= x202)
+x203 = (x204 and x205)
+
+// ---- Lorentzian voter (from the owner's merged script; runs only when switched on)
+lcF1 = ml.n_rsi(close, 14, 1)
+lcF2 = ml.n_wt(hlc3, 10, 11)
+lcF3 = ml.n_cci(close, 20, 1)
+lcF4 = ml.n_adx(high, low, close, 20)
+lcF5 = ml.n_rsi(close, 9, 1)
+var array<float> lcA1 = array.new_float()
+var array<float> lcA2 = array.new_float()
+var array<float> lcA3 = array.new_float()
+var array<float> lcA4 = array.new_float()
+var array<float> lcA5 = array.new_float()
+var array<int> lcLabels = array.new_int()
+var array<int> lcPreds = array.new_int()
+var array<float> lcDists = array.new_float()
+var float lcPrediction = 0.0
+var int lcSignal = 0
+int lcLabel = close[4] < close ? -1 : close[4] > close ? 1 : 0
+if useLC
+    array.push(lcA1, lcF1)
+    array.push(lcA2, lcF2)
+    array.push(lcA3, lcF3)
+    array.push(lcA4, lcF4)
+    array.push(lcA5, lcF5)
+    array.push(lcLabels, lcLabel)
+    int lcEnd = array.size(lcLabels) - 1
+    int lcStart = math.max(0, lcEnd - 1999)
+    float lcLast = -1.0
+    for i = lcStart to lcEnd
+        float dist = math.log(1 + math.abs(lcF1 - array.get(lcA1, i))) + math.log(1 + math.abs(lcF2 - array.get(lcA2, i))) + math.log(1 + math.abs(lcF3 - array.get(lcA3, i))) + math.log(1 + math.abs(lcF4 - array.get(lcA4, i))) + math.log(1 + math.abs(lcF5 - array.get(lcA5, i)))
+        if not na(dist) and dist >= lcLast and i % 4 != 0
+            lcLast := dist
+            array.push(lcDists, dist)
+            array.push(lcPreds, array.get(lcLabels, i))
+            if array.size(lcPreds) > 8
+                lcLast := array.get(lcDists, 6)
+                array.shift(lcDists)
+                array.shift(lcPreds)
+    lcPrediction := array.sum(lcPreds)
+bool lcVolOk = ml.filter_volatility(1, 10, true)
+bool lcRegOk = ml.regime_filter(ohlc4, -0.1, true)
+lcSignal := lcPrediction > 0 and lcVolOk and lcRegOk ? 1 : lcPrediction < 0 and lcVolOk and lcRegOk ? -1 : nz(lcSignal[1], 0)
+bool lcChanged = ta.change(lcSignal) != 0
+float lcKernel = kernels.rationalQuadratic(close, 8, 8.0, 25)
+bool lcLong  = useLC and lcSignal == 1 and lcChanged and lcKernel > lcKernel[1]
+bool lcShort = useLC and lcSignal == -1 and lcChanged and lcKernel < lcKernel[1]
+
+// ---- Agreement: each voter's signal stays valid for `window` candles
+e1L = use1 and x1 and not x12
+e1S = use1 and x12 and not x1
+r1L = ta.barssince(e1L) <= window
+r1S = ta.barssince(e1S) <= window
+e2L = use2 and x14 and not x27
+e2S = use2 and x27 and not x14
+r2L = ta.barssince(e2L) <= window
+r2S = ta.barssince(e2S) <= window
+e3L = use3 and x35 and not x42
+e3S = use3 and x42 and not x35
+r3L = ta.barssince(e3L) <= window
+r3S = ta.barssince(e3S) <= window
+e4L = use4 and x47 and not x55
+e4S = use4 and x55 and not x47
+r4L = ta.barssince(e4L) <= window
+r4S = ta.barssince(e4S) <= window
+e5L = use5 and x60 and not x65
+e5S = use5 and x65 and not x60
+r5L = ta.barssince(e5L) <= window
+r5S = ta.barssince(e5S) <= window
+e6L = use6 and x70 and not x77
+e6S = use6 and x77 and not x70
+r6L = ta.barssince(e6L) <= window
+r6S = ta.barssince(e6S) <= window
+e7L = use7 and x80 and not x89
+e7S = use7 and x89 and not x80
+r7L = ta.barssince(e7L) <= window
+r7S = ta.barssince(e7S) <= window
+e8L = use8 and x92 and not x97
+e8S = use8 and x97 and not x92
+r8L = ta.barssince(e8L) <= window
+r8S = ta.barssince(e8S) <= window
+e9L = use9 and x100 and not x107
+e9S = use9 and x107 and not x100
+r9L = ta.barssince(e9L) <= window
+r9S = ta.barssince(e9S) <= window
+e10L = use10 and x113 and not x120
+e10S = use10 and x120 and not x113
+r10L = ta.barssince(e10L) <= window
+r10S = ta.barssince(e10S) <= window
+e11L = use11 and x126 and not x134
+e11S = use11 and x134 and not x126
+r11L = ta.barssince(e11L) <= window
+r11S = ta.barssince(e11S) <= window
+e12L = use12 and x139 and not x147
+e12S = use12 and x147 and not x139
+r12L = ta.barssince(e12L) <= window
+r12S = ta.barssince(e12S) <= window
+e13L = use13 and x152 and not x161
+e13S = use13 and x161 and not x152
+r13L = ta.barssince(e13L) <= window
+r13S = ta.barssince(e13S) <= window
+e14L = use14 and x166 and not x173
+e14S = use14 and x173 and not x166
+r14L = ta.barssince(e14L) <= window
+r14S = ta.barssince(e14S) <= window
+e15L = use15 and x177 and not x186
+e15S = use15 and x186 and not x177
+r15L = ta.barssince(e15L) <= window
+r15S = ta.barssince(e15S) <= window
+e16L = use16 and x190 and not x203
+e16S = use16 and x203 and not x190
+r16L = ta.barssince(e16L) <= window
+r16S = ta.barssince(e16S) <= window
+eLcL = lcLong and not lcShort
+eLcS = lcShort and not lcLong
+rLcL = ta.barssince(eLcL) <= window
+rLcS = ta.barssince(eLcS) <= window
+cntL = (r1L ? 1 : 0) + (r2L ? 1 : 0) + (r3L ? 1 : 0) + (r4L ? 1 : 0) + (r5L ? 1 : 0) + (r6L ? 1 : 0) + (r7L ? 1 : 0) + (r8L ? 1 : 0) + (r9L ? 1 : 0) + (r10L ? 1 : 0) + (r11L ? 1 : 0) + (r12L ? 1 : 0) + (r13L ? 1 : 0) + (r14L ? 1 : 0) + (r15L ? 1 : 0) + (r16L ? 1 : 0) + (rLcL ? 1 : 0)
+cntS = (r1S ? 1 : 0) + (r2S ? 1 : 0) + (r3S ? 1 : 0) + (r4S ? 1 : 0) + (r5S ? 1 : 0) + (r6S ? 1 : 0) + (r7S ? 1 : 0) + (r8S ? 1 : 0) + (r9S ? 1 : 0) + (r10S ? 1 : 0) + (r11S ? 1 : 0) + (r12S ? 1 : 0) + (r13S ? 1 : 0) + (r14S ? 1 : 0) + (r15S ? 1 : 0) + (r16S ? 1 : 0) + (rLcS ? 1 : 0)
+nowL = e1L or e2L or e3L or e4L or e5L or e6L or e7L or e8L or e9L or e10L or e11L or e12L or e13L or e14L or e15L or e16L or eLcL
+nowS = e1S or e2S or e3S or e4S or e5S or e6S or e7S or e8S or e9S or e10S or e11S or e12S or e13S or e14S or e15S or e16S or eLcS
+baseL = baseMode == "Arrow" ? ta.barssince(buyArrow) <= window : regime == 1
+baseS = baseMode == "Arrow" ? ta.barssince(sellArrow) <= window : regime == -1
+okL = cntL >= quorumN and cntS == 0 and baseL
+okS = cntS >= quorumN and cntL == 0 and baseS
+fireL = okL and nowL and not okL[1]
+fireS = okS and nowS and not okS[1]
+
+// ---- Orders: entry at the next bar's open; stop and target measured from the signal candle's close
+atrNow = ta.atr(14)
+nyMin = hour(time_close, "America/New_York") * 60 + minute(time_close, "America/New_York")
+flatNow = dayOnly and (nyMin >= 960 or nyMin <= 570 or session.islastbar_regular)
+canEnter = not dayOnly or (nyMin > 570 and nyMin < 960 and not session.islastbar_regular)
+var int tradesToday = 0
+var int sigBar = na
+var float stopPx = na
+var float tgtPx = na
+var float halfPx = na
+if ta.change(time("D")) != 0
+    tradesToday := 0
+bool usePartial = halfOffR > 0 and qty >= 2
+int halfQty = int(math.floor(qty / 2))
+isFlat = strategy.position_size == 0
+lossNow = strategy.losstrades > strategy.losstrades[1]
+lastDir = strategy.closedtrades > 0 ? (strategy.closedtrades.size(strategy.closedtrades - 1) > 0 ? 1 : -1) : 0
+goL = fireL and not fireS and isFlat and canEnter and ordersOk and not na(atrNow) and tradesToday < maxTrades and not (lossNow and lastDir == 1)
+goS = fireS and not fireL and isFlat and canEnter and ordersOk and not na(atrNow) and tradesToday < maxTrades and not (lossNow and lastDir == -1)
+if goL
+    stopPx := math.round_to_mintick(close - stopAtr * atrNow)
+    tgtPx  := math.round_to_mintick(close + stopAtr * targetR * atrNow)
+    halfPx := math.round_to_mintick(close + stopAtr * halfOffR * atrNow)
+    sigBar := bar_index
+    tradesToday += 1
+    strategy.entry("Long", strategy.long, qty=qty, comment="L", alert_message=f_alert("entry", "long", "BUY", qty))
+if goS
+    stopPx := math.round_to_mintick(close + stopAtr * atrNow)
+    tgtPx  := math.round_to_mintick(close - stopAtr * targetR * atrNow)
+    halfPx := math.round_to_mintick(close - stopAtr * halfOffR * atrNow)
+    sigBar := bar_index
+    tradesToday += 1
+    strategy.entry("Short", strategy.short, qty=qty, comment="S", alert_message=f_alert("entry", "short", "SELL_SHORT", qty))
+// after the half is taken, the stop moves to the entry price
+if strategy.position_size > 0 and usePartial and strategy.position_size < qty
+    stopPx := math.max(stopPx, strategy.position_avg_price)
+if strategy.position_size < 0 and usePartial and -strategy.position_size < qty
+    stopPx := math.min(stopPx, strategy.position_avg_price)
+if goL or strategy.position_size > 0
+    if usePartial and (goL or strategy.position_size == qty)
+        strategy.exit("L half", from_entry="Long", qty=halfQty, limit=halfPx, stop=stopPx, comment="XL", alert_message=f_alert("half", "long", "CLOSE_LONG", halfQty))
+    strategy.exit("L exit", from_entry="Long", limit=tgtPx, stop=stopPx, comment="XL", alert_message=f_alert("exit", "long", "CLOSE_LONG", qty))
+if goS or strategy.position_size < 0
+    if usePartial and (goS or -strategy.position_size == qty)
+        strategy.exit("S half", from_entry="Short", qty=halfQty, limit=halfPx, stop=stopPx, comment="XS", alert_message=f_alert("half", "short", "CLOSE_SHORT", halfQty))
+    strategy.exit("S exit", from_entry="Short", limit=tgtPx, stop=stopPx, comment="XS", alert_message=f_alert("exit", "short", "CLOSE_SHORT", qty))
+timeUp = maxBars > 0 and not isFlat and not na(sigBar) and bar_index - sigBar >= maxBars
+if timeUp and strategy.position_size > 0
+    strategy.close("Long", comment="XL", alert_message=f_alert("time", "long", "CLOSE_LONG", qty))
+if timeUp and strategy.position_size < 0
+    strategy.close("Short", comment="XS", alert_message=f_alert("time", "short", "CLOSE_SHORT", qty))
+if flatNow and strategy.position_size > 0
+    strategy.close("Long", comment="XL", immediately=true, alert_message=f_alert("eod", "long", "CLOSE_LONG", qty))
+if flatNow and strategy.position_size < 0
+    strategy.close("Short", comment="XS", immediately=true, alert_message=f_alert("eod", "short", "CLOSE_SHORT", qty))
+
+// ---- Display
+trailColor = regime == 1 ? #00D084 : #FF4757
+plot(trailLevel, "Smart Trail", color=trailColor, linewidth=2)
+plotshape(buyArrow, title="Smart Trend buy arrow", style=shape.triangleup, location=location.belowbar, color=#00D084, size=size.tiny)
+plotshape(sellArrow, title="Smart Trend sell arrow", style=shape.triangledown, location=location.abovebar, color=#FF4757, size=size.tiny)
+plotshape(nowL and not fireL, title="Voter buy signal", style=shape.circle, location=location.belowbar, color=color.new(color.aqua, 40), size=size.tiny)
+plotshape(nowS and not fireS, title="Voter sell signal", style=shape.circle, location=location.abovebar, color=color.new(color.orange, 40), size=size.tiny)
+plotshape(goL, title="Agreed BUY", style=shape.labelup, location=location.belowbar, color=#009988, text="BUY", textcolor=color.white, size=size.small)
+plotshape(goS, title="Agreed SELL", style=shape.labeldown, location=location.abovebar, color=#CC3311, text="SELL", textcolor=color.white, size=size.small)
+plot(strategy.position_size != 0 ? stopPx : na, "Stop", color=#CC3311, style=plot.style_linebr)
+plot(strategy.position_size != 0 ? tgtPx : na, "Target", color=#009988, style=plot.style_linebr)
+bgcolor(goL ? color.new(#00D084, 90) : goS ? color.new(#FF4757, 90) : na, title="Agreed entry")
+alertcondition(goL or goS, title="Smart Trend Quorum - agreed entry", message="Smart Trend Quorum entry on {{ticker}} @ {{close}}")

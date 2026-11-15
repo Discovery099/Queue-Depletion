@@ -1,0 +1,98 @@
+
+Voters alone: 156 tested; top 15 by Discover t   (net move after costs, ATR units, 6 bars)
+name                                                       ev/day | disc mean  t   win% | conf mean  t   win%
+bollinger_break[k=2.5]                                       1.91 | +0.080  +1.3   53 | -0.091  -1.5   47
+squeeze_release                                              2.15 | +0.053  +1.2   51 | -0.103  -2.2   47
+supertrend_flip                                              1.94 | +0.060  +1.2   51 | -0.093  -1.9   47
+roc_thrust[n=5]                                              4.87 | +0.034  +1.0   50 | -0.061  -1.7   47
+squeeze_release[n=30]                                        1.00 | +0.064  +1.0   51 | -0.116  -1.8   47
+supertrend_flip[n=10]                                        1.95 | +0.050  +0.9   50 | -0.104  -2.0   47
+supertrend_flip[n=20]                                        1.98 | +0.042  +0.8   51 | -0.049  -0.9   47
+true_range_spike[k=3.0]                                      0.67 | +0.093  +0.8   49 | +0.080  +0.7   53
+range_expansion_break[n=20]                                  1.84 | +0.047  +0.8   50 | -0.045  -0.7   48
+bollinger_break                                              3.86 | +0.031  +0.8   50 | -0.079  -1.8   47
+keltner_break[k=2.0]                                         4.05 | +0.028  +0.8   50 | -0.077  -2.1   47
+lorentzian                                                   2.06 | +0.037  +0.8   51 | -0.087  -1.9   47
+range_expansion_break                                        3.66 | +0.032  +0.7   49 | -0.082  -1.9   47
+trail_flip[n=10]                                             2.21 | +0.035  +0.7   50 | -0.084  -1.8   47
+band_width_expansion                                         1.25 | +0.042  +0.7   52 | +0.008  +0.1   49
+  share with positive net move: discover 18%, confirm 4%
+  discover t > 2: 0; of those, confirm mean > 0: 0, confirm t > 2: 0
+  pass Benjamini-Hochberg at 10% on discover: 0; of those confirm mean > 0: 0, confirm t > 2: 0
+  rank correlation of discover t with confirm t: +0.77
+
+Voter events in the direction of the Smart Trend regime: 141 tested; top 15 by Discover t   (net move after costs, ATR units, 6 bars)
+name                                                       ev/day | disc mean  t   win% | conf mean  t   win%
+squeeze_release[n=30]                                        0.80 | +0.138  +1.9   55 | -0.103  -1.4   48
+coil_break[n=12]                                             0.53 | +0.140  +1.7   53 | -0.092  -1.1   48
+bollinger_break[k=2.5]                                       1.82 | +0.102  +1.6   53 | -0.069  -1.1   48
+squeeze_release[n=14]                                        2.39 | +0.064  +1.5   52 | -0.087  -1.9   48
+lorentzian                                                   1.40 | +0.089  +1.4   52 | -0.124  -2.2   47
+squeeze_release                                              1.62 | +0.069  +1.3   52 | -0.121  -2.2   47
+trail_flip[n=10]                                             2.02 | +0.064  +1.2   51 | -0.086  -1.7   47
+low_volatility_break[q=20]                                   1.17 | +0.092  +1.2   52 | -0.138  -2.0   45
+momentum_bar                                                 0.28 | +0.193  +1.1   48 | +0.102  +0.5   53
+supertrend_flip                                              1.77 | +0.059  +1.1   51 | -0.096  -1.8   47
+bollinger_break                                              3.51 | +0.039  +1.0   51 | -0.056  -1.2   47
+volume_climax_follow[n=40]                                   1.12 | +0.088  +0.9   52 | +0.079  +0.9   52
+key_reversal[n=10]                                           0.24 | +0.135  +0.9   50 | -0.104  -0.6   50
+supertrend_flip[n=10]                                        1.66 | +0.053  +0.9   51 | -0.110  -2.0   48
+band_width_expansion                                         1.22 | +0.055  +0.9   52 | +0.016  +0.2   49
+  share with positive net move: discover 31%, confirm 9%
+  discover t > 2: 0; of those, confirm mean > 0: 0, confirm t > 2: 0
+  pass Benjamini-Hochberg at 10% on discover: 0; of those confirm mean > 0: 0, confirm t > 2: 0
+  rank correlation of discover t with confirm t: +0.45
+
+Voter events against the Smart Trend regime: 139 tested; top 15 by Discover t   (net move after costs, ATR units, 6 bars)
+name                                                       ev/day | disc mean  t   win% | conf mean  t   win%
+roc_thrust[n=5]                                              0.97 | +0.074  +1.1   49 | -0.035  -0.6   48
+keltner_break                                                0.42 | +0.090  +0.9   51 | -0.229  -2.5   41
+bollinger_break[k=1.5]                                       0.93 | +0.045  +0.6   47 | -0.162  -2.2   45
+trail_flip[n=20]                                             0.27 | +0.038  +0.4   47 | -0.228  -2.4   38
+two_bar_reversal                                             0.97 | +0.029  +0.4   53 | -0.092  -1.2   46
+range_expansion_break                                        0.77 | +0.023  +0.3   48 | -0.176  -2.6   42
+supertrend_flip[n=10]                                        0.28 | +0.029  +0.2   47 | -0.074  -0.6   46
+keltner_break[k=1.0]                                         1.19 | +0.007  +0.1   47 | -0.206  -3.6   44
+squeeze_release                                              0.52 | +0.003  +0.0   49 | -0.051  -0.7   47
+swing_break[r=5]                                             0.91 | -0.012  -0.2   49 | -0.097  -1.4   45
+true_range_spike                                             0.21 | -0.050  -0.3   47 | +0.063  +0.4   48
+pin_bar                                                      1.38 | -0.023  -0.3   49 | -0.119  -2.1   46
+bollinger_break                                              0.35 | -0.055  -0.5   43 | -0.284  -2.5   43
+roc_thrust[n=12]                                             1.28 | -0.032  -0.5   47 | -0.121  -2.1   46
+volume_dryup_extreme                                         0.56 | -0.043  -0.6   45 | -0.173  -2.9   44
+  share with positive net move: discover 6%, confirm 1%
+  discover t > 2: 0; of those, confirm mean > 0: 0, confirm t > 2: 0
+  pass Benjamini-Hochberg at 10% on discover: 0; of those confirm mean > 0: 0, confirm t > 2: 0
+  rank correlation of discover t with confirm t: +0.69
+
+Pairs of different techniques agreeing within 2 bars: 8320 tested; top 25 by Discover t   (net move after costs, ATR units, 6 bars)
+name                                                       ev/day | disc mean  t   win% | conf mean  t   win%
+range_expansion_break + swing_break_failure[r=2]             0.61 | +0.314  +3.5   55 | -0.141  -1.3   46
+range_expansion_break[n=20] + swing_break_failure[r=2]       0.31 | +0.490  +3.4   60 | -0.158  -0.8   45
+bollinger_break[k=1.5] + swing_break_failure[r=2]            0.80 | +0.270  +3.4   54 | -0.174  -1.8   46
+supertrend_flip[n=10] + stochastic_hook[n=9]                 0.37 | +0.411  +3.1   61 | -0.024  -0.2   49
+stochastic_cross[n=21] + coil_break[n=12]                    0.39 | +0.287  +3.1   57 | -0.134  -1.5   44
+di_cross + roc_thrust[n=5]                                   1.54 | +0.172  +3.0   54 | -0.125  -2.1   48
+ema_cross + inside_bar_break                                 0.32 | +0.287  +3.0   58 | -0.233  -2.3   40
+di_cross[n=10] + range_expansion_break[n=20]                 0.44 | +0.348  +3.0   59 | -0.132  -1.0   48
+keltner_break[k=1.0] + rsi_hook[n=7]                         0.21 | +0.453  +2.9   62 | -0.137  -0.8   45
+di_cross[n=10] + roc_thrust[n=5]                             1.62 | +0.167  +2.9   54 | -0.101  -1.8   48
+stochastic_hook[n=9] + bollinger_break[k=1.5]                0.49 | +0.320  +2.9   57 | -0.098  -0.9   48
+cci_breakout[n=14] + sweep_n_bar[n=10]                       0.32 | +0.330  +2.9   58 | -0.120  -0.9   47
+di_cross + range_expansion_break[n=20]                       0.46 | +0.321  +2.9   57 | -0.185  -1.5   46
+supertrend_flip[n=10] + stochastic_hook                      0.41 | +0.341  +2.8   59 | +0.018  +0.1   50
+keltner_break[k=1.0] + keltner_reentry[n=50]                 0.28 | +0.383  +2.8   61 | -0.092  -0.6   47
+stochastic_cross + coil_break[n=12]                          0.40 | +0.269  +2.8   55 | -0.074  -0.8   46
+supertrend_flip[n=10] + williams_hook[n=10]                  0.29 | +0.388  +2.8   63 | +0.122  +0.7   54
+macd_zero_cross[s=2] + squeeze_release                       0.24 | +0.322  +2.8   55 | -0.172  -1.5   47
+donchian_break[n=20] + swing_break_failure[r=2]              0.66 | +0.240  +2.8   54 | -0.163  -1.6   46
+supertrend_flip + range_expansion_break[n=20]                0.52 | +0.305  +2.8   54 | -0.216  -1.9   45
+roc_thrust[n=5] + volume_climax_follow[n=10]                 1.67 | +0.149  +2.8   54 | -0.054  -0.8   48
+stochastic_hook[n=9] + range_expansion_break                 0.38 | +0.361  +2.8   54 | -0.227  -2.0   44
+volume_climax_follow[n=10] + bollinger_break[k=2.5]          0.88 | +0.214  +2.8   56 | -0.062  -0.8   48
+roc_thrust[n=5] + hma_turn[n=25]                             1.99 | +0.146  +2.7   53 | -0.100  -1.9   47
+supertrend_flip[n=10] + rsi_hook[n=7]                        0.25 | +0.390  +2.7   64 | +0.047  +0.2   50
+  share with positive net move: discover 40%, confirm 10%
+  discover t > 2: 217; of those, confirm mean > 0: 43, confirm t > 2: 0
+  pass Benjamini-Hochberg at 10% on discover: 0; of those confirm mean > 0: 0, confirm t > 2: 0
+  rank correlation of discover t with confirm t: +0.48
