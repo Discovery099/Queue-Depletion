@@ -58,3 +58,7 @@ Every entry states what happened, what it could have affected, and what was done
     as ERROR with their trial rows ABORTED. All would have failed stage 1 (no trades). (b) The epoch routine referenced the exchange
     result before computing it and stopped the loop at generation 20,500; generations 20,489 to 20,500 were re-run after the fix,
     so their first attempts remain in the trial ledger as extra rows (over-counting only). Both paths now have tests.
+15. **Parent selection made faster at generation 90,417.** The 10% "uniformly at random" parent draw read every evaluated genome of
+    the island each time, which had become the bottleneck with 45,000 genomes per island. It now looks up one random generation by
+    index. The distribution is unchanged in intent (uniform over the island's evaluated generations); the sequence of proposals for
+    a given seed differs from this point on.

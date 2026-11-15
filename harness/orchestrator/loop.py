@@ -236,10 +236,16 @@ class Run:
             return top[int(rng.integers(len(top)))]
         row = self.db.execute("SELECT generation, genome, score, tf, lineage_id, win_rate, pf, n_trades FROM genomes WHERE island=? AND status!='VOID' "
                               "ORDER BY RANDOM() LIMIT 1", [island]).fetchone() if False else None
-        rows = self.db.execute("SELECT generation, genome, score, tf, lineage_id FROM genomes WHERE island=? AND status!='VOID'", [island]).fetchall()
-        if not rows:
+        top = self.st["next_generation"] - 1
+        r = None
+        for _ in range(8):                               # a uniformly random generation of this island (index lookup, not a full scan)
+            r = self.db.execute("SELECT generation, genome, score, tf, lineage_id FROM genomes WHERE generation>=? AND island=? "
+                                "AND status NOT IN ('VOID','ERROR') ORDER BY generation LIMIT 1", [int(rng.integers(1, max(2, top + 1))), island]).fetchone()
+            if r:
+                break
+        if not r:
             return None
-        gen, js, score, tf, lin = rows[int(rng.integers(len(rows)))]
+        gen, js, score, tf, lin = r
         return {"generation": gen, "genome": json.loads(js), "score": score or 0.0, "lineage_id": lin, "metrics": None}
 
     def survey_item(self, k):

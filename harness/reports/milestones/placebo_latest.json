@@ -1,17 +1,17 @@
 {
- "best_composite_score": 0.23802899416555356,
+ "best_composite_score": 0.328274805692821,
  "decoy": [
-  "bootstrap",
-  3
+  "phase",
+  5
  ],
  "engine_version": "1.4.0",
  "generations": 1000,
  "genomes_with_150_trades": {
-  "count": 564,
-  "max_alpha_pts": 11.583091238263654,
-  "max_pf": 1.410417602155366,
-  "mean_alpha_pts": 0.49669277594794087,
-  "mean_pf": 0.8346475742836584
+  "count": 584,
+  "max_alpha_pts": 10.093484863810298,
+  "max_pf": 1.629130582031061,
+  "mean_alpha_pts": 0.7238014260405486,
+  "mean_pf": 0.9179708313334913
  },
  "holds": true,
  "outcomes": {
@@ -24,5 +24,5 @@
  },
  "requirement": "zero Gold, zero Silver, at most 2 Bronze in 1,000 generations",
  "stage1_passes": 0,
- "tag": "engine140_bootstrap3"
+ "tag": "final_phase5"
 }
