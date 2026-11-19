@@ -1,0 +1,71 @@
+
+// 5-MINUTE OPENING-RANGE BREAKOUT  -  also tested, failed (not a holdout candidate)
+// Rule from Zarattini and Aziz (2023), "Can Day Trading Really Be Profitable?".
+// Direction of the first candle of the session (use a 5-minute chart); enter at the open of the second candle; stop
+// one tick beyond the first candle's other extreme; target 10 times the risk; otherwise flat at 16:00.
+// RESEARCH RESULT 2020 to Sep 2023 (ES and YM, 1 contract, after costs): 1.0 trade a day, 21% wins, profit factor 0.92.
+// Fills: orders are placed on a closed bar and fill at the NEXT bar's open (process_orders_on_close=false), as in the
+// research engine. Research costs: $1.25 a side and 1 tick slippage a side. TradingView fills stop and target orders
+// more optimistically than the research engine (which assumes the stop is hit first when both are inside one bar).
+// Use an ES1! or YM1! chart; set the webhook inputs to match the chart. Nothing here is financial advice.
+
+//@version=6
+strategy("5-Minute Opening-Range Breakout (tested, failed)", overlay = true, initial_capital = 100000, margin_long = 0, margin_short = 0, default_qty_type = strategy.fixed, default_qty_value = 1, pyramiding = 0, commission_type = strategy.commission.cash_per_contract, commission_value = 1.25, slippage = 1, process_orders_on_close = false, calc_on_every_tick = false)
+
+// ---- 06 Webhook / Live Gates (same behaviour as your Smart Trend V1 script; defaults are paper)
+gAlerts = "06 Webhook / Live Gates"
+executionMode  = input.string("Sim/Paper", "Execution mode", options = ["Backtest only", "Sim/Paper", "Live"], group = gAlerts)
+webhookMode    = input.string("internal_paper", "Webhook mode", options = ["disabled", "internal_paper", "projectx_sim", "live"], group = gAlerts)
+acceptLiveRisk = input.bool(false, "I accept full live-trading risk", group = gAlerts)
+alertTag       = input.string("ORB_5MIN", "Alert tag", group = gAlerts)
+brokerRoot     = input.string("YM", "Broker root override", group = gAlerts)
+tvSymbol       = input.string("CBOT_MINI_DL:YM1!", "TV symbol override", group = gAlerts)
+qty            = input.int(1, "Quantity", minval = 1, maxval = 10, group = gAlerts, tooltip = "Research used 1 contract.")
+f_num(x) => na(x) ? "null" : str.tostring(x, "#.#####")
+f_bool(x) => x ? "true" : "false"
+liveAuthorized = executionMode == "Live" and webhookMode == "live" and acceptLiveRisk
+ordersOk       = executionMode == "Sim/Paper" or executionMode == "Live"
+f_alert(eventName, side, action) =>
+    key = syminfo.ticker + "_" + str.tostring(time) + "_" + eventName + "_" + side
+    "{" + "\"action\":\"" + action + "\",\"side\":\"" + side + "\",\"qty\":" + str.tostring(qty) + ",\"symbol\":\"" + tvSymbol + "\",\"broker_root\":\"" + brokerRoot + "\",\"price\":" + f_num(close) + ",\"key\":\"" + key + "\",\"tag\":\"" + alertTag + "\",\"live\":" + f_bool(liveAuthorized) + "}"
+
+// ---- Session: 09:30 to 16:00 New York, as in the research data. Works on a 24-hour or a regular-hours chart;
+//      nothing is traded outside the session and any position is closed by its last bar.
+gSess   = "05 Session"
+sessStr = input.session("0930-1600", "Trading session (New York)", group = gSess)
+tfMin   = timeframe.in_seconds() / 60.0
+inSess  = not na(time(timeframe.period, sessStr, "America/New_York"))
+newSess = inSess and not inSess[1]
+var int   sessOpenT     = na
+var float sOpen         = na
+var float prevClose     = na
+var float lastSessClose = na
+if newSess
+    sessOpenT := time
+    sOpen     := open
+    prevClose := lastSessClose
+mso       = inSess ? (time_close - sessOpenT) / 60000.0 : na
+isLastBar = inSess and mso >= 390.0 - 0.01
+if inSess
+    lastSessClose := close
+posSize = strategy.position_size
+inLong  = posSize > 0
+inShort = posSize < 0
+// flat by the session's last bar; a position still open outside the session (early-close holiday) is closed at once
+if ordersOk and barstate.isconfirmed and posSize != 0 and (isLastBar or not inSess)
+    strategy.close_all(immediately = true, comment = inLong ? "XL" : "XS", alert_message = f_alert("session", inLong ? "long" : "short", inLong ? "CLOSE_LONG" : "CLOSE_SHORT"))
+
+gS      = "01 Rule settings"
+targetR = input.float(10.0, "Target (multiple of the risk)", minval = 0.5, step = 0.5, group = gS)
+isFirst = newSess and not isLastBar
+longOk  = isFirst and close > open and close - low > 2 * syminfo.mintick
+shortOk = isFirst and close < open and high - close > 2 * syminfo.mintick
+if ordersOk and barstate.isconfirmed and posSize == 0
+    if longOk
+        strategy.entry("L", strategy.long, qty = qty, comment = "L", alert_message = f_alert("entry", "long", "BUY"))
+        strategy.exit("XL", "L", stop = math.round_to_mintick(low - syminfo.mintick), limit = math.round_to_mintick(close + targetR * (close - low)), comment = "XL", alert_message = f_alert("exit", "long", "CLOSE_LONG"))
+    else if shortOk
+        strategy.entry("S", strategy.short, qty = qty, comment = "S", alert_message = f_alert("entry", "short", "SELL_SHORT"))
+        strategy.exit("XS", "S", stop = math.round_to_mintick(high + syminfo.mintick), limit = math.round_to_mintick(close - targetR * (high - close)), comment = "XS", alert_message = f_alert("exit", "short", "CLOSE_SHORT"))
+plotshape(longOk, "Long signal", shape.triangleup, location.belowbar, color.new(#2a78d6, 0), size = size.tiny)
+plotshape(shortOk, "Short signal", shape.triangledown, location.abovebar, color.new(#eb6834, 0), size = size.tiny)

@@ -1,0 +1,133 @@
+
+// NOISE-AREA INTRADAY MOMENTUM  -  candidate C of the holdout audit
+// Rule from Zarattini, Aziz and Barbon (2024), "Beat the Market: An Effective Intraday Momentum Strategy for the
+// S&P 500 ETF (SPY)", at the paper's published settings. Original implementation; no script text copied.
+//
+// RULE
+//   Noise area: for each time of day, the average over the previous 14 sessions of |close / session open - 1|.
+//   Upper boundary = max(session open, previous session close) x (1 + that average); lower = min(...) x (1 - it).
+//   Every 30 minutes from 10:00: if flat, go long when the close is above the upper boundary, short below the lower.
+//   Every 30 minutes: exit a long when the close is below the higher of the upper boundary and session VWAP
+//   (shorts mirror). Flat at 16:00. A 10 ATR emergency stop is attached to every entry.
+//
+// RESEARCH RESULT (ES and YM, 5-minute bars, 1 contract, after costs)
+//   2020 to Sep 2023 (947 sessions): 0.8 trades a day, 37% wins, profit factor 1.08 (ES 1.21, YM 0.93)
+//   Sep 2023 to Apr 2024 (168 never-seen sessions): 35% wins, profit factor 0.95 (ES 1.10, YM 0.78), net -$3,060
+//   It did NOT pass. Low win rate by design: wins are about 1.8 times the size of losses.
+// Fills: orders are placed on a closed bar and fill at the NEXT bar's open (process_orders_on_close=false), as in the
+// research engine. Research costs: $1.25 a side and 1 tick slippage a side. TradingView fills stop and target orders
+// more optimistically than the research engine (which assumes the stop is hit first when both are inside one bar).
+// Use an ES1! or YM1! chart; set the webhook inputs to match the chart. Nothing here is financial advice.
+
+//@version=6
+strategy("Noise-Area Momentum (candidate C, not validated)", overlay = true, initial_capital = 100000, margin_long = 0, margin_short = 0, default_qty_type = strategy.fixed, default_qty_value = 1, pyramiding = 0, commission_type = strategy.commission.cash_per_contract, commission_value = 1.25, slippage = 1, process_orders_on_close = false, calc_on_every_tick = false)
+
+// ---- 06 Webhook / Live Gates (same behaviour as your Smart Trend V1 script; defaults are paper)
+gAlerts = "06 Webhook / Live Gates"
+executionMode  = input.string("Sim/Paper", "Execution mode", options = ["Backtest only", "Sim/Paper", "Live"], group = gAlerts)
+webhookMode    = input.string("internal_paper", "Webhook mode", options = ["disabled", "internal_paper", "projectx_sim", "live"], group = gAlerts)
+acceptLiveRisk = input.bool(false, "I accept full live-trading risk", group = gAlerts)
+alertTag       = input.string("NOISE_AREA_MOM", "Alert tag", group = gAlerts)
+brokerRoot     = input.string("YM", "Broker root override", group = gAlerts)
+tvSymbol       = input.string("CBOT_MINI_DL:YM1!", "TV symbol override", group = gAlerts)
+qty            = input.int(1, "Quantity", minval = 1, maxval = 10, group = gAlerts, tooltip = "Research used 1 contract.")
+f_num(x) => na(x) ? "null" : str.tostring(x, "#.#####")
+f_bool(x) => x ? "true" : "false"
+liveAuthorized = executionMode == "Live" and webhookMode == "live" and acceptLiveRisk
+ordersOk       = executionMode == "Sim/Paper" or executionMode == "Live"
+f_alert(eventName, side, action) =>
+    key = syminfo.ticker + "_" + str.tostring(time) + "_" + eventName + "_" + side
+    "{" + "\"action\":\"" + action + "\",\"side\":\"" + side + "\",\"qty\":" + str.tostring(qty) + ",\"symbol\":\"" + tvSymbol + "\",\"broker_root\":\"" + brokerRoot + "\",\"price\":" + f_num(close) + ",\"key\":\"" + key + "\",\"tag\":\"" + alertTag + "\",\"live\":" + f_bool(liveAuthorized) + "}"
+
+// ---- Session: 09:30 to 16:00 New York, as in the research data. Works on a 24-hour or a regular-hours chart;
+//      nothing is traded outside the session and any position is closed by its last bar.
+gSess   = "05 Session"
+sessStr = input.session("0930-1600", "Trading session (New York)", group = gSess)
+tfMin   = timeframe.in_seconds() / 60.0
+inSess  = not na(time(timeframe.period, sessStr, "America/New_York"))
+newSess = inSess and not inSess[1]
+var int   sessOpenT     = na
+var float sOpen         = na
+var float prevClose     = na
+var float lastSessClose = na
+if newSess
+    sessOpenT := time
+    sOpen     := open
+    prevClose := lastSessClose
+mso       = inSess ? (time_close - sessOpenT) / 60000.0 : na
+isLastBar = inSess and mso >= 390.0 - 0.01
+if inSess
+    lastSessClose := close
+posSize = strategy.position_size
+inLong  = posSize > 0
+inShort = posSize < 0
+// flat by the session's last bar; a position still open outside the session (early-close holiday) is closed at once
+if ordersOk and barstate.isconfirmed and posSize != 0 and (isLastBar or not inSess)
+    strategy.close_all(immediately = true, comment = inLong ? "XL" : "XS", alert_message = f_alert("session", inLong ? "long" : "short", inLong ? "CLOSE_LONG" : "CLOSE_SHORT"))
+
+// ---- Settings (the paper's values)
+gS       = "01 Rule settings"
+lookback = input.int(14, "Sessions averaged for the noise area", minval = 2, maxval = 60, group = gS)
+volMult  = input.float(1.0, "Noise-area multiplier", minval = 0.1, step = 0.1, group = gS)
+interval = input.int(30, "Check every N minutes", minval = 5, step = 5, group = gS, tooltip = "Must be a multiple of the chart timeframe.")
+useVwap  = input.bool(true, "Exit at the nearer of the boundary and VWAP", group = gS)
+stopAtr  = input.float(10.0, "Emergency stop (ATR 14)", minval = 0.5, step = 0.5, group = gS)
+
+// ---- Noise area: one row per session (ring buffer), one column per time of day
+nCols = int(math.ceil(1440.0 / tfMin)) + 1
+var matrix<float> moves = matrix.new<float>(lookback + 1, nCols, na)
+var int ring = 0
+if newSess
+    ring := (ring + 1) % (lookback + 1)
+    for j = 0 to nCols - 1
+        matrix.set(moves, ring, j, na)
+float sigma = na
+if inSess
+    col = math.min(int(math.round(mso / tfMin)), nCols - 1)
+    float acc = 0.0
+    int cnt = 0
+    for r = 0 to lookback
+        if r != ring
+            v = matrix.get(moves, r, col)
+            if not na(v)
+                acc += v
+                cnt += 1
+    sigma := cnt == lookback ? acc / lookback : na
+    matrix.set(moves, ring, col, math.abs(close / sOpen - 1.0))
+upper = na(sigma) or na(prevClose) ? na : math.max(sOpen, prevClose) * (1.0 + volMult * sigma)
+lower = na(sigma) or na(prevClose) ? na : math.min(sOpen, prevClose) * (1.0 - volMult * sigma)
+
+// ---- Session VWAP and ATR
+var float cumPV = 0.0
+var float cumV  = 0.0
+if newSess
+    cumPV := 0.0
+    cumV  := 0.0
+if inSess
+    cumPV += hlc3 * volume
+    cumV  += volume
+vwapS  = cumV > 0 ? cumPV / cumV : na
+atr14  = ta.atr(14)
+
+// ---- Checks every `interval` minutes from the session open (10:00, 10:30, ... 15:30)
+mRound  = inSess ? int(math.round(mso)) : 0
+isCheck = inSess and not isLastBar and mRound >= interval and mRound % interval == 0 and not na(upper) and not na(atr14)
+exitL   = useVwap ? math.max(upper, vwapS) : upper
+exitS   = useVwap ? math.min(lower, vwapS) : lower
+
+if ordersOk and barstate.isconfirmed and isCheck
+    if inLong and close < exitL
+        strategy.close("L", comment = "XL", alert_message = f_alert("exit", "long", "CLOSE_LONG"))
+    if inShort and close > exitS
+        strategy.close("S", comment = "XS", alert_message = f_alert("exit", "short", "CLOSE_SHORT"))
+    if posSize == 0 and close > upper
+        strategy.entry("L", strategy.long, qty = qty, comment = "L", alert_message = f_alert("entry", "long", "BUY"))
+        strategy.exit("XLs", "L", stop = math.round_to_mintick(close - stopAtr * atr14), comment = "XL", alert_message = f_alert("stop", "long", "CLOSE_LONG"))
+    else if posSize == 0 and close < lower
+        strategy.entry("S", strategy.short, qty = qty, comment = "S", alert_message = f_alert("entry", "short", "SELL_SHORT"))
+        strategy.exit("XSs", "S", stop = math.round_to_mintick(close + stopAtr * atr14), comment = "XS", alert_message = f_alert("stop", "short", "CLOSE_SHORT"))
+
+// ---- Display
+plot(upper, "Upper noise boundary", color = color.new(#2a78d6, 0), style = plot.style_linebr)
+plot(lower, "Lower noise boundary", color = color.new(#eb6834, 0), style = plot.style_linebr)
+plot(inSess ? vwapS : na, "Session VWAP", color = color.new(color.gray, 30), style = plot.style_linebr)

@@ -1,0 +1,265 @@
+// CANDIDATE A OF THE HOLDOUT AUDIT (Nov 2026). Use a 5-minute chart.
+// Holdout result, Sep 2023 to Apr 2024 (168 sessions it had never seen, ES and YM, 1 contract, after costs):
+//   510 trades, 69% wins, profit factor 0.91 (ES 0.89, YM 0.93), net -$7,290. It did NOT pass. The research figures below are from 2020 to Sep 2023.
+//
+// SEH candidate 25968 (NOT CERTIFIED)  -  Strategy Evolution Harness export
+// Generation: 25968    Tier: none: failed Bronze    Genome:
+// 4411ecca50cf91d270a41789605ebe718427ab6417bcb7c9b9fc592c46ce01d6
+//
+// WHAT THIS IS
+//   direction: both_mirrored; holding: INTRADAY_FLAT; complexity: 8
+//   trigger: tr_roc_thrust(k=3.0, n=8)
+//   entry: market
+//   stop: r_stop_swing(buf=0.05, n=12)
+//   exit: x_target_atr(k=1.0)
+//   sequencing: cool-down 15 min, max 6 trades per session, stand down after 3 straight
+//  losses
+//
+//   NOT CERTIFIED. This strategy FAILED the lowest tier (Bronze) of the harness. It is exported for inspection only.
+//   Failed gates on all six walk-forward test folds: profit factor 1.19 against a floor of 1.40;
+//   median fold profit factor against 1.40; and it lost money in the two earliest folds of the research data.
+//   
+//   WIN-RATE STATEMENT (research walk-forward folds 3 to 8, ES and YM pooled, base costs, 1 contract)
+//   Headline win rate (net, flat-to-flat, OOS):   73.2 %   (n = 2281 trades)
+//   Wilson 95% interval:                          71.3 % to 74.9 %
+//   Geometry baseline (random-entry twin median): 66.0 %   (200 twins)
+//   Win-rate alpha:                               +7.2 points (twin p99 = 68.0 %); about 2.7 of these points also appear on no-edge decoy markets
+//   Random-exit twin win rate:                    52.4 %
+//   Payoff ratio:                                 0.44
+//   Profit factor:                                1.19   (1.11 at doubled costs)
+//   Expectancy per trade:                         +4.89 ticks   (+2.02 x round-trip cost)
+//   Largest loss / average win:                   5.1
+//   Trades per year per instrument:               403
+//   Sessions with a trade:                        81 %
+//   Known weaknesses: profit disappears when each session's net drift is removed (it earns on trend days); win rate falls
+//   from 73% on 5-minute bars to 50% on 60-minute bars; no vault (unseen-data) result exists; no live fills.
+//
+// ATOMS (techniques) USED
+//   x_target_atr: Profit target at a multiple of ATR. [volatility expansion]
+//   tr_roc_thrust: Net move over a few bars exceeds a multiple of ATR for the first time.
+//  [trend continuation]
+//   r_stop_swing: Initial stop beyond the adverse extreme of the last n bars plus a small
+//  ATR buffer. [liquidity sweep and reversal]
+// All code in this file is an original implementation of these concepts. No library script
+// text is copied.
+//
+// CHANGES FROM THE OWNER'S ORIGINAL SCRIPT, AND WHY
+//   1. Orders are placed on confirmed bars and fill on the NEXT bar
+//  (process_orders_on_close=false). The original filled at the signal bar's close, a price
+//  that cannot be traded once the bar has closed; every research result was measured with
+//  next-bar fills.
+//   2. Every entry has a hard stop placed with it (strategy.exit). The original had no
+//  stop.
+//   3. All positions are closed by the session's last regular-hours bar. The original held
+//  overnight.
+//   4. Stop and target exits send CLOSE_LONG / CLOSE_SHORT payloads through alert_message
+//  with their own keys. The original strategy had no such exits: VERIFY THE SERVER-SIDE
+//  HANDLING OF THESE EXITS IN PAPER MODE before anything else.
+//
+// LIMITS OF THE EVIDENCE
+//   Research used two highly correlated instruments (ES, YM), regular trading hours only,
+//  5-minute bars whose intrabar order of events is unknown, about six years of history and
+//  no live fills. TradingView's own fill model is more optimistic than the research
+//  engine's (which assumes the stop fills before the target when both are inside one bar).
+//  Use a regular-hours chart. Session logic assumes the 09:30 to 16:00 Eastern session; on
+//  shortened holiday sessions this script cannot know the bar is the last one, so it
+//  flattens at the first bar of the next session instead. Timeframes below 5 minutes were
+//  never tested. No backtest result is a promise of live performance, and nothing here is
+//  financial advice.
+
+//@version=6
+strategy("SEH candidate 25968 (NOT CERTIFIED)", overlay = true, initial_capital = 100000, margin_long = 0, margin_short = 0, default_qty_type = strategy.fixed, default_qty_value = 1, pyramiding = 0, commission_type = strategy.commission.cash_per_contract, commission_value = 1.25, slippage = 1, process_orders_on_close = false, calc_on_every_tick = false)
+
+// ---- 06 Webhook / Live Gates (carried over from the owner's script, same behaviour)
+gAlerts = "06 Webhook / Live Gates"
+executionMode  = input.string("Sim/Paper", "Execution mode", options = ["Backtest only", "Sim/Paper", "Live"], group = gAlerts, tooltip = "Backtest only disables all orders and therefore all alerts. Sim/Paper and Live both place orders; the live flag in the JSON tells your server which path to route.")
+webhookMode    = input.string("internal_paper", "Webhook mode", options = ["disabled", "internal_paper", "projectx_sim", "live"], group = gAlerts)
+acceptLiveRisk = input.bool(false, "I accept full live-trading risk", group = gAlerts)
+alertTag       = input.string("SEH_CAND_25968", "Alert tag", group = gAlerts, tooltip = "A tag of its own so your dashboard can tell strategies apart.")
+brokerRoot     = input.string("YM", "Broker root override", group = gAlerts)
+tvSymbol       = input.string("CBOT_MINI_DL:YM1!", "TV symbol override", group = gAlerts)
+qty            = input.int(4, "Quantity", minval = 1, maxval = 10, group = gAlerts, tooltip = "Contracts per position. Research used 1 contract; sizing is your decision.")
+f_num(x) => na(x) ? "null" : str.tostring(x, "#.#####")
+f_bool(x) => x ? "true" : "false"
+liveAuthorized = executionMode == "Live" and webhookMode == "live" and acceptLiveRisk
+ordersOk       = executionMode == "Sim/Paper" or executionMode == "Live"
+f_alert(eventName, side, action) =>
+    key = syminfo.ticker + "_" + str.tostring(time) + "_" + eventName + "_" + side
+    "{" + "\"action\":\"" + action + "\",\"side\":\"" + side + "\",\"qty\":" + str.tostring(qty) + ",\"symbol\":\"" + tvSymbol + "\",\"broker_root\":\"" + brokerRoot + "\",\"price\":" + f_num(close) + ",\"key\":\"" + key + "\",\"tag\":\"" + alertTag + "\",\"live\":" + f_bool(liveAuthorized) + "}"
+
+// ---- Strategy settings (units in the tooltips)
+gRisk = "01 Risk and sequencing"
+cooldownMin = input.int(15, "Cool-down after a loss (minutes)", minval = 0, group = gRisk, tooltip = "After a losing trade, no new entry in the same direction for this many minutes (at least 2 bars).")
+maxTrades   = input.int(6, "Maximum trades per session", minval = 1, maxval = 6, group = gRisk)
+standDownN  = input.int(3, "Stand down after this many straight losses in a session", minval = 0, group = gRisk)
+
+// ---- Signal layer: every value is final at the close of the bar it is read on
+tfMin   = timeframe.in_seconds() / 60.0
+newSess = session.isfirstbar_regular
+var int sessOpenT = na
+sessOpenT := newSess ? time : sessOpenT
+mso     = (time_close - sessOpenT) / 60000.0
+minTgt  = 3.0 * (2.0 * 1.25 / syminfo.pointvalue + 2.0 * syminfo.mintick)
+var int sCount = 0
+sCount  := newSess ? 0 : sCount + 1
+x7 = close[8]
+x6 = (close - x7)
+x8 = ta.atr(14)
+x5 = (x8 != 0 ? x6 / x8 : na)
+x4 = (x5 > 3.0)
+x10 = x5[1]
+x9 = (x10 <= 3.0)
+x3 = (x4 and x9)
+x2 = (true and x3)
+x21 = ta.lowest(low, 12)
+x20 = (close - x21)
+x22 = (0.05 * x8)
+x19 = (x20 + x22)
+x23 = (0.3 * x8)
+x18 = math.max(x19, x23)
+x25 = (2.5 * x8)
+x26 = (0.006 * close)
+x24 = math.min(x25, x26)
+x17 = math.min(x18, x24)
+x16 = (close - x17)
+x15 = math.floor(x16 / syminfo.mintick + 0.5) * syminfo.mintick
+x14 = (close - x15)
+x13 = (x14 > 0.0)
+x32 = (1.0 * x8)
+x31 = (close + x32)
+x30 = math.floor(x31 / syminfo.mintick + 0.5) * syminfo.mintick
+x29 = (x30 - close)
+x28 = (x29 * 2.5)
+x27 = (x28 >= x14)
+x12 = (x13 and x27)
+x33 = (x29 >= minTgt)
+x11 = (x12 and x33)
+x1 = (x2 and x11)
+x39 = (0.0 - x6)
+x38 = (x8 != 0 ? x39 / x8 : na)
+x37 = (x38 > 3.0)
+x41 = x38[1]
+x40 = (x41 <= 3.0)
+x36 = (x37 and x40)
+x35 = (true and x36)
+x54 = ta.highest(high, 12)
+x53 = (close - x54)
+x52 = (0.0 - x53)
+x51 = (x52 + x22)
+x50 = math.max(x51, x23)
+x49 = math.min(x50, x24)
+x48 = (close + x49)
+x47 = math.floor(x48 / syminfo.mintick + 0.5) * syminfo.mintick
+x46 = (close - x47)
+x45 = (0.0 - x46)
+x44 = (x45 > 0.0)
+x60 = (close - x32)
+x59 = math.floor(x60 / syminfo.mintick + 0.5) * syminfo.mintick
+x58 = (x59 - close)
+x57 = (0.0 - x58)
+x56 = (x57 * 2.5)
+x55 = (x56 >= x45)
+x43 = (x44 and x55)
+x61 = (x57 >= minTgt)
+x42 = (x43 and x61)
+x34 = (x35 and x42)
+
+// ---- Order layer
+isLastBar    = mso >= 390.0
+cooldownBars = math.max(2, math.ceil(cooldownMin / tfMin))
+var int   tradesToday = 0
+var int   consecLoss  = 0
+var bool  standDown   = false
+var int   lastLossDir = 0
+var int   lastLossBar = -1000000
+var float npAtFlat    = 0.0
+var float curStop     = na
+var float curTgt      = na
+var float riskPts     = na
+var float mfe         = 0.0
+var int   ordBar      = na
+var bool  tookPartial = false
+if newSess
+    tradesToday := 0
+    consecLoss  := 0
+    standDown   := false
+posSize   = strategy.position_size
+inLong    = posSize > 0
+inShort   = posSize < 0
+tradeDone = strategy.closedtrades > strategy.closedtrades[1] and posSize == 0
+enteredNow = (posSize != 0 and strategy.opentrades.entry_bar_index(strategy.opentrades - 1) == bar_index) or (tradeDone and strategy.closedtrades.entry_bar_index(strategy.closedtrades - 1) == bar_index)
+if enteredNow
+    tradesToday += 1
+    mfe := 0.0
+    tookPartial := false
+if tradeDone
+    tradeNet = strategy.netprofit - npAtFlat
+    npAtFlat := strategy.netprofit
+    if tradeNet > syminfo.mintick * syminfo.pointvalue * qty
+        consecLoss := 0
+    else
+        consecLoss  += 1
+        lastLossDir := strategy.closedtrades.size(strategy.closedtrades - 1) > 0 ? 1 : -1
+        lastLossBar := bar_index
+        if standDownN > 0 and consecLoss >= standDownN
+            standDown := true
+canTrade = barstate.isconfirmed and ordersOk
+
+// manage the open position: the stop may only tighten
+if canTrade and posSize != 0
+    entryPx = strategy.position_avg_price
+    if enteredNow
+        riskPts := math.max(math.abs(entryPx - curStop), syminfo.mintick)
+    mfe := math.max(mfe, inLong ? high - entryPx : entryPx - low)
+    strategy.exit(inLong ? "XL" : "XS", inLong ? "L" : "S", stop = curStop, limit = curTgt, comment = inLong ? "XL" : "XS", alert_message = f_alert("exit", inLong ? "long" : "short", inLong ? "CLOSE_LONG" : "CLOSE_SHORT"))
+    if (inLong and false) or (inShort and false)
+        strategy.close(inLong ? "L" : "S", comment = inLong ? "XL" : "XS", alert_message = f_alert("exit_rule", inLong ? "long" : "short", inLong ? "CLOSE_LONG" : "CLOSE_SHORT"))
+    if isLastBar
+        strategy.close_all(immediately = true, comment = inLong ? "XL" : "XS", alert_message = f_alert("session", inLong ? "long" : "short", inLong ? "CLOSE_LONG" : "CLOSE_SHORT"))
+
+// new entries: flat, not the session's last bar, limits respected
+wantL = x1 and not x34 and not (lastLossDir == 1 and bar_index - lastLossBar < cooldownBars)
+wantS = x34 and not x1 and not (lastLossDir == -1 and bar_index - lastLossBar < cooldownBars)
+if canTrade and posSize == 0
+    if isLastBar
+        strategy.cancel_all()
+    else if not standDown and tradesToday < maxTrades
+        if wantL
+            strategy.cancel_all()
+            curStop := x15
+            curTgt  := x30
+            ordBar  := bar_index
+            strategy.entry("L", strategy.long, qty = qty, comment = "L", alert_message = f_alert("entry", "long", "BUY"))
+            strategy.exit("XL", "L", stop = curStop, limit = curTgt, comment = "XL", alert_message = f_alert("exit", "long", "CLOSE_LONG"))
+        if wantS
+            strategy.cancel_all()
+            curStop := x47
+            curTgt  := x59
+            ordBar  := bar_index
+            strategy.entry("S", strategy.short, qty = qty, comment = "S", alert_message = f_alert("entry", "short", "SELL_SHORT"))
+            strategy.exit("XS", "S", stop = curStop, limit = curTgt, comment = "XS", alert_message = f_alert("exit", "short", "CLOSE_SHORT"))
+// safety: a position carried past an unrecognised short session is closed on the next session's first bar
+if canTrade and newSess and posSize != 0
+    strategy.close_all(comment = inLong ? "XL" : "XS", alert_message = f_alert("carry", inLong ? "long" : "short", inLong ? "CLOSE_LONG" : "CLOSE_SHORT"))
+
+// ---- Visuals (do not affect orders)
+plotshape(x1 and posSize == 0, title = "Long setup", location = location.belowbar, color = color.new(#00D084, 0), style = shape.triangleup, size = size.tiny)
+plotshape(x34 and posSize == 0, title = "Short setup", location = location.abovebar, color = color.new(#FF4757, 0), style = shape.triangledown, size = size.tiny)
+plot(posSize != 0 ? curStop : na, title = "Stop", color = color.new(#FF4757, 0), style = plot.style_linebr)
+plot(posSize != 0 ? curTgt : na, title = "Target", color = color.new(#00D084, 0), style = plot.style_linebr)
+var table info = table.new(position.top_right, 2, 5, bgcolor = color.new(color.black, 10), frame_width = 1, frame_color = color.gray)
+if barstate.islast
+    table.cell(info, 0, 0, "SEH candidate 25968 (NOT CERTIFIED)", text_color = color.white, text_size = size.small)
+    table.cell(info, 1, 0, "", text_color = color.white, text_size = size.small)
+    table.cell(info, 0, 1, "Position", text_color = color.gray, text_size = size.tiny)
+    table.cell(info, 1, 1, posSize > 0 ? "LONG" : posSize < 0 ? "SHORT" : "FLAT", text_color = color.white, text_size = size.tiny)
+    table.cell(info, 0, 2, "Trades today", text_color = color.gray, text_size = size.tiny)
+    table.cell(info, 1, 2, str.tostring(tradesToday), text_color = color.white, text_size = size.tiny)
+    table.cell(info, 0, 3, "Stood down", text_color = color.gray, text_size = size.tiny)
+    table.cell(info, 1, 3, standDown ? "yes" : "no", text_color = color.white, text_size = size.tiny)
+    table.cell(info, 0, 4, "Gate", text_color = color.gray, text_size = size.tiny)
+    table.cell(info, 1, 4, liveAuthorized ? "LIVE AUTH" : "sim/paper", text_color = liveAuthorized ? color.red : color.white, text_size = size.tiny)
+
+// ALERT SETUP (unchanged from the owner's script): create ONE alert on this strategy,
+// condition 'Order fills only', message {{strategy.order.alert_message}} and nothing else,
+// webhook = your own URL. No URL is embedded here and the defaults are paper.
