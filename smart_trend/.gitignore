@@ -1,0 +1,4 @@
+data/
+*.pkl
+results/meta_signals_oos.csv
+results/*_trades.csv

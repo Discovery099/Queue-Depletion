@@ -1,0 +1,70 @@
+
+Per-symbol, 1 contract each (geo-mean PF across symbols)
+                                               stack  SELECT 2022-23 gPF  SELECT 2022-23 net  SELECT 2022-23 DDsum  SELECT 2022-23 worstDay          SELECT 2022-23 PF by sym  CONFIRM 2024-26 gPF  CONFIRM 2024-26 net  CONFIRM 2024-26 DDsum  CONFIRM 2024-26 worstDay         CONFIRM 2024-26 PF by sym
+                                  S0 original script                0.92              -17672                -39572                    -5178 ES:0.95 MES:0.88 MNQ:0.95 YM:0.89                 0.94               -21192                 -43704                     -4435 ES:0.88 MES:0.95 MNQ:1.04 YM:0.91
+                   S1 ML + 3ATR stop + hold to close                1.35               78244                -30943                    -3068 ES:1.27 MES:1.18 MNQ:1.17 YM:1.89                 1.33                78778                 -27356                     -3820 ES:1.29 MES:1.25 MNQ:1.18 YM:1.64
+         S2 S1 + skip first 30min + max 2 losers/day                1.34               62343                -21844                    -2240 ES:1.39 MES:1.33 MNQ:1.05 YM:1.67                 1.35                74737                 -17688                     -3820 ES:1.28 MES:1.27 MNQ:1.14 YM:1.80
+      S3 S2 + scale-out 50% at +1ATR only if ER>=0.3                1.34               58314                -22596                    -2240 ES:1.38 MES:1.31 MNQ:1.07 YM:1.66                 1.40                77247                 -18718                     -3820 ES:1.33 MES:1.33 MNQ:1.17 YM:1.83
+S4 S2 + scale-out 50% at +1ATR, BE + 3ATR chandelier                1.57               59958                -13357                    -2240 ES:1.81 MES:1.61 MNQ:1.12 YM:1.83                 1.23                35182                 -16178                     -2332 ES:1.23 MES:1.11 MNQ:1.10 YM:1.50
+                           S5 S2 + time stop 18 bars                1.31               57005                -21849                    -2240 ES:1.38 MES:1.35 MNQ:1.01 YM:1.57                 1.32                67354                 -22858                     -3820 ES:1.21 MES:1.19 MNQ:1.16 YM:1.81
+
+Portfolio {'MES': 6, 'MNQ': 5, 'YM': 1} (fixed contracts):
+                                               stack    guard          period  trades       net   pf    max_dd  ret_dd  worst_day  pos_months  sharpe  pf_MES  pf_MNQ  pf_YM
+                                  S0 original script no guard  SELECT 2022-23    2106 -30645.00 0.88 -35552.50   -0.86  -10300.00       41.67   -1.12    0.89    0.86   0.89
+                                  S0 original script no guard CONFIRM 2024-26    2436 -32317.50 0.89 -36085.00   -0.90   -5267.50       37.04   -1.19    0.91    0.85   0.91
+                                  S0 original script no guard     ALL 2022-26    4542 -62962.50 0.88 -65062.50   -0.97  -10300.00       39.22   -1.15    0.90    0.85   0.90
+                                  S0 original script    guard  SELECT 2022-23    1891 -25220.00 0.89 -28322.50   -0.89   -6402.50       33.33   -1.04    0.90    0.84   0.93
+                                  S0 original script    guard CONFIRM 2024-26    2223 -27075.00 0.89 -30962.50   -0.87   -5242.50       37.04   -1.05    0.90    0.85   0.94
+                                  S0 original script    guard     ALL 2022-26    4114 -52295.00 0.89 -52620.00   -0.99   -6402.50       35.29   -1.05    0.90    0.85   0.94
+                   S1 ML + 3ATR stop + hold to close no guard  SELECT 2022-23     784  74685.00 1.36 -16327.50    4.57   -5405.00       66.67    2.00    1.18    1.17   1.89
+                   S1 ML + 3ATR stop + hold to close no guard CONFIRM 2024-26     835  75467.50 1.33 -27147.50    2.78   -5232.50       51.85    1.15    1.25    1.18   1.64
+                   S1 ML + 3ATR stop + hold to close no guard     ALL 2022-26    1619 150152.50 1.34 -27147.50    5.53   -5405.00       58.82    1.42    1.22    1.18   1.75
+                   S1 ML + 3ATR stop + hold to close    guard  SELECT 2022-23     644  61722.50 1.35 -11265.00    5.48   -3850.00       66.67    1.97    1.17    1.29   1.74
+                   S1 ML + 3ATR stop + hold to close    guard CONFIRM 2024-26     690  52625.00 1.28 -20420.00    2.58   -3735.00       48.15    1.09    1.30    1.15   1.48
+                   S1 ML + 3ATR stop + hold to close    guard     ALL 2022-26    1334 114347.50 1.31 -20420.00    5.60   -3850.00       56.86    1.42    1.24    1.22   1.60
+         S2 S1 + skip first 30min + max 2 losers/day no guard  SELECT 2022-23     703  49555.00 1.28 -15695.00    3.16   -4822.50       58.33    1.55    1.33    1.05   1.67
+         S2 S1 + skip first 30min + max 2 losers/day no guard CONFIRM 2024-26     764  70312.50 1.36 -19862.50    3.54   -5232.50       48.15    1.14    1.27    1.14   1.80
+         S2 S1 + skip first 30min + max 2 losers/day no guard     ALL 2022-26    1467 119867.50 1.32 -19862.50    6.03   -5232.50       52.94    1.24    1.30    1.10   1.74
+         S2 S1 + skip first 30min + max 2 losers/day    guard  SELECT 2022-23     591  37970.00 1.25 -14272.50    2.66   -3850.00       62.50    1.40    1.32    1.12   1.47
+         S2 S1 + skip first 30min + max 2 losers/day    guard CONFIRM 2024-26     647  53430.00 1.33 -16405.00    3.26   -3735.00       40.74    1.26    1.35    0.90   2.15
+         S2 S1 + skip first 30min + max 2 losers/day    guard     ALL 2022-26    1238  91400.00 1.29 -16405.00    5.57   -3850.00       50.98    1.30    1.33    1.01   1.84
+      S3 S2 + scale-out 50% at +1ATR only if ER>=0.3 no guard  SELECT 2022-23     708  47882.25 1.29 -15695.00    3.05   -4822.50       58.33    1.56    1.36    1.05   1.66
+      S3 S2 + scale-out 50% at +1ATR only if ER>=0.3 no guard CONFIRM 2024-26     769  72207.75 1.39 -17142.00    4.21   -5232.50       44.44    1.18    1.34    1.14   1.83
+      S3 S2 + scale-out 50% at +1ATR only if ER>=0.3 no guard     ALL 2022-26    1477 120090.00 1.34 -17142.00    7.01   -5232.50       50.98    1.26    1.35    1.09   1.76
+      S3 S2 + scale-out 50% at +1ATR only if ER>=0.3    guard  SELECT 2022-23     598  37259.75 1.26 -14272.50    2.61   -3850.00       62.50    1.42    1.34    1.11   1.50
+      S3 S2 + scale-out 50% at +1ATR only if ER>=0.3    guard CONFIRM 2024-26     654  55099.75 1.35 -14910.00    3.70   -3735.00       48.15    1.31    1.43    0.90   2.11
+      S3 S2 + scale-out 50% at +1ATR only if ER>=0.3    guard     ALL 2022-26    1252  92359.50 1.31 -14910.00    6.19   -3850.00       54.90    1.34    1.39    1.01   1.84
+S4 S2 + scale-out 50% at +1ATR, BE + 3ATR chandelier no guard  SELECT 2022-23     744  41157.50 1.39 -11554.50    3.56   -4822.50       66.67    1.94    1.55    1.07   1.83
+S4 S2 + scale-out 50% at +1ATR, BE + 3ATR chandelier no guard CONFIRM 2024-26     815  28672.75 1.22 -10408.75    2.75   -4217.75       51.85    1.27    1.14    1.08   1.50
+S4 S2 + scale-out 50% at +1ATR, BE + 3ATR chandelier no guard     ALL 2022-26    1559  69830.25 1.30 -11554.50    6.04   -4822.50       58.82    1.59    1.31    1.08   1.64
+S4 S2 + scale-out 50% at +1ATR, BE + 3ATR chandelier    guard  SELECT 2022-23     662  31339.75 1.34  -9909.50    3.16   -3220.00       66.67    1.86    1.54    1.11   1.66
+S4 S2 + scale-out 50% at +1ATR, BE + 3ATR chandelier    guard CONFIRM 2024-26     722  27205.50 1.25 -12082.00    2.25   -3381.50       55.56    1.33    1.12    1.06   1.73
+S4 S2 + scale-out 50% at +1ATR, BE + 3ATR chandelier    guard     ALL 2022-26    1384  58545.25 1.29 -12082.00    4.85   -3381.50       60.78    1.57    1.29    1.08   1.70
+                           S5 S2 + time stop 18 bars no guard  SELECT 2022-23     709  43062.50 1.25 -15665.00    2.75   -4822.50       62.50    1.41    1.35    1.01   1.57
+                           S5 S2 + time stop 18 bars no guard CONFIRM 2024-26     774  67117.50 1.35 -19580.00    3.43   -5232.50       48.15    1.10    1.19    1.16   1.81
+                           S5 S2 + time stop 18 bars no guard     ALL 2022-26    1483 110180.00 1.30 -19580.00    5.63   -5232.50       54.90    1.17    1.26    1.09   1.70
+                           S5 S2 + time stop 18 bars    guard  SELECT 2022-23     597  31285.00 1.21 -14242.50    2.20   -3850.00       54.17    1.23    1.34    1.07   1.34
+                           S5 S2 + time stop 18 bars    guard CONFIRM 2024-26     660  53835.00 1.33 -16975.00    3.17   -3735.00       44.44    1.17    0.99    1.15   2.17
+                           S5 S2 + time stop 18 bars    guard     ALL 2022-26    1257  85120.00 1.27 -16975.00    5.01   -3850.00       49.02    1.16    1.15    1.11   1.78
+
+Chosen on 2022-23 only (best ret/DD): S1 ML + 3ATR stop + hold to close [guard]
+
+Final portfolio by year:
+            trades      net    pf
+exit_time                       
+2022          348  45067.5  1.39
+2023          296  16655.0  1.28
+2024          326  -8610.0  0.89
+2025          303  58512.5  1.63
+2026           61   2722.5  1.14
+
+Monthly P&L:
+ month       1       2       3        4        5       6        7       8       9       10      11      12
+year                                                                                                     
+2022   15445.0  3285.0 -2330.0   -208.0  12762.0 -3842.0  11008.0  3200.0  2282.0  3298.0  4178.0 -4010.0
+2023    5720.0 -5822.0  2408.0   4342.0   4802.0 -2462.0  -3775.0  2032.0   352.0  4600.0  4870.0  -412.0
+2024    -868.0  2130.0   168.0  -5425.0   1782.0   510.0   -815.0 -4915.0   -48.0 -4180.0  3270.0  -220.0
+2025    1345.0  6458.0  2772.0  58395.0  -5842.0 -1168.0  -3972.0 -3902.0  -928.0  3605.0  5648.0 -3898.0
+2026    3780.0   140.0 -1198.0      NaN      NaN     NaN      NaN     NaN     NaN     NaN     NaN     NaN
+
+model exported: 2020-2026 ['ES', 'MES', 'MNQ', 'YM'] threshold 0.4524

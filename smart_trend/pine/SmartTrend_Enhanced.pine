@@ -1,0 +1,615 @@
+// This Source Code Form is subject to the Mozilla Public License, v. 2.0.
+// https://mozilla.org/MPL/2.0/
+// Smart Trail adapted from © Smart Trend V1.
+// Enhanced research version: walk-forward meta-label filter + risk-managed exits.
+// Research, backtests and the model are in smart_trend/ (run_final.py). Defaults = tested config.
+//
+// USE: a standard 5-minute chart of an INDEX future (ES/MES/NQ/MNQ/YM/MYM, RTY/M2K once verified),
+//      chart session = REGULAR TRADING HOURS (09:30-16:00 New York). The model was trained on RTH
+//      bars; on an extended-hours chart the indicator values (ATR, RSI, trail) are different.
+//@version=6
+strategy("Smart Trend + HMA + RSI | Enhanced (Meta + Risk)", overlay=true,
+     initial_capital=50000, margin_long=0, margin_short=0,
+     default_qty_type=strategy.fixed, default_qty_value=1, pyramiding=0,
+     commission_type=strategy.commission.cash_per_contract, commission_value=1.25,
+     slippage=1, process_orders_on_close=false, calc_on_every_tick=false, max_bars_back=500,
+     max_labels_count=500)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. TEST PERIOD (unchanged from the original)
+// ─────────────────────────────────────────────────────────────────────────────
+string testGroup = "1. Test period"
+string testPeriod = input.string("All history", "Select test period",
+     options=["All history", "1: Aug 2024 - Jun 2025",
+     "2: Jun 2025 - Aug 2025", "3: Sep 2025 - Aug 2026",
+     "4: Sep 2026 - Nov 2026"], group=testGroup)
+
+int periodStart = switch testPeriod
+    "1: Aug 2024 - Jun 2025" => timestamp("UTC", 2024, 8, 4, 0, 0)
+    "2: Jun 2025 - Aug 2025" => timestamp("UTC", 2025, 6, 23, 4, 0)
+    "3: Sep 2025 - Aug 2026" => timestamp("UTC", 2025, 9, 1, 4, 0)
+    "4: Sep 2026 - Nov 2026" => timestamp("UTC", 2026, 9, 4, 4, 5)
+    => 0
+
+int periodEnd = switch testPeriod
+    "1: Aug 2024 - Jun 2025" => timestamp("UTC", 2025, 6, 23, 0, 0)
+    "2: Jun 2025 - Aug 2025" => timestamp("UTC", 2025, 9, 1, 4, 0)
+    "3: Sep 2025 - Aug 2026" => timestamp("UTC", 2026, 9, 1, 0, 0)
+    "4: Sep 2026 - Nov 2026" => timestamp("UTC", 2026, 11, 13, 22, 0)
+    => timestamp("UTC", 2099, 1, 1, 0, 0)
+
+bool inPeriod = time >= periodStart and time < periodEnd
+bool lastPeriodBar = testPeriod != "All history" and inPeriod and time_close >= periodEnd
+
+if barstate.isfirst and (not timeframe.isminutes or timeframe.multiplier != 5)
+    runtime.error("Use a standard 5-minute chart.")
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. SMART TREND (unchanged)
+// ─────────────────────────────────────────────────────────────────────────────
+string smartGroup = "2. Smart Trend"
+int atrLength = input.int(14, "ATR length", minval=5, maxval=100, group=smartGroup)
+float trailFactor = input.float(2.0, "Smart Trail ATR factor", minval=1.0, maxval=5.0, step=0.1, group=smartGroup)
+bool smoothAtr = input.bool(true, "Smooth ATR", group=smartGroup)
+int smoothLength = input.int(10, "ATR smoothing length", minval=5, maxval=30, group=smartGroup)
+bool useRecovery = input.bool(true, "Enable pullback recovery signal", group=smartGroup)
+
+float rawAtr = ta.atr(atrLength)
+float atr = smoothAtr ? ta.ema(rawAtr, smoothLength) : rawAtr
+float buffer = trailFactor * atr
+
+var float trail = na
+var int regime = 0
+
+if na(trail) and not na(atr)
+    trail := close
+    regime := close > close[1] ? 1 : -1
+
+if not na(trail) and not na(buffer)
+    float rawTrail = regime == 1 ? math.max(trail, close - buffer) : math.min(trail, close + buffer)
+    int nextRegime = regime == 1 and close < rawTrail ? -1 : regime == -1 and close > rawTrail ? 1 : regime
+    if nextRegime != regime
+        regime := nextRegime
+        trail := regime == 1 ? close - buffer : close + buffer
+    else
+        trail := rawTrail
+
+var int previousRegime = 0
+bool smartFlipBuy = regime == 1 and previousRegime == -1
+bool smartFlipSell = regime == -1 and previousRegime == 1
+previousRegime := regime
+
+// Smart Trend regime as a function, for the higher-timeframe features
+f_smartRegime(int len, int sLen, float factor) =>
+    float rA = ta.atr(len)
+    float a = ta.ema(rA, sLen)
+    float buf = factor * a
+    var float tr = na
+    var int rg = 0
+    if na(tr) and not na(a)
+        tr := close
+        rg := close > close[1] ? 1 : -1
+    if not na(tr) and not na(buf)
+        float raw = rg == 1 ? math.max(tr, close - buf) : math.min(tr, close + buf)
+        int nx = rg == 1 and close < raw ? -1 : rg == -1 and close > raw ? 1 : rg
+        if nx != rg
+            rg := nx
+            tr := rg == 1 ? close - buf : close + buf
+        else
+            tr := raw
+    rg
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. SESSION, ROLL PAUSE, DAILY ANCHORS
+// ─────────────────────────────────────────────────────────────────────────────
+string sessionGroup = "3. Session"
+bool rollGuard = input.bool(true, "Pause during quarterly roll window", group=sessionGroup,
+     tooltip="No entries (and flat) on March, June, September and December trading dates 7–22.")
+string rthSession = input.session("0930-1600", "Regular session (New York)", group=sessionGroup)
+int skipOpenBarsIn = input.int(6, "Skip the first N bars of the session (Custom preset)", minval=0, maxval=30, group=sessionGroup,
+     tooltip="Enhancement: the first 30 minutes had negative edge in 2020-2023. Preset S1 = 0, S4 = 6.")
+bool flattenAtClose = input.bool(true, "Flatten on the last bar of the session", group=sessionGroup)
+
+int nyHour = hour(time, "America/New_York")
+int nyMinute = minute(time, "America/New_York")
+int minuteNY = nyHour * 60 + nyMinute
+int tradingMonth = month(time, "America/New_York")
+int tradingDay = dayofmonth(time, "America/New_York")
+bool quarterlyMonth = tradingMonth == 3 or tradingMonth == 6 or tradingMonth == 9 or tradingMonth == 12
+bool rollBlocked = rollGuard and quarterlyMonth and tradingDay >= 7 and tradingDay <= 22
+
+bool inRth = not na(time(timeframe.period, rthSession, "America/New_York"))
+bool newDay = ta.change(dayofmonth(time, "America/New_York")) != 0
+bool rthFirst = inRth and (not inRth[1] or newDay)
+// last bar of the regular session: the bar that closes at the session end, or the exchange's
+// last regular bar on an early-close day
+int sessEndMin = int(str.tonumber(str.substring(rthSession, 5, 7))) * 60 + int(str.tonumber(str.substring(rthSession, 7, 9)))
+bool rthLast = inRth and (minuteNY + timeframe.multiplier >= sessEndMin or session.islastbar_regular)
+
+var int barOfDay = 0
+var float dayOpen = na
+var float runHi = na
+var float runLo = na
+var float lastRthClose = na
+var float prevClose = na
+var float prevPrevClose = na
+var float cumPV = 0.0
+var float cumV = 0.0
+
+if rthFirst
+    barOfDay := 0
+    dayOpen := open
+    runHi := high
+    runLo := low
+    prevPrevClose := prevClose
+    prevClose := lastRthClose
+    cumPV := 0.0
+    cumV := 0.0
+else if inRth
+    barOfDay += 1
+    runHi := math.max(runHi, high)
+    runLo := math.min(runLo, low)
+if inRth
+    cumPV += hlc3 * volume
+    cumV += volume
+    lastRthClose := close
+float rthVwap = cumV > 0 ? cumPV / cumV : hlc3
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 4. PULLBACK RECOVERY (unchanged)
+// ─────────────────────────────────────────────────────────────────────────────
+var int recoveryArmed = 0
+var int recoveryBar = na
+var int recoveryTime = na
+bool recoveryBuy = false
+bool recoverySell = false
+
+if barstate.isconfirmed
+    if not useRecovery or smartFlipBuy or smartFlipSell or rollBlocked or regime == 0 or na(atr) or na(trail)
+        recoveryArmed := 0
+        recoveryBar := na
+        recoveryTime := na
+    else
+        bool recoveryExpired = recoveryArmed != 0 and (recoveryArmed != regime or
+             bar_index - recoveryBar > 6 or time - recoveryTime > 30 * 60 * 1000)
+        if recoveryExpired
+            recoveryArmed := 0
+            recoveryBar := na
+            recoveryTime := na
+        bool firedRecovery = false
+        if recoveryArmed != 0 and bar_index > recoveryBar
+            if regime == 1 and close > high[1] and close > open
+                recoveryBuy := true
+                firedRecovery := true
+                recoveryArmed := 0
+                recoveryBar := na
+                recoveryTime := na
+            else if regime == -1 and close < low[1] and close < open
+                recoverySell := true
+                firedRecovery := true
+                recoveryArmed := 0
+                recoveryBar := na
+                recoveryTime := na
+        if recoveryArmed == 0 and not firedRecovery
+            if regime == 1 and low <= trail + 0.5 * atr
+                recoveryArmed := 1
+                recoveryBar := bar_index
+                recoveryTime := time
+            else if regime == -1 and high >= trail - 0.5 * atr
+                recoveryArmed := -1
+                recoveryBar := bar_index
+                recoveryTime := time
+
+bool smartBuy = smartFlipBuy or recoveryBuy
+bool smartSell = smartFlipSell or recoverySell
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 5. HMA AND RSI SIGNALS (unchanged)
+// NOTE: with length 2, ta.hma(close,2) = close + (close-close[1])/3, so an "HMA buy" fires on the
+// first DOWN-close bar. Research showed this accidental counter-bar timing helps, so it is kept.
+// ─────────────────────────────────────────────────────────────────────────────
+string signalGroup = "4. Signal agreement"
+int hmaLength = input.int(2, "HMA length", minval=2, group=signalGroup)
+int rsiFastLength = input.int(25, "Fast RSI length", minval=2, group=signalGroup)
+int rsiSlowLength = input.int(100, "Slow RSI length", minval=2, group=signalGroup)
+int maxGap = input.int(4, "Maximum bars between the three signals", minval=0, maxval=10, group=signalGroup)
+
+float hma = ta.hma(close, hmaLength)
+bool hmaCrossUp = ta.crossover(close, hma)
+bool hmaCrossDown = ta.crossunder(close, hma)
+var int hmaShadowDirection = 0
+bool hmaBuy = false
+bool hmaSell = false
+if barstate.isconfirmed
+    if hmaCrossUp and hmaShadowDirection != 1
+        hmaBuy := true
+        hmaShadowDirection := 1
+    else if hmaCrossDown and hmaShadowDirection != -1
+        hmaSell := true
+        hmaShadowDirection := -1
+
+float fastRsi = ta.rsi(close, rsiFastLength)
+float slowRsi = ta.rsi(close, rsiSlowLength)
+bool rsiBuy = ta.crossover(fastRsi, slowRsi)[1]
+bool rsiSell = ta.crossunder(fastRsi, slowRsi)[1]
+
+var int smartPending = 0
+var int hmaPending = 0
+var int rsiPending = 0
+var int smartBar = na
+var int hmaBar = na
+var int rsiBar = na
+bool matchBuy = false
+bool matchSell = false
+
+if barstate.isconfirmed
+    if rollBlocked
+        smartPending := 0
+        hmaPending := 0
+        rsiPending := 0
+        smartBar := na
+        hmaBar := na
+        rsiBar := na
+    else
+        if smartPending != 0 and bar_index - smartBar > maxGap
+            smartPending := 0
+            smartBar := na
+        if hmaPending != 0 and bar_index - hmaBar > maxGap
+            hmaPending := 0
+            hmaBar := na
+        if rsiPending != 0 and bar_index - rsiBar > maxGap
+            rsiPending := 0
+            rsiBar := na
+        bool upEvent = smartBuy or hmaBuy or rsiBuy
+        bool downEvent = smartSell or hmaSell or rsiSell
+        if upEvent and downEvent
+            smartPending := 0
+            hmaPending := 0
+            rsiPending := 0
+            smartBar := na
+            hmaBar := na
+            rsiBar := na
+        else
+            int smartEvent = smartBuy ? 1 : smartSell ? -1 : 0
+            int hmaEvent = hmaBuy ? 1 : hmaSell ? -1 : 0
+            int rsiEvent = rsiBuy ? 1 : rsiSell ? -1 : 0
+            int eventDirection = smartEvent != 0 ? smartEvent : hmaEvent != 0 ? hmaEvent : rsiEvent
+            if eventDirection != 0
+                if smartPending != 0 and smartPending != eventDirection
+                    smartPending := 0
+                    smartBar := na
+                if hmaPending != 0 and hmaPending != eventDirection
+                    hmaPending := 0
+                    hmaBar := na
+                if rsiPending != 0 and rsiPending != eventDirection
+                    rsiPending := 0
+                    rsiBar := na
+            if smartEvent != 0
+                smartPending := smartEvent
+                smartBar := bar_index
+            if hmaEvent != 0
+                hmaPending := hmaEvent
+                hmaBar := bar_index
+            if rsiEvent != 0
+                rsiPending := rsiEvent
+                rsiBar := bar_index
+            if smartPending != 0 and smartPending == hmaPending and smartPending == rsiPending
+                matchBuy := smartPending == 1
+                matchSell := smartPending == -1
+                smartPending := 0
+                hmaPending := 0
+                rsiPending := 0
+                smartBar := na
+                hmaBar := na
+                rsiBar := na
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 6. META-LABEL FILTER (enhancement 11)
+// Logistic regression trained on ES/MES/MNQ/YM RTH 2020-2026 (smart_trend/results/meta_model.json).
+// Walk-forward test: retrained every January on prior years only. Out-of-sample 2022-2026 portfolio
+// (MES 6 / MNQ 5 / YM 1, preset S1, with the 2-position + daily-stop guard): PF 1.31 vs 0.89 original.
+// ─────────────────────────────────────────────────────────────────────────────
+string metaGroup = "5. Meta-label filter"
+bool useMeta = input.bool(true, "Take only signals the model scores above the threshold", group=metaGroup)
+float metaThreshold = input.float(0.4524, "Probability threshold", minval=0.0, maxval=1.0, step=0.005,
+     group=metaGroup, tooltip="0.4524 = top 40% of signals in training. Higher = fewer, better trades.")
+bool showScore = input.bool(true, "Show the score on signals", group=metaGroup)
+
+f_er(int n) =>
+    float den = math.sum(math.abs(close - close[1]), n)
+    den > 0 ? math.abs(close - close[n]) / den : 0.0
+
+[diPlus, diMinus, adxValue] = ta.dmi(14, 14)
+float hma21 = ta.hma(close, 21)
+int htf15 = request.security(syminfo.tickerid, "15", f_smartRegime(atrLength, smoothLength, trailFactor)[1],
+     lookahead=barmerge.lookahead_on)
+int htf60 = request.security(syminfo.tickerid, "60", f_smartRegime(atrLength, smoothLength, trailFactor)[1],
+     lookahead=barmerge.lookahead_on)
+float atrBase = ta.sma(rawAtr, 390)
+float volBase = ta.sma(volume, 390)
+
+// all features are computed on EVERY bar (Pine v6 evaluates and/or lazily and series functions must
+// not be called conditionally); f_metaProb only applies the trade direction
+float er10 = f_er(10)
+float er20 = f_er(20)
+float er40 = f_er(40)
+float fHmaSlope = (hma21 - hma21[1]) / atr
+float fRet6 = (close - close[6]) / atr
+float fRet24 = (close - close[24]) / atr
+float fVwapExt = (close - rthVwap) / atr
+float fTrailExt = (close - trail) / atr
+float fRange = (high - low) / atr
+float fAtrRatio = rawAtr / atrBase
+float fAtrPct = atr / close * 100
+float fGap = (dayOpen - prevClose) / atr
+float fDayPos = runHi > runLo ? (close - runLo) / (runHi - runLo) : 0.5
+float fFromOpen = (close - dayOpen) / atr
+float fPrevDay = (prevClose - prevPrevClose) / atr
+float fVolRatio = volume / volBase
+int fDow = dayofweek(time, "America/New_York") - 2
+
+var array<float> M_MEAN = array.from(0.29461916, 0.15690701, 0.12338413, 22.22124, 8.4822803, 0.4864905,
+     1.4118653, 1.0931834, 1.0578112, 35.778295, 2.5828271, 3.2303985, 0.37897812, -0.091302935,
+     -0.045705621, 0.14305615, 2.0181956, 0.15516522, 0.088662992, 0.33966783, 0.021675408, 1.7581691,
+     0.83365306, 1.1935544)
+var array<float> M_STD = array.from(0.21059015, 0.13043957, 0.097050306, 7.4940344, 9.9246233, 1.6091809,
+     0.43660315, 0.51347749, 0.37663005, 25.340303, 3.5811371, 6.6337965, 0.36447686, 0.99582316,
+     0.99824997, 0.093499115, 1.3687949, 4.5182138, 0.56587006, 4.0789408, 8.0123047, 1.92272, 2.3912702,
+     0.75030578)
+var array<float> M_COEF = array.from(-0.0010759521, 0.055045424, 0.010211251, -0.027287438, 0.13171529,
+     -0.03196518, 0.0082863216, -0.059288065, 0.043017119, 0.18079825, -0.11301212, -0.031051836,
+     0.030415101, 0.023379531, -0.12128257, 0.053462703, 0.027521405, 0.051372186, 0.21911964,
+     0.0017520931, -0.028289412, -0.0012308431, -0.055827234, 0.013981481)
+float M_B0 = -0.2698178872022448
+
+f_metaProb(int d) =>
+    float dir = d
+    float[] x = array.new_float(24, 0.0)
+    array.set(x, 0, nz(er10))
+    array.set(x, 1, nz(er20))
+    array.set(x, 2, nz(er40))
+    array.set(x, 3, nz(adxValue))
+    array.set(x, 4, nz((diPlus - diMinus) * dir))
+    array.set(x, 5, nz(fVwapExt * dir))
+    array.set(x, 6, nz(fTrailExt * dir))
+    array.set(x, 7, nz(fRange))
+    array.set(x, 8, nz(fAtrRatio))
+    array.set(x, 9, barOfDay)
+    array.set(x, 10, nz((fastRsi - slowRsi) * dir))
+    array.set(x, 11, nz((fastRsi - 50) * dir))
+    array.set(x, 12, nz(fHmaSlope * dir))
+    array.set(x, 13, nz(htf15 * dir))
+    array.set(x, 14, nz(htf60 * dir))
+    array.set(x, 15, nz(fAtrPct))
+    array.set(x, 16, fDow)
+    array.set(x, 17, nz(fGap * dir))
+    array.set(x, 18, nz(fDayPos * dir))
+    array.set(x, 19, nz(fFromOpen * dir))
+    array.set(x, 20, nz(fPrevDay * dir))
+    array.set(x, 21, nz(fRet6 * dir))
+    array.set(x, 22, nz(fRet24 * dir))
+    array.set(x, 23, nz(fVolRatio))
+    float z = M_B0
+    for i = 0 to 23
+        z += array.get(M_COEF, i) * (array.get(x, i) - array.get(M_MEAN, i)) / array.get(M_STD, i)
+    1.0 / (1.0 + math.exp(-z))
+
+float pBuy = matchBuy ? f_metaProb(1) : na
+float pSell = matchSell ? f_metaProb(-1) : na
+bool metaOkBuy = not useMeta or (not na(pBuy) and pBuy >= metaThreshold)
+bool metaOkSell = not useMeta or (not na(pSell) and pSell >= metaThreshold)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 7. OPTIONAL EXTRA FILTERS (enhancements 3, 7-10; off by default: the model already uses them)
+// ─────────────────────────────────────────────────────────────────────────────
+string fltGroup = "6. Optional filters"
+float shockRange = input.float(0.0, "Skip if signal bar range > x ATR (0 = off)", minval=0, step=0.1, group=fltGroup)
+float shockRatio = input.float(0.0, "Skip if ATR / 5-day ATR > x (0 = off)", minval=0, step=0.1, group=fltGroup)
+bool needRegime = input.bool(false, "Require Smart Trend regime in trade direction", group=fltGroup)
+bool needHtf15 = input.bool(false, "Require 15m Smart Trend agreement", group=fltGroup)
+float minEr = input.float(0.0, "Minimum efficiency ratio (20) (0 = off)", minval=0, maxval=1, step=0.05, group=fltGroup)
+float minAdx = input.float(0.0, "Minimum ADX (0 = off)", minval=0, step=1, group=fltGroup)
+bool needVwapSide = input.bool(false, "Require price on the trade side of session VWAP", group=fltGroup)
+float maxTrailExt = input.float(0.0, "Max distance from Smart Trail in ATR (0 = off)", minval=0, step=0.1, group=fltGroup)
+
+bool fltCommon = (shockRange <= 0 or (high - low) <= shockRange * atr) and
+     (shockRatio <= 0 or na(atrBase) or rawAtr / atrBase <= shockRatio) and
+     (minEr <= 0 or er20 >= minEr) and (minAdx <= 0 or adxValue >= minAdx) and
+     (maxTrailExt <= 0 or math.abs(close - trail) <= maxTrailExt * atr)
+bool fltBuy = fltCommon and (not needRegime or regime == 1) and (not needHtf15 or htf15 == 1) and
+     (not needVwapSide or close > rthVwap)
+bool fltSell = fltCommon and (not needRegime or regime == -1) and (not needHtf15 or htf15 == -1) and
+     (not needVwapSide or close < rthVwap)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 8. RISK AND EXITS (enhancements 1, 2, 4, 5, 6, 12)
+// ─────────────────────────────────────────────────────────────────────────────
+string riskGroup = "7. Risk and exits"
+string preset = input.string("Selected (S1)", "Preset", options=["Selected (S1)", "Smoother (S4)", "Custom (inputs below)"],
+     group=riskGroup, tooltip="S1 = meta filter + 3 ATR stop + hold to the session close (chosen on 2022-23 by return/drawdown). S4 = S1 + skip first 30 min + stop after 2 losers/day + scale out half at +1 ATR, then break-even and 3 ATR chandelier (smoother, less dependent on outlier days). Custom = use the inputs below.")
+float stopAtr = input.float(3.0, "Initial stop, ATR multiple (0 = no stop, as the original)", minval=0, step=0.25, group=riskGroup)
+bool useRiskSizing = input.bool(false, "Size by risk (tested and NOT recommended, see report)", group=riskGroup)
+float riskUsd = input.float(300.0, "Risk per trade, USD", minval=1, group=riskGroup,
+     tooltip="Contracts = floor(risk / (stop distance x point value)), min 1. Keep it near 1/20 of your max drawdown limit.")
+int fixedQty = input.int(1, "Contracts when not sizing by risk", minval=1, group=riskGroup)
+int maxQty = input.int(20, "Maximum contracts", minval=1, group=riskGroup)
+bool useScaleOutIn = input.bool(true, "Scale out half at +X ATR, then break-even + chandelier (Custom)", group=riskGroup)
+float scaleAtr = input.float(1.0, "Scale-out distance, ATR", minval=0.1, step=0.1, group=riskGroup)
+float chandAtr = input.float(3.0, "Chandelier trail on the runner, ATR (0 = break-even only)", minval=0, step=0.25, group=riskGroup)
+float adaptiveEr = input.float(0.0, "Only scale out when ER(20) at entry >= x (0 = always)", minval=0, maxval=1, step=0.05, group=riskGroup)
+bool useOrigTarget = input.bool(false, "Original fixed target (min ATR multiple, cash cap)", group=riskGroup)
+float targetAtrMultiple = input.float(1.25, "  Target distance in ATR", minval=0.1, step=0.05, group=riskGroup)
+float targetCashCap = input.float(0.0, "  Max target USD (0 = no cap; original was 150)", minval=0, group=riskGroup)
+bool invalExit = input.bool(false, "Exit when Smart Trend regime flips against the trade", group=riskGroup)
+int timeStopBars = input.int(0, "Time stop: bars (0 = off)", minval=0, group=riskGroup)
+float timeStopMfe = input.float(0.5, "  ...exit if best move < x ATR by then", minval=0, step=0.05, group=riskGroup)
+int maxLosersDayIn = input.int(2, "Stop for the day after N losing trades, 0 = off (Custom)", minval=0, group=riskGroup)
+float dailyLossUsd = input.float(0.0, "Daily loss limit incl. open P&L, USD (0 = off)", minval=0, group=riskGroup)
+string oppMode = input.string("Reverse", "On an opposite (filtered) signal", options=["Reverse", "Exit only", "Ignore"], group=riskGroup)
+
+// effective settings from the preset
+bool useScaleOut = preset == "Selected (S1)" ? false : preset == "Smoother (S4)" ? true : useScaleOutIn
+int maxLosersDay = preset == "Selected (S1)" ? 0 : preset == "Smoother (S4)" ? 2 : maxLosersDayIn
+int skipOpenBars = preset == "Selected (S1)" ? 0 : preset == "Smoother (S4)" ? 6 : skipOpenBarsIn
+
+// daily counters. A "losing trade" is a whole position (scale-out + runner counted together).
+var int losersToday = 0
+var float dayStartNet = 0.0
+var bool dayBlocked = false
+if rthFirst
+    losersToday := 0
+    dayStartNet := strategy.netprofit
+    dayBlocked := false
+var int accEB = -1
+var float accPnl = 0.0
+int nClosed = strategy.closedtrades
+int prevClosed = nz(nClosed[1])
+if nClosed > prevClosed
+    for k = prevClosed to nClosed - 1
+        int ebk = strategy.closedtrades.entry_bar_index(k)
+        if ebk != accEB
+            if accEB != -1 and accPnl < 0
+                losersToday += 1
+            accEB := ebk
+            accPnl := 0.0
+        accPnl += strategy.closedtrades.profit(k)
+bool accStillOpen = strategy.opentrades > 0 and strategy.opentrades.entry_bar_index(0) == accEB
+if accEB != -1 and not accStillOpen
+    if accPnl < 0
+        losersToday += 1
+    accEB := -1
+    accPnl := 0.0
+float dayPnl = strategy.netprofit - dayStartNet + strategy.openprofit
+if maxLosersDay > 0 and losersToday >= maxLosersDay
+    dayBlocked := true
+if dailyLossUsd > 0 and dayPnl <= -dailyLossUsd
+    dayBlocked := true
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 9. ENTRIES
+// ─────────────────────────────────────────────────────────────────────────────
+float pointValueTick = syminfo.mintick * syminfo.pointvalue
+int stopTicks = stopAtr > 0 and not na(atr) ? int(math.round(stopAtr * atr / syminfo.mintick)) : 0
+int riskQty = stopTicks > 0 ? int(math.floor(riskUsd / (stopTicks * pointValueTick))) : fixedQty
+int qty = useRiskSizing and stopTicks > 0 ? math.min(maxQty, math.max(1, riskQty)) : fixedQty
+
+bool forceExit = rollBlocked or not inPeriod or lastPeriodBar or (flattenAtClose and rthLast) or
+     (dailyLossUsd > 0 and dayPnl <= -dailyLossUsd)
+bool entryPermitted = inPeriod and not lastPeriodBar and not rollBlocked and inRth and not rthLast and
+     barOfDay >= skipOpenBars and not dayBlocked and not na(atr)
+
+bool goLong = matchBuy and entryPermitted and metaOkBuy and fltBuy and strategy.position_size <= 0
+bool goShort = matchSell and entryPermitted and metaOkSell and fltSell and strategy.position_size >= 0
+if oppMode == "Ignore"
+    goLong := goLong and strategy.position_size == 0
+    goShort := goShort and strategy.position_size == 0
+bool oppExitLong = oppMode == "Exit only" and strategy.position_size > 0 and matchSell and entryPermitted and metaOkSell
+bool oppExitShort = oppMode == "Exit only" and strategy.position_size < 0 and matchBuy and entryPermitted and metaOkBuy
+if oppMode == "Exit only"
+    goLong := goLong and strategy.position_size == 0
+    goShort := goShort and strategy.position_size == 0
+
+// state of the current trade
+var float sigAtr = na
+var float sigEr = na
+var int tradeEntryBar = -1
+var float bestPx = na
+var bool partDone = false
+var float runStop = na
+var bool scaleThisTrade = false
+var int tradeQty = 0
+
+f_targetTicks() =>
+    int atrTicks = int(math.ceil(targetAtrMultiple * atr / syminfo.mintick))
+    int capTicks = targetCashCap > 0 ? int(math.floor(targetCashCap / (pointValueTick * qty))) : atrTicks
+    math.max(1, math.min(capTicks, atrTicks))
+
+f_placeExits(string id, bool isLong, int q) =>
+    int scaleTicks = int(math.round(scaleAtr * atr / syminfo.mintick))
+    int partQty = int(math.floor(q * 0.5))
+    bool doScale = useScaleOut and (adaptiveEr <= 0 or er20 >= adaptiveEr)
+    if useOrigTarget
+        strategy.exit(id + " target", from_entry=id, profit=f_targetTicks(), loss=stopTicks > 0 ? stopTicks : na,
+             alert_message="ENH_TARGET")
+    else if doScale and partQty >= 1
+        strategy.exit(id + " TP1", from_entry=id, qty=partQty, profit=scaleTicks, loss=stopTicks > 0 ? stopTicks : na,
+             alert_message="ENH_TP1")
+        strategy.exit(id + " run", from_entry=id, loss=stopTicks > 0 ? stopTicks : na, alert_message="ENH_STOP")
+    else if stopTicks > 0
+        strategy.exit(id + " run", from_entry=id, loss=stopTicks, alert_message="ENH_STOP")
+    doScale
+
+if forceExit and barstate.isconfirmed and strategy.position_size != 0
+    strategy.close_all(comment="Session, roll, daily-limit or period exit", alert_message="ENH_EXIT", immediately=true)
+
+if goLong
+    strategy.entry("Long", strategy.long, qty=qty, alert_message="ENH_BUY")
+    scaleThisTrade := f_placeExits("Long", true, qty)
+    sigAtr := atr
+    sigEr := er20
+    tradeQty := qty
+if goShort
+    strategy.entry("Short", strategy.short, qty=qty, alert_message="ENH_SELL")
+    scaleThisTrade := f_placeExits("Short", false, qty)
+    sigAtr := atr
+    sigEr := er20
+    tradeQty := qty
+if oppExitLong
+    strategy.close("Long", comment="Opposite signal exit", alert_message="ENH_EXIT")
+if oppExitShort
+    strategy.close("Short", comment="Opposite signal exit", alert_message="ENH_EXIT")
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 10. TRADE MANAGEMENT ON BAR CLOSE (break-even, chandelier, invalidation, time stop)
+// ─────────────────────────────────────────────────────────────────────────────
+if strategy.position_size != 0 and not forceExit
+    bool isLong = strategy.position_size > 0
+    string id = isLong ? "Long" : "Short"
+    int eb = strategy.opentrades.entry_bar_index(0)
+    float ep = strategy.opentrades.entry_price(0)
+    if eb != tradeEntryBar
+        tradeEntryBar := eb
+        bestPx := isLong ? high : low
+        partDone := false
+        runStop := na
+    bestPx := isLong ? math.max(bestPx, high) : math.min(bestPx, low)
+    float a0 = nz(sigAtr, atr)
+    // the scale-out has happened (or, with one lot, the trade reached the scale-out distance)
+    bool reached = isLong ? bestPx >= ep + scaleAtr * a0 : bestPx <= ep - scaleAtr * a0
+    if useScaleOut and scaleThisTrade and not partDone and (math.abs(strategy.position_size) < tradeQty or reached)
+        partDone := true
+    if partDone and not useOrigTarget
+        float be = ep
+        float ch = chandAtr > 0 ? (isLong ? bestPx - chandAtr * atr : bestPx + chandAtr * atr) : be
+        float ns = isLong ? math.max(be, ch) : math.min(be, ch)
+        runStop := na(runStop) ? ns : isLong ? math.max(runStop, ns) : math.min(runStop, ns)
+        strategy.exit(id + " run", from_entry=id, stop=runStop, alert_message="ENH_STOP")
+    int barsIn = bar_index - eb + 1
+    float mfe = isLong ? bestPx - ep : ep - bestPx
+    bool invalid = invalExit and ((isLong and regime == -1) or (not isLong and regime == 1))
+    bool timedOut = timeStopBars > 0 and barsIn >= timeStopBars and mfe < timeStopMfe * a0 and not partDone
+    if invalid or timedOut
+        strategy.close(id, comment=invalid ? "Regime flip exit" : "Time stop", alert_message="ENH_EXIT")
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 11. DISPLAY
+// ─────────────────────────────────────────────────────────────────────────────
+string displayGroup = "8. Display"
+bool showFill = input.bool(true, "Show trail shading", group=displayGroup)
+color bullColor = #00D084
+color bearColor = #FF4757
+color trailColor = regime == 1 ? bullColor : bearColor
+pTrail = plot(trail, "Smart Trail", color=trailColor, linewidth=2)
+pClose = plot(close, "Fill reference", color=na, display=display.none)
+fill(pTrail, pClose, color=showFill ? color.new(trailColor, 92) : na, title="Trail zone")
+plotshape(goLong, title="Enhanced BUY", style=shape.triangleup, location=location.belowbar, color=bullColor, size=size.small)
+plotshape(goShort, title="Enhanced SELL", style=shape.triangledown, location=location.abovebar, color=bearColor, size=size.small)
+plotshape(matchBuy and not goLong, title="Filtered buy", style=shape.circle, location=location.belowbar,
+     color=color.new(bullColor, 70), size=size.tiny)
+plotshape(matchSell and not goShort, title="Filtered sell", style=shape.circle, location=location.abovebar,
+     color=color.new(bearColor, 70), size=size.tiny)
+if showScore and (matchBuy or matchSell)
+    float pr = matchBuy ? pBuy : pSell
+    label.new(bar_index, matchBuy ? low : high, str.tostring(pr, "#.00"),
+         style=matchBuy ? label.style_label_up : label.style_label_down,
+         color=color.new(color.gray, 80), textcolor=color.white, size=size.tiny)
