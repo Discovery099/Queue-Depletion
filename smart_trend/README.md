@@ -9,6 +9,7 @@ All 13 proposed enhancements are built, tested and reported here. The research u
 | `st/` | Python research engine: indicators, signal logic, a bar-by-bar simulator with TradingView fill rules, filters, meta-model, portfolio |
 | `run_baseline.py` | Original strategy on the 6-year data, reconciled against your TradingView exports |
 | `run_final.py` | End-to-end evaluation: walk-forward model, stacked enhancements, portfolio, model export |
+| `run_bias.py` | Long-bias diagnosis after the forward test, and fixes |
 | `run_new_markets.py`, `run_portfolio_v2.py` | Cross-market test on RTY/M2K/MYM/MCL and portfolio choices |
 | `run_exit_modes.py`, `run_hybrid.py` | Exit-comparison script's models (Original / Timed / Trend runner) and hybrids |
 | `make_charts.py` | Equity-curve chart |
@@ -120,6 +121,47 @@ The final configuration (S1 + guard) was chosen by return/drawdown on **2022–2
 2024–26 was not used for any choice. The one exception is the 3 ATR label stop: the exit grid
 that suggested it looked at both windows, but the meta-model result holds for every stop
 from 2 to 4 ATR.
+
+## Forward test on TradingView (Aug 12 – Nov 19, 2026): negative
+
+You ran `SmartTrend_Enhanced.pine` (preset S1, 1 contract) on TradingView over a period that
+starts after the research data ends (March 2026), so this is a true forward test.
+
+| Market | Enhanced: net | Enhanced: PF | Longs / shorts | Original, same window: PF |
+|---|---|---|---|---|
+| ES | −$6,250 | 0.66 | 41 / 4 | 0.98 |
+| MES | −$1,008 | 0.55 | 43 / 4 | 0.61 |
+| MGC (not recommended) | −$292 | 0.90 | 39 / 6 | 0.92 |
+| GC (not recommended) | −$5,172 | 0.82 | 37 / 8 | 0.72 |
+| CL (not recommended) | −$8,032 | 0.61 | 40 / 17 | 0.88 |
+
+**Diagnosis (`run_bias.py`): the meta filter is long-biased.** Out of sample in 2022–26 it takes
+65–86% longs (raw signals are 50/50), and its edge is almost all on the long side: long PF 1.48,
+short PF 0.97. It learned to trade *against the 60-minute trend near the day's extreme*. In
+2020–25 equity indices that meant buying intraday dips, which paid. Aug–Nov 2026 was a
+falling market (ES −6.5%, gold −18%), so it kept buying dips that kept falling.
+
+Fixes tested (portfolio, profit factor):
+
+| Variant | 2022–23 | 2024–26 | 2022–26 | Max DD |
+|---|---|---|---|---|
+| Current model | 1.35 | 1.28 | 1.31 | −$20.4k |
+| **Long-only** | 1.57 | **1.41** | **1.49** | **−$16.6k** |
+| Daily-trend gate (50-day) | 1.54 | 1.06 | 1.24 | −$19.0k |
+| Per-direction thresholds (50/50) | 1.29 | 1.09 | 1.18 | −$26.9k |
+| Model + daily-trend features (picked by the 2022–23 rule) | 1.44 | 1.26 | 1.34 | −$19.7k |
+
+- **Shorts have no edge in any variant.** Long-only is the strongest historically, profitable in
+  every year including 2022. In the forward window, though, it would have done **worse**: the
+  longs lost, the few shorts won.
+- **The daily-trend features don't fix the bias.** The 20-day and 50-day terms take opposite
+  signs and mostly cancel, and the variant is no better in 2024–26. The current model is kept.
+- **A "Trade direction" input** (Both / Long only / Short only) is now in the Pine Script.
+
+**Bottom line:** the historical edge is mostly *buying intraday dips in equity-index uptrends*.
+That's a real, persistent pattern, but it fails in sustained declines, as Aug–Nov 2026 shows.
+Don't trade it live on the strength of the backtest. Paper-trade it, and treat a falling
+market as the scenario where it loses.
 
 ## Exit-comparison script (Timed exit / Trend runner)
 

@@ -448,6 +448,8 @@ float timeStopMfe = input.float(0.5, "  ...exit if best move < x ATR by then", m
 int maxLosersDayIn = input.int(2, "Stop for the day after N losing trades, 0 = off (Custom)", minval=0, group=riskGroup)
 float dailyLossUsd = input.float(0.0, "Daily loss limit incl. open P&L, USD (0 = off)", minval=0, group=riskGroup)
 string oppMode = input.string("Reverse", "On an opposite (filtered) signal", options=["Reverse", "Exit only", "Ignore"], group=riskGroup)
+string tradeDir = input.string("Both", "Trade direction", options=["Both", "Long only", "Short only"], group=riskGroup,
+     tooltip="Backtest 2022-26: the edge is almost all on the long side (long PF 1.48, short PF 0.97; long-only portfolio PF 1.49). Forward test Aug-Nov 2026 (falling market): longs lost, the few shorts won.")
 
 // effective settings from the preset
 bool useScaleOut = preset == "Smoother (S4)" ? true : preset == "Custom (inputs below)" ? useScaleOutIn : false
@@ -502,8 +504,8 @@ bool forceExit = rollBlocked or not inPeriod or lastPeriodBar or (flattenAtClose
 bool entryPermitted = inPeriod and not lastPeriodBar and not rollBlocked and inRth and not rthLast and
      barOfDay >= skipOpenBars and not dayBlocked and not na(atr)
 
-bool goLong = matchBuy and entryPermitted and metaOkBuy and fltBuy and strategy.position_size <= 0
-bool goShort = matchSell and entryPermitted and metaOkSell and fltSell and strategy.position_size >= 0
+bool goLong = matchBuy and entryPermitted and metaOkBuy and fltBuy and tradeDir != "Short only" and strategy.position_size <= 0
+bool goShort = matchSell and entryPermitted and metaOkSell and fltSell and tradeDir != "Long only" and strategy.position_size >= 0
 if oppMode == "Ignore"
     goLong := goLong and strategy.position_size == 0
     goShort := goShort and strategy.position_size == 0
