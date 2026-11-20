@@ -1,0 +1,30 @@
+
+RTY
+  Original script                  PF 22-23 1.20 | 24-26 0.82 | all 0.98 net     -3130 DD   -23015 worstDay   -3062 n 1462
+  S1 exit, no filter               PF 22-23 1.38 | 24-26 0.83 | all 1.07 net     19165 DD   -29337 worstDay   -2802 n 1358
+  S1 + meta (frozen index model)   PF 22-23 1.49 | 24-26 0.86 | all 1.17 net     20868 DD   -15487 worstDay   -2775 n 559
+  Trend runner, no filter          PF 22-23 1.25 | 24-26 0.84 | all 1.03 net      5915 DD   -22837 worstDay   -2357 n 1420
+
+M2K
+  Original script                  PF 22-23 1.10 | 24-26 0.62 | all 0.81 net     -4201 DD    -6041 worstDay    -964 n 1383
+  S1 exit, no filter               PF 22-23 1.27 | 24-26 0.73 | all 0.97 net      -973 DD    -4988 worstDay    -292 n 1326
+  S1 + meta (frozen index model)   PF 22-23 1.46 | 24-26 0.68 | all 1.05 net       629 DD    -2715 worstDay    -279 n 541
+  Trend runner, no filter          PF 22-23 1.06 | 24-26 0.75 | all 0.89 net     -2712 DD    -4092 worstDay    -218 n 1395
+
+MYM
+  Original script                  PF 22-23 0.94 | 24-26 0.89 | all 0.91 net     -2313 DD    -3222 worstDay    -482 n 1464
+  S1 exit, no filter               PF 22-23 1.13 | 24-26 0.97 | all 1.04 net      1463 DD    -3288 worstDay    -332 n 1362
+  S1 + meta (frozen index model)   PF 22-23 1.72 | 24-26 1.52 | all 1.62 net      7490 DD     -909 worstDay    -241 n 494
+  Trend runner, no filter          PF 22-23 1.11 | 24-26 0.98 | all 1.04 net      1144 DD    -2351 worstDay    -274 n 1439
+
+MCL
+  Original script                  PF 22-23 0.82 | 24-26 0.65 | all 0.74 net     -6255 DD    -6985 worstDay    -616 n 1168
+  S1 exit, no filter               PF 22-23 0.92 | 24-26 0.66 | all 0.80 net     -5829 DD    -7529 worstDay    -505 n 1099
+  S1 + meta (frozen index model)   PF 22-23 0.85 | 24-26 0.65 | all 0.77 net     -3557 DD    -4282 worstDay    -248 n 500
+  Trend runner, no filter          PF 22-23 0.96 | 24-26 0.65 | all 0.82 net     -4572 DD    -6298 worstDay    -456 n 1146
+
+S1 + meta by year (unseen markets):
+  RTY: {2022: 1.5, 2023: 1.48, 2024: 0.82, 2025: 0.78, 2026: 1.52}
+  M2K: {2022: 1.47, 2023: 1.44, 2024: 0.66, 2025: 0.58, 2026: 1.29}
+  MYM: {2022: 1.99, 2023: 1.24, 2024: 1.08, 2025: 1.78, 2026: 1.79}
+  MCL: {2022: 1.01, 2023: 0.63, 2024: 0.59, 2025: 0.65, 2026: 0.98}

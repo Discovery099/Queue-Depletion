@@ -9,6 +9,7 @@ All 13 proposed enhancements are built, tested and reported here. The research u
 | `st/` | Python research engine: indicators, signal logic, a bar-by-bar simulator with TradingView fill rules, filters, meta-model, portfolio |
 | `run_baseline.py` | Original strategy on the 6-year data, reconciled against your TradingView exports |
 | `run_final.py` | End-to-end evaluation: walk-forward model, stacked enhancements, portfolio, model export |
+| `run_new_markets.py`, `run_portfolio_v2.py` | Cross-market test on RTY/M2K/MYM/MCL and portfolio choices |
 | `run_exit_modes.py`, `run_hybrid.py` | Exit-comparison script's models (Original / Timed / Trend runner) and hybrids |
 | `make_charts.py` | Equity-curve chart |
 | `tests/` | Look-ahead (causality) tests and logic checks |
@@ -155,9 +156,41 @@ Both are available as Pine presets ("Trend runner", "Runner after +1.5 ATR") for
 comparison. This also shows that a winner on the selection window can fail. S1 passed the same
 test, but each extra round of selection raises the chance of a fluke.
 
+## New markets: RTY, M2K, MYM, MCL (cross-market test)
+
+The walk-forward model trained **only on ES/MES/MNQ/YM** was applied unchanged to markets it
+never saw (`run_new_markets.py`). The exit is S1 (3 ATR stop, hold to close), 1 contract.
+
+| Market | Original | S1 exit, no filter | **S1 + meta filter** | Meta-filter PF, 2022 → 2026 |
+|---|---|---|---|---|
+| MYM | 0.91 | 1.04 | **1.62** | 1.99, 1.24, 1.08, 1.78, 1.79 |
+| RTY | 0.98 | 1.07 | **1.17** | 1.50, 1.48, 0.82, 0.78, 1.52 |
+| M2K | 0.81 | 0.97 | **1.05** | 1.47, 1.44, 0.66, 0.58, 1.29 |
+| MCL | 0.74 | 0.80 | 0.77 | 1.01, 0.63, 0.59, 0.65, 0.98 |
+
+- **The filter generalises.** It improved every unseen index market in both periods, which is
+  evidence it isn't just fitted to ES/NQ/YM.
+- **The Russell lost money in 2024–25 even with the filter.** The edge varies over time and is
+  strongest in the Dow and S&P.
+- **M2K is worse than RTY on identical prices because of commission.** $2.50 per round turn is a
+  large share of a $5-per-point contract. Your real micro commission matters.
+- **Crude (MCL) fails, like gold.** This is an equity-index strategy only.
+
+Portfolio choices (`run_portfolio_v2.py`), chosen on 2022–23 by return/drawdown, profit factor:
+
+| Training pool / portfolio | 2022–23 | 2024–26 | 2022–26 | Max DD |
+|---|---|---|---|---|
+| **ES/MES/MNQ/YM pool, 6 MES + 5 MNQ + 1 YM (selected)** | 1.35 | 1.28 | 1.31 | −$20.4k |
+| same pool, 6 MES + 5 MNQ + 10 MYM (all micro) | 1.32 | 1.25 | 1.28 | −$22.7k |
+| same pool, all micro + 16 M2K | 1.29 | 1.08 | 1.18 | −$27.7k |
+| pool + MYM/RTY/M2K, 6 MES + 5 MNQ + 1 YM | 1.36 | 1.23 | 1.29 | −$16.1k |
+
+Decision: keep the model and its Pine coefficients as they are. **Trade ES/MES, NQ/MNQ and
+YM/MYM only**; MYM is the small-account substitute for YM. Leave out the Russell, crude and gold.
+
 ## Using the Pine Script
 
-1. Open a **5-minute** chart of MES, ES, MNQ or YM (MYM/NQ should work, but weren't tested). Set
+1. Open a **5-minute** chart of ES/MES, MNQ (NQ untested) or YM/MYM. Not the Russell, crude or gold. Set
    the session to **regular trading hours**.
 2. Add `SmartTrend_Enhanced.pine`. Preset **Selected (S1)** is the tested default. **Smoother
    (S4)** trades lower drawdown for lower profit.

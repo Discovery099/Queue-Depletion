@@ -40,3 +40,24 @@ def walk_forward_masks(markets, label_exit, C=0.05, q=0.6, first_test_year=2022)
         mk[r.idx.to_numpy()] = True
         masks[s] = mk
     return masks, T
+
+
+def walk_forward_masks_cross(train_markets, apply_markets, label_exit, C=0.05, q=0.6, first_test_year=2022):
+    """Train on `train_markets` (expanding window by year), score signals of `apply_markets`
+    (which may include markets not in the training pool)."""
+    Ttr = pd.concat([signal_table(m, label_exit, k) for k, m in enumerate(train_markets.values())],
+                    ignore_index=True)
+    tabs = {s: signal_table(m, label_exit, 0) for s, m in apply_markets.items()}
+    masks = {s: np.zeros(m.b.n, bool) for s, m in apply_markets.items()}
+    for yr in sorted(set(Ttr.year.unique()) | {y for t in tabs.values() for y in t.year.unique()}):
+        if yr < first_test_year:
+            continue
+        tr = Ttr[Ttr.year < yr]
+        clf = fit_logit(tr, C)
+        thr = np.quantile(clf.predict_proba(tr[FEATS].fillna(0))[:, 1], q)
+        for s, T in tabs.items():
+            te = T[T.year == yr]
+            if len(te):
+                pr = clf.predict_proba(te[FEATS].fillna(0))[:, 1]
+                masks[s][te.idx.to_numpy()[pr >= thr]] = True
+    return masks

@@ -1,0 +1,20 @@
+pool: ES/MES/MNQ/YM    | 6 MES + 5 MNQ + 1 YM (previous)      | 2022-23 PF 1.35 net    61722 DD  -11265 ret/DD  5.48 worstDay  -3850 +mo  67% exApr25 1.35 | MES:1.17 MNQ:1.29 YM:1.74
+pool: ES/MES/MNQ/YM    | 6 MES + 5 MNQ + 1 YM (previous)      | 2024-26 PF 1.28 net    52625 DD  -20420 ret/DD  2.58 worstDay  -3735 +mo  48% exApr25 0.97 | MES:1.30 MNQ:1.15 YM:1.48
+pool: ES/MES/MNQ/YM    | 6 MES + 5 MNQ + 1 YM (previous)      | ALL     PF 1.31 net   114348 DD  -20420 ret/DD  5.60 worstDay  -3850 +mo  57% exApr25 1.16 | MES:1.24 MNQ:1.22 YM:1.60
+pool: ES/MES/MNQ/YM    | 6 MES + 5 MNQ + 10 MYM (all micro)   | 2022-23 PF 1.32 net    55695 DD  -12120 ret/DD  4.60 worstDay  -3882 +mo  67% exApr25 1.32 | MES:1.13 MNQ:1.23 MYM:1.75
+pool: ES/MES/MNQ/YM    | 6 MES + 5 MNQ + 10 MYM (all micro)   | 2024-26 PF 1.25 net    48652 DD  -22700 ret/DD  2.14 worstDay  -3735 +mo  44% exApr25 0.94 | MES:1.29 MNQ:1.16 MYM:1.37
+pool: ES/MES/MNQ/YM    | 6 MES + 5 MNQ + 10 MYM (all micro)   | ALL     PF 1.28 net   104348 DD  -22700 ret/DD  4.60 worstDay  -3882 +mo  55% exApr25 1.12 | MES:1.22 MNQ:1.20 MYM:1.55
+pool: ES/MES/MNQ/YM    | all micro + 16 M2K                   | 2022-23 PF 1.29 net    66613 DD  -13272 ret/DD  5.02 worstDay  -4179 +mo  75% exApr25 1.29 | MES:1.10 MNQ:1.17 MYM:1.62 M2K:1.37
+pool: ES/MES/MNQ/YM    | all micro + 16 M2K                   | 2024-26 PF 1.08 net    19738 DD  -25786 ret/DD  0.77 worstDay  -3229 +mo  33% exApr25 0.91 | MES:1.16 MNQ:1.28 MYM:1.48 M2K:0.71
+pool: ES/MES/MNQ/YM    | all micro + 16 M2K                   | ALL     PF 1.18 net    86350 DD  -27706 ret/DD  3.12 worstDay  -4179 +mo  53% exApr25 1.10 | MES:1.13 MNQ:1.22 MYM:1.54 M2K:1.03
+pool: + MYM/RTY/M2K    | 6 MES + 5 MNQ + 1 YM (previous)      | 2022-23 PF 1.36 net    59870 DD  -15382 ret/DD  3.89 worstDay  -3498 +mo  67% exApr25 1.36 | MES:1.22 MNQ:1.27 YM:1.81
+pool: + MYM/RTY/M2K    | 6 MES + 5 MNQ + 1 YM (previous)      | 2024-26 PF 1.23 net    42850 DD  -16072 ret/DD  2.67 worstDay  -2955 +mo  41% exApr25 0.99 | MES:1.19 MNQ:1.22 YM:1.31
+pool: + MYM/RTY/M2K    | 6 MES + 5 MNQ + 1 YM (previous)      | ALL     PF 1.29 net   102720 DD  -16072 ret/DD  6.39 worstDay  -3498 +mo  53% exApr25 1.17 | MES:1.20 MNQ:1.24 YM:1.52
+pool: + MYM/RTY/M2K    | 6 MES + 5 MNQ + 10 MYM (all micro)   | 2022-23 PF 1.37 net    59475 DD  -15455 ret/DD  3.85 worstDay  -3498 +mo  62% exApr25 1.37 | MES:1.21 MNQ:1.27 MYM:1.87
+pool: + MYM/RTY/M2K    | 6 MES + 5 MNQ + 10 MYM (all micro)   | 2024-26 PF 1.22 net    40950 DD  -17740 ret/DD  2.31 worstDay  -2988 +mo  37% exApr25 0.98 | MES:1.18 MNQ:1.22 MYM:1.28
+pool: + MYM/RTY/M2K    | 6 MES + 5 MNQ + 10 MYM (all micro)   | ALL     PF 1.29 net   100425 DD  -17740 ret/DD  5.66 worstDay  -3498 +mo  49% exApr25 1.16 | MES:1.20 MNQ:1.25 MYM:1.52
+pool: + MYM/RTY/M2K    | all micro + 16 M2K                   | 2022-23 PF 1.33 net    69585 DD  -14041 ret/DD  4.96 worstDay  -4044 +mo  71% exApr25 1.33 | MES:1.23 MNQ:1.20 MYM:1.59 M2K:1.41
+pool: + MYM/RTY/M2K    | all micro + 16 M2K                   | 2024-26 PF 1.03 net     7358 DD  -23712 ret/DD  0.31 worstDay  -2988 +mo  37% exApr25 0.89 | MES:1.07 MNQ:1.25 MYM:1.33 M2K:0.71
+pool: + MYM/RTY/M2K    | all micro + 16 M2K                   | ALL     PF 1.17 net    76943 DD  -23712 ret/DD  3.24 worstDay  -4044 +mo  53% exApr25 1.10 | MES:1.14 MNQ:1.22 MYM:1.44 M2K:1.04
+
+Chosen on 2022-23 by ret/DD: pool: ES/MES/MNQ/YM | 6 MES + 5 MNQ + 1 YM (previous)

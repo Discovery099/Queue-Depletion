@@ -4,7 +4,8 @@
 // Enhanced research version: walk-forward meta-label filter + risk-managed exits.
 // Research, backtests and the model are in smart_trend/ (run_final.py). Defaults = tested config.
 //
-// USE: a standard 5-minute chart of an INDEX future (ES/MES/NQ/MNQ/YM/MYM, RTY/M2K once verified),
+// USE: a standard 5-minute chart of ES/MES, MNQ (NQ untested) or YM/MYM. Tested and NOT recommended:
+//      RTY/M2K (lost money in 2024-25), MCL and MGC (lose in every variant).
 //      chart session = REGULAR TRADING HOURS (09:30-16:00 New York). The model was trained on RTH
 //      bars; on an extended-hours chart the indicator values (ATR, RSI, trail) are different.
 //@version=6
