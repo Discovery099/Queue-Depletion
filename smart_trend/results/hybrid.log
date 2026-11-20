@@ -1,0 +1,23 @@
+S1 hold to close                   2022-23 PF 1.35 net    61722 DD  -11265 ret/DD  5.48 worstDay  -3850 +mo  67% | exApr25 1.35 exTop10 1.04 | MES 1.17 MNQ 1.29 YM 1.74
+S1 hold to close                   2024-26 PF 1.28 net    52625 DD  -20420 ret/DD  2.58 worstDay  -3735 +mo  48% | exApr25 0.97 exTop10 0.85 | MES 1.30 MNQ 1.15 YM 1.48
+S1 hold to close                   ALL     PF 1.31 net   114348 DD  -20420 ret/DD  5.60 worstDay  -3850 +mo  57% | exApr25 1.16 exTop10 1.07 | MES 1.24 MNQ 1.22 YM 1.60
+Runner (flip exit)                 2022-23 PF 1.44 net    61072 DD  -11732 ret/DD  5.21 worstDay  -3212 +mo  67% | exApr25 1.44 exTop10 1.12 | MES 1.48 MNQ 1.33 YM 1.62
+Runner (flip exit)                 2024-26 PF 0.92 net   -14658 DD  -26108 ret/DD -0.56 worstDay  -3385 +mo  44% | exApr25 0.88 exTop10 0.72 | MES 0.84 MNQ 0.80 YM 1.22
+Runner (flip exit)                 ALL     PF 1.14 net    46415 DD  -26108 ret/DD  1.78 worstDay  -3385 +mo  55% | exApr25 1.13 exTop10 0.99 | MES 1.11 MNQ 1.04 YM 1.38
+Hybrid: flip exit after +0.5 ATR   2022-23 PF 1.49 net    68260 DD   -9225 ret/DD  7.40 worstDay  -3212 +mo  75% | exApr25 1.49 exTop10 1.15 | MES 1.48 MNQ 1.44 YM 1.61
+Hybrid: flip exit after +0.5 ATR   2024-26 PF 0.99 net    -2602 DD  -20472 ret/DD -0.13 worstDay  -3422 +mo  48% | exApr25 0.95 exTop10 0.78 | MES 0.95 MNQ 0.84 YM 1.29
+Hybrid: flip exit after +0.5 ATR   ALL     PF 1.21 net    65658 DD  -20472 ret/DD  3.21 worstDay  -3422 +mo  61% | exApr25 1.19 exTop10 1.04 | MES 1.18 MNQ 1.11 YM 1.42
+Hybrid: flip exit after +1.0 ATR   2022-23 PF 1.47 net    67858 DD   -9668 ret/DD  7.02 worstDay  -3220 +mo  75% | exApr25 1.47 exTop10 1.14 | MES 1.44 MNQ 1.42 YM 1.63
+Hybrid: flip exit after +1.0 ATR   2024-26 PF 1.08 net    13102 DD  -18252 ret/DD  0.72 worstDay  -3428 +mo  48% | exApr25 1.01 exTop10 0.84 | MES 1.06 MNQ 0.94 YM 1.33
+Hybrid: flip exit after +1.0 ATR   ALL     PF 1.26 net    80960 DD  -18252 ret/DD  4.44 worstDay  -3428 +mo  61% | exApr25 1.23 exTop10 1.09 | MES 1.23 MNQ 1.17 YM 1.46
+Hybrid: flip exit after +1.5 ATR   2022-23 PF 1.39 net    59095 DD  -10335 ret/DD  5.72 worstDay  -3220 +mo  75% | exApr25 1.39 exTop10 1.07 | MES 1.32 MNQ 1.37 YM 1.53
+Hybrid: flip exit after +1.5 ATR   2024-26 PF 1.24 net    42192 DD  -20215 ret/DD  2.09 worstDay  -3735 +mo  56% | exApr25 0.98 exTop10 0.84 | MES 1.30 MNQ 1.16 YM 1.31
+Hybrid: flip exit after +1.5 ATR   ALL     PF 1.31 net   101288 DD  -20215 ret/DD  5.01 worstDay  -3735 +mo  65% | exApr25 1.17 exTop10 1.07 | MES 1.31 MNQ 1.26 YM 1.41
+Hybrid: flip exit after +2.0 ATR   2022-23 PF 1.35 net    55715 DD  -11800 ret/DD  4.72 worstDay  -3220 +mo  67% | exApr25 1.35 exTop10 1.04 | MES 1.26 MNQ 1.36 YM 1.50
+Hybrid: flip exit after +2.0 ATR   2024-26 PF 1.27 net    48288 DD  -17105 ret/DD  2.82 worstDay  -3735 +mo  56% | exApr25 1.00 exTop10 0.88 | MES 1.31 MNQ 1.17 YM 1.40
+Hybrid: flip exit after +2.0 ATR   ALL     PF 1.31 net   104002 DD  -17105 ret/DD  6.08 worstDay  -3735 +mo  61% | exApr25 1.17 exTop10 1.07 | MES 1.29 MNQ 1.26 YM 1.45
+Hybrid: flip exit after +3.0 ATR   2022-23 PF 1.37 net    62048 DD  -12312 ret/DD  5.04 worstDay  -3850 +mo  67% | exApr25 1.37 exTop10 1.05 | MES 1.28 MNQ 1.29 YM 1.67
+Hybrid: flip exit after +3.0 ATR   2024-26 PF 1.28 net    52898 DD  -20065 ret/DD  2.64 worstDay  -3735 +mo  56% | exApr25 1.01 exTop10 0.90 | MES 1.33 MNQ 1.16 YM 1.45
+Hybrid: flip exit after +3.0 ATR   ALL     PF 1.32 net   114945 DD  -20065 ret/DD  5.73 worstDay  -3850 +mo  61% | exApr25 1.18 exTop10 1.09 | MES 1.31 MNQ 1.22 YM 1.55
+
+Chosen on 2022-23 by ret/DD: Hybrid: flip exit after +0.5 ATR

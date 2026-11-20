@@ -9,6 +9,7 @@ All 13 proposed enhancements are built, tested and reported here. The research u
 | `st/` | Python research engine: indicators, signal logic, a bar-by-bar simulator with TradingView fill rules, filters, meta-model, portfolio |
 | `run_baseline.py` | Original strategy on the 6-year data, reconciled against your TradingView exports |
 | `run_final.py` | End-to-end evaluation: walk-forward model, stacked enhancements, portfolio, model export |
+| `run_exit_modes.py`, `run_hybrid.py` | Exit-comparison script's models (Original / Timed / Trend runner) and hybrids |
 | `make_charts.py` | Equity-curve chart |
 | `tests/` | Look-ahead (causality) tests and logic checks |
 | `results/` | Metrics CSVs, trade lists, the exported model (`meta_model.json`), `equity_curve.png`, run log |
@@ -118,6 +119,41 @@ The final configuration (S1 + guard) was chosen by return/drawdown on **2022–2
 2024–26 was not used for any choice. The one exception is the 3 ATR label stop: the exit grid
 that suggested it looked at both windows, but the meta-model result holds for every stop
 from 2 to 4 ATR.
+
+## Exit-comparison script (Timed exit / Trend runner)
+
+Both uploaded "One-Year Exit Comparison" exports use the **Original** exit model:
+- `f74570fd` is trade-for-trade identical to the earlier MNQ one-year export (1,363 trades, PF 1.02).
+- `e67abe40` is the same run ending three days earlier (1,341 trades, PF 1.03).
+
+So the three exit models were tested here on the 6-year RTH data (`run_exit_modes.py`,
+`run_hybrid.py`).
+
+**Raw strategy** (no meta filter), 1 contract per symbol, 2020 – Mar 2026, geometric-mean PF
+across ES/MES/MNQ/YM/MGC:
+
+| Exit model | Gm. PF | Net |
+|---|---|---|
+| Original (capped target) | 0.90 | −$55k |
+| Timed exit (1.25 ATR target, 12 bars) | 0.93 | −$15k |
+| **Trend runner (exit on regime flip)** | **1.01** | **+$109k** |
+
+The Trend runner is a real improvement over the original exit, but on its own it's still about
+break-even.
+
+**With the meta filter, portfolio** (6 MES + 5 MNQ + 1 YM, guard on, profit factor):
+
+| Exit | 2022–23 | 2024–26 | 2022–26 |
+|---|---|---|---|
+| S1: hold to close (default) | 1.35 | **1.28** | **1.31** |
+| Trend runner | 1.44 | **0.92** | 1.14 |
+| Hybrid: flip exit after +0.5 ATR (picked by the 2022–23 rule) | **1.49** | 0.99 | 1.21 |
+| Hybrid: flip exit after +1.5 ATR | 1.39 | 1.24 | 1.31 |
+
+The runner and the aggressive hybrid won 2022–23 and failed 2024–26, so the default stays S1.
+Both are available as Pine presets ("Trend runner", "Runner after +1.5 ATR") for forward
+comparison. This also shows that a winner on the selection window can fail. S1 passed the same
+test, but each extra round of selection raises the chance of a fluke.
 
 ## Using the Pine Script
 

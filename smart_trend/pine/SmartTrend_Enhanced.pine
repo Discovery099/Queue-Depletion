@@ -425,8 +425,8 @@ bool fltSell = fltCommon and (not needRegime or regime == -1) and (not needHtf15
 // 8. RISK AND EXITS (enhancements 1, 2, 4, 5, 6, 12)
 // ─────────────────────────────────────────────────────────────────────────────
 string riskGroup = "7. Risk and exits"
-string preset = input.string("Selected (S1)", "Preset", options=["Selected (S1)", "Smoother (S4)", "Custom (inputs below)"],
-     group=riskGroup, tooltip="S1 = meta filter + 3 ATR stop + hold to the session close (chosen on 2022-23 by return/drawdown). S4 = S1 + skip first 30 min + stop after 2 losers/day + scale out half at +1 ATR, then break-even and 3 ATR chandelier (smoother, less dependent on outlier days). Custom = use the inputs below.")
+string preset = input.string("Selected (S1)", "Preset", options=["Selected (S1)", "Smoother (S4)", "Trend runner", "Runner after +1.5 ATR", "Custom (inputs below)"],
+     group=riskGroup, tooltip="S1 = meta filter + 3 ATR stop + hold to the session close (chosen on 2022-23 by return/drawdown). S4 = S1 + skip first 30 min + stop after 2 losers/day + scale out half at +1 ATR, then break-even and 3 ATR chandelier (smoother, less dependent on outlier days). Trend runner = S1 entries/stop, exit when the Smart Trend regime flips (your Exit Comparison model; best in 2022-23, PF 0.92 in 2024-26). Runner after +1.5 ATR = hold like S1 until 1.5 ATR in profit, then exit on a regime flip. Custom = use the inputs below.")
 float stopAtr = input.float(3.0, "Initial stop, ATR multiple (0 = no stop, as the original)", minval=0, step=0.25, group=riskGroup)
 bool useRiskSizing = input.bool(false, "Size by risk (tested and NOT recommended, see report)", group=riskGroup)
 float riskUsd = input.float(300.0, "Risk per trade, USD", minval=1, group=riskGroup,
@@ -440,7 +440,8 @@ float adaptiveEr = input.float(0.0, "Only scale out when ER(20) at entry >= x (0
 bool useOrigTarget = input.bool(false, "Original fixed target (min ATR multiple, cash cap)", group=riskGroup)
 float targetAtrMultiple = input.float(1.25, "  Target distance in ATR", minval=0.1, step=0.05, group=riskGroup)
 float targetCashCap = input.float(0.0, "  Max target USD (0 = no cap; original was 150)", minval=0, group=riskGroup)
-bool invalExit = input.bool(false, "Exit when Smart Trend regime flips against the trade", group=riskGroup)
+bool invalExitIn = input.bool(false, "Exit when Smart Trend regime flips against the trade (Custom)", group=riskGroup)
+float invalMinMfeIn = input.float(0.0, "  ...only once the trade has been x ATR in profit (Custom)", minval=0, step=0.25, group=riskGroup)
 int timeStopBars = input.int(0, "Time stop: bars (0 = off)", minval=0, group=riskGroup)
 float timeStopMfe = input.float(0.5, "  ...exit if best move < x ATR by then", minval=0, step=0.05, group=riskGroup)
 int maxLosersDayIn = input.int(2, "Stop for the day after N losing trades, 0 = off (Custom)", minval=0, group=riskGroup)
@@ -448,9 +449,11 @@ float dailyLossUsd = input.float(0.0, "Daily loss limit incl. open P&L, USD (0 =
 string oppMode = input.string("Reverse", "On an opposite (filtered) signal", options=["Reverse", "Exit only", "Ignore"], group=riskGroup)
 
 // effective settings from the preset
-bool useScaleOut = preset == "Selected (S1)" ? false : preset == "Smoother (S4)" ? true : useScaleOutIn
-int maxLosersDay = preset == "Selected (S1)" ? 0 : preset == "Smoother (S4)" ? 2 : maxLosersDayIn
-int skipOpenBars = preset == "Selected (S1)" ? 0 : preset == "Smoother (S4)" ? 6 : skipOpenBarsIn
+bool useScaleOut = preset == "Smoother (S4)" ? true : preset == "Custom (inputs below)" ? useScaleOutIn : false
+int maxLosersDay = preset == "Smoother (S4)" ? 2 : preset == "Custom (inputs below)" ? maxLosersDayIn : 0
+bool invalExit = preset == "Trend runner" or preset == "Runner after +1.5 ATR" ? true : preset == "Custom (inputs below)" ? invalExitIn : false
+float invalMinMfe = preset == "Runner after +1.5 ATR" ? 1.5 : preset == "Custom (inputs below)" ? invalMinMfeIn : 0.0
+int skipOpenBars = preset == "Smoother (S4)" ? 6 : preset == "Custom (inputs below)" ? skipOpenBarsIn : 0
 
 // daily counters. A "losing trade" is a whole position (scale-out + runner counted together).
 var int losersToday = 0
@@ -586,7 +589,7 @@ if strategy.position_size != 0 and not forceExit
         strategy.exit(id + " run", from_entry=id, stop=runStop, alert_message="ENH_STOP")
     int barsIn = bar_index - eb + 1
     float mfe = isLong ? bestPx - ep : ep - bestPx
-    bool invalid = invalExit and ((isLong and regime == -1) or (not isLong and regime == 1))
+    bool invalid = invalExit and ((isLong and regime == -1) or (not isLong and regime == 1)) and mfe >= invalMinMfe * a0
     bool timedOut = timeStopBars > 0 and barsIn >= timeStopBars and mfe < timeStopMfe * a0 and not partDone
     if invalid or timedOut
         strategy.close(id, comment=invalid ? "Regime flip exit" : "Time stop", alert_message="ENH_EXIT")

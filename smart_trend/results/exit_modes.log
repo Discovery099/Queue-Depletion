@@ -1,0 +1,22 @@
+A) Exit models alone, per symbol, 1 contract, 2020-01..2026-03
+  Original (capped target)                      gPF 0.90  net    -55501  DDsum    -86397  worstDay   -5178  | ES:0.91 MES:0.92 MNQ:1.02 YM:0.93 MGC:0.74
+  Timed exit (1.25ATR tgt, 12 bars)             gPF 0.93  net    -15048  DDsum    -71898  worstDay   -4080  | ES:1.03 MES:0.97 MNQ:1.02 YM:0.95 MGC:0.71
+  Trend runner (exit on regime flip)            gPF 1.01  net    108816  DDsum    -69254  worstDay   -4428  | ES:1.11 MES:1.04 MNQ:1.05 YM:1.13 MGC:0.75
+  Trend runner + 3ATR stop                      gPF 1.00  net    104871  DDsum    -72287  worstDay   -4428  | ES:1.10 MES:1.04 MNQ:1.05 YM:1.13 MGC:0.74
+  Enhanced S1 exit (3ATR stop, hold to close)   gPF 1.01  net     99490  DDsum    -95032  worstDay   -5122  | ES:1.07 MES:1.01 MNQ:1.09 YM:1.11 MGC:0.79
+
+B) With the meta filter, 2022-01..2026-03 (walk-forward), index futures, 1 contract
+  Timed exit (1.25ATR tgt, 12 bars)             [S1 label ] 2022-23: gPF 1.21 net     32198 DDsum   -18282 worstDay   -2792 | ES:1.34 MES:1.22 MNQ:1.00 YM:1.33
+  Timed exit (1.25ATR tgt, 12 bars)             [S1 label ] 2024-26: gPF 1.06 net     11961 DDsum   -19870 worstDay   -3292 | ES:1.11 MES:1.10 MNQ:0.97 YM:1.06
+  Timed exit (1.25ATR tgt, 12 bars)             [own label] 2022-23: gPF 1.01 net      6979 DDsum   -20578 worstDay   -3280 | ES:1.00 MES:0.93 MNQ:0.97 YM:1.18
+  Timed exit (1.25ATR tgt, 12 bars)             [own label] 2024-26: gPF 1.14 net     18211 DDsum   -24753 worstDay   -3292 | ES:1.37 MES:1.24 MNQ:1.24 YM:0.82
+  Trend runner (exit on regime flip)            [S1 label ] 2022-23: gPF 1.53 net     76717 DDsum   -19167 worstDay   -1940 | ES:1.50 MES:1.49 MNQ:1.33 YM:1.85
+  Trend runner (exit on regime flip)            [S1 label ] 2024-26: gPF 1.15 net     37586 DDsum   -24090 worstDay   -3362 | ES:1.12 MES:1.13 MNQ:0.99 YM:1.39
+  Trend runner (exit on regime flip)            [own label] 2022-23: gPF 1.47 net     81668 DDsum   -17963 worstDay   -1940 | ES:1.57 MES:1.50 MNQ:1.21 YM:1.66
+  Trend runner (exit on regime flip)            [own label] 2024-26: gPF 1.14 net     33424 DDsum   -27622 worstDay   -2832 | ES:1.22 MES:1.23 MNQ:0.99 YM:1.13
+  Trend runner + 3ATR stop                      [S1 label ] 2022-23: gPF 1.52 net     75408 DDsum   -19167 worstDay   -1940 | ES:1.47 MES:1.49 MNQ:1.34 YM:1.84
+  Trend runner + 3ATR stop                      [S1 label ] 2024-26: gPF 1.15 net     37444 DDsum   -24494 worstDay   -3362 | ES:1.12 MES:1.13 MNQ:0.98 YM:1.40
+  Trend runner + 3ATR stop                      [own label] 2022-23: gPF 1.49 net     80834 DDsum   -17698 worstDay   -1940 | ES:1.55 MES:1.53 MNQ:1.27 YM:1.62
+  Trend runner + 3ATR stop                      [own label] 2024-26: gPF 1.12 net     30892 DDsum   -27684 worstDay   -3610 | ES:1.19 MES:1.18 MNQ:0.99 YM:1.13
+  Enhanced S1 exit (3ATR stop, hold to close)   [S1 label ] 2022-23: gPF 1.35 net     78244 DDsum   -30943 worstDay   -3068 | ES:1.27 MES:1.18 MNQ:1.17 YM:1.89
+  Enhanced S1 exit (3ATR stop, hold to close)   [S1 label ] 2024-26: gPF 1.33 net     78778 DDsum   -27356 worstDay   -3820 | ES:1.29 MES:1.25 MNQ:1.18 YM:1.64

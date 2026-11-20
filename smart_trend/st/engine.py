@@ -34,6 +34,7 @@ PARAMS = dict(
     max_losses_day=0.0,          # stop for the day after N losing trades
     risk_usd=0.0, max_qty=50.0,  # risk-based sizing: qty = floor(risk_usd / (stop distance * pv))
     opp_mode=1.0,                # 1 = reverse on opposite agreement (original), 2 = exit only, 0 = ignore
+    inval_min_mfe_atr=0.0,       # inval_mode 1 only once the trade has been >= x ATR in profit (hybrid)
 )
 PIDX = {k: i for i, k in enumerate(PARAMS)}
 
@@ -68,7 +69,7 @@ def run(o, h, l, c, atr, trail, regime, mbuy, msell, allow_long, allow_short, fo
     ts_bars = int(P[12]); ts_min = P[13]; max_bars = int(P[14])
     pfrac = P[15]; pr = P[16]; be_off = P[17]; runner_mode = int(P[18]); runner_atr = P[19]
     runner_tr = P[20]; adaptive_er = P[21]; dll = P[22]; max_losses = int(P[23])
-    risk_usd = P[24]; max_qty = P[25]; opp_mode = int(P[26])
+    risk_usd = P[24]; max_qty = P[25]; opp_mode = int(P[26]); inval_min = P[27]
 
     n = c.size
     cap = n // 2 + 10
@@ -246,7 +247,7 @@ def run(o, h, l, c, atr, trail, regime, mbuy, msell, allow_long, allow_short, fo
                 pos = 0; q = 0.0
             else:
                 bars_in = i - ent_i + 1
-                if inval_mode == 1 and regime[i] == -pos:
+                if inval_mode == 1 and regime[i] == -pos and mfe >= inval_min * e_atr:
                     pend_exit = R_INVAL
                 elif ts_bars > 0 and bars_in >= ts_bars and mfe < ts_min * e_atr and not part_done:
                     pend_exit = R_TIME
