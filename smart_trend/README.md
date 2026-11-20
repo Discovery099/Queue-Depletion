@@ -158,10 +158,34 @@ Fixes tested (portfolio, profit factor):
   signs and mostly cancel, and the variant is no better in 2024–26. The current model is kept.
 - **A "Trade direction" input** (Both / Long only / Short only) is now in the Pine Script.
 
+**These TradingView runs used extended-hours charts.** The model was trained on regular-session
+bars only, so on those charts its ATR, RSI, Smart Trail, raw signals, 15/60-minute trends and
+390-bar averages were all computed differently. The forward test was therefore not a faithful
+test of the model. The long bias is real in the backtest too, so this doesn't explain
+everything. The Pine Script now computes every indicator, signal and feature from
+regular-session bars only, whatever the chart session; see "Session-independent engine" below.
+
 **Bottom line:** the historical edge is mostly *buying intraday dips in equity-index uptrends*.
 That's a real, persistent pattern, but it fails in sustained declines, as Aug–Nov 2026 shows.
 Don't trade it live on the strength of the backtest. Paper-trade it, and treat a falling
 market as the scenario where it loses.
+
+## Session-independent engine (Pine)
+
+`SmartTrend_Enhanced.pine` rebuilds the whole signal and feature pipeline from regular-session
+bars (default `0930-1600` New York) and ignores extended-hours bars. That covers:
+- ATR (Wilder) with EMA smoothing, and the Smart Trail;
+- pullback recovery;
+- HMA events;
+- RSI 25/100 and its one-bar-delayed cross;
+- the three-signal agreement window, counted in session bars;
+- DMI/ADX and the HMA-21 slope;
+- efficiency ratios, 6- and 24-bar returns, and the 390-bar ATR and volume averages;
+- 15- and 60-minute Smart Trend from session-aligned buckets, using only fully closed buckets;
+- session VWAP and the day anchors.
+
+The calculations mirror the Python research engine, so an extended-hours chart and a
+regular-hours chart should give the same trades. It no longer uses `request.security`.
 
 ## Exit-comparison script (Timed exit / Trend runner)
 
@@ -232,8 +256,8 @@ YM/MYM only**; MYM is the small-account substitute for YM. Leave out the Russell
 
 ## Using the Pine Script
 
-1. Open a **5-minute** chart of ES/MES, MNQ (NQ untested) or YM/MYM. Not the Russell, crude or gold. Set
-   the session to **regular trading hours**.
+1. Open a **5-minute** chart of ES/MES, MNQ (NQ untested) or YM/MYM. Not the Russell, crude or gold. Either
+   chart session works: the script computes everything from regular-session bars.
 2. Add `SmartTrend_Enhanced.pine`. Preset **Selected (S1)** is the tested default. **Smoother
    (S4)** trades lower drawdown for lower profit.
 3. Sizing: **fixed contracts** ("Size by risk" off). The research used about $200k notional per
